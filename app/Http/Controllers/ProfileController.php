@@ -31,12 +31,17 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:users,name,' . $id,
             'avatar' => 'image|mimes:jpg,jpeg,png,webp|max:10048',
+            'password' => 'nullable|min:8|max:255',
         ], [
             'name.required' => 'Nama harus diisi!',
             'name.unique' => 'Nama sudah digunakan!',
             'name.string' => 'Nama harus berupa teks!',
             'name.max' => 'Nama maksimal 255 karakter!',
+            'avatar.image' => 'Avatar harus berupa gambar!',
+            'avatar.mimes' => 'Format avatar tidak valid! Gunakan format jpg, jpeg, png, atau webp!',
             'avatar.max' => 'Ukuran avatar tidak boleh lebih dari 10MB!',
+            'password.min' => 'Password minimal 8 karakter!',
+            'password.max' => 'Password maksimal 255 karakter!',
         ]);
 
         // Cek apakah pengguna ada dalam database
