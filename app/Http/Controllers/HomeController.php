@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\History;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,10 +24,13 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $histories = History::latest()->get();
+
         return view('pages.index', [
             'title' => 'Dashboard Putra Panggil Jaya',
             'navTitle' => 'Dashboard',
-            'active' => 'dashboard'
+            'active' => 'dashboard',
+            'histories' => $histories
         ]);
     }
 }

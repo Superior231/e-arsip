@@ -1,14 +1,59 @@
 <nav class="navbar shadow-sm">
     <div class="container-fluid">
         <div class="navbar-brand d-flex align-items-center gap-3">
-            <i class='bx bx-menu d-md-none fs-1 mt-1' type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#mobileNav" aria-controls="mobileNav"></i>
+            <i class='bx bx-menu d-md-none fs-1 mt-1' type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav"
+                aria-controls="mobileNav"></i>
             <span class="fw-semibold my-0 py-0">{{ $navTitle }}</span>
         </div>
         <ul class="navbar-nav me-2 me-md-3 d-flex flex-row align-items-center gap-4" id="dropdown">
+            <li class="nav-item dropdown mt-0 mt-md-1">
+                <a class="nav-link d-flex align-items-center" href="#"
+                    onclick="toggleNotification(event)">
+                    <i class='bx bxs-bell fs-4'></i>
+                </a>
+
+                <div class="notification-container text-dark py-2" id="notificationContainer">
+                    <div class="notification text-dark w-100">
+                        @forelse ($histories->take(5) as $item)
+                            @php
+                                $bgClass = match ($item->method) {
+                                    'create' => 'bg-success text-light',
+                                    'update' => 'bg-warning',
+                                    'mutate' => 'bg-primary text-light',
+                                    'create, mutate' => 'bg-dark text-light',
+                                    'mutate, update' => 'bg-dark text-light',
+                                    'mutate, delete' => 'bg-danger text-light',
+                                    'mutate, in' => 'bg-primary text-light',
+                                    'mutate, out' => 'bg-danger text-light',
+                                    'delete' => 'bg-danger text-light',
+                                    default => 'bg-secondary text-dark',
+                                };
+                            @endphp
+                            <div class="notification-header d-flex justify-content-between px-3 {{ $bgClass }}">
+                                <span class="fs-7">{{ $item->title }}</span>
+                                <span class="fs-7">{{ $item->created_at->format('d M Y H:i') }} WIB</span>
+                            </div>
+                            <div class="notification-body d-flex flex-column px-3 gap-0 mb-2">
+                                <p class="my-0 py-0 fs-6 fw-bold">{{ $item->name }}</p>
+                                <p class="my-0 py-0 fs-7">{{ $item->description }}</p>
+                            </div>
+                        @empty
+                            <div class="d-flex justify-content-center align-items-center w-100">
+                                <p class="text-center my-0 py-0">Belum ada notifikasi</p>
+                            </div>
+                        @endforelse
+
+                        @if ($histories->isNotEmpty())
+                            <div class="notification-footer d-flex justify-content-center align-items-center w-100">
+                                <a href="#" class="fs-7 text-center text-primary w-100">See all notifications</a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
-                    id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink"
+                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="profile-image">
                         @if (!empty(Auth::user()->avatar))
                             <img class="img" src="{{ asset('storage/avatars/' . Auth::user()->avatar) }}">
@@ -27,8 +72,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2"
-                            href="#">
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="#">
                             <i class='bx bx-cog'></i>
                             Pengaturan
                         </a>
@@ -57,13 +101,12 @@
     <div class="offcanvas-header">
         <div class="d-flex align-items-center">
             <a href="{{ route('index') }}">
-                <img src="{{ url('/assets/img/logo_ppj.png') }}" alt="logo" style="width: 40px;"
-                    class="logo" id="logo">
+                <img src="{{ url('/assets/img/logo_ppj.png') }}" alt="logo" style="width: 40px;" class="logo"
+                    id="logo">
             </a>
             <span class="nav-name-brand ms-2 fw-semibold text-color" id="navNameBrand">e-Arsip PPJ</span>
         </div>
-        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas"
-            aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
     <hr class="border-secondary py-0 my-0">
@@ -148,5 +191,27 @@
                 }
             });
         }
+
+        // Notifications
+        function toggleNotification(event) {
+            event.preventDefault(); // Mencegah halaman reload jika href="#"
+            let notifContainer = document.getElementById("notificationContainer");
+
+            if (notifContainer.style.display === "none" || notifContainer.style.display === "") {
+                notifContainer.style.display = "flex";
+            } else {
+                notifContainer.style.display = "none";
+            }
+        }
+
+        // Menutup notifikasi jika klik di luar
+        document.addEventListener("click", function(event) {
+            let notifContainer = document.getElementById("notificationContainer");
+            let bellIcon = document.querySelector(".nav-link");
+
+            if (!notifContainer.contains(event.target) && !bellIcon.contains(event.target)) {
+                notifContainer.style.display = "none";
+            }
+        });
     </script>
 @endpush
