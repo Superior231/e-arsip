@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('avatar')->nullable();
-            $table->enum('roles', ['admin', 'superadmin'])->default('admin');
+            $table->enum('roles', ['user', 'admin', 'superadmin'])->default('user');
             $table->enum('status', ['approved', 'suspend'])->default('approved');
             $table->timestamp('name_verified_at')->nullable();
             $table->string('password');
