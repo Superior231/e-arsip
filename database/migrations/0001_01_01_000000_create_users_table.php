@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('name')->unique();
+            $table->string('avatar')->nullable();
+            $table->enum('roles', ['admin', 'superadmin'])->default('admin');
+            $table->enum('status', ['approved', 'suspend'])->default('approved');
+            $table->timestamp('name_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
