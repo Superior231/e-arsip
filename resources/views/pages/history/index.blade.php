@@ -113,7 +113,7 @@
                         <th class="text-center">Method</th>
                         <th>Type</th>
                         <th>Nama</th>
-                        <th>Deskripsi</th>
+                        <th style="min-width: 250px;">Deskripsi</th>
                         <th>Tanggal</th>
                     </tr>
                 </thead>
@@ -139,7 +139,7 @@
                             </td>
                             <td>{{ $history->type }}</td>
                             <td>{{ $history->name }}</td>
-                            <td>{{ $history->description }}</td>
+                            <td class="text-break">{{ $history->description }}</td>
                             <td class="text-nowrap">
                                 <span class="d-none">{{ $history->created_at->format('Y m d H:i') }}</span>
                                 {{ $history->created_at->format('d M Y H:i') }} WIB
@@ -160,7 +160,7 @@
                         <th class="text-center">Method</th>
                         <th>Type</th>
                         <th>Name</th>
-                        <th>Description</th>
+                        <th style="min-width: 250px;">Description</th>
                         <th>Date</th>
                     </tr>
                 </thead>
@@ -183,7 +183,7 @@
                             </td>
                             <td>{{ $item->type }}</td>
                             <td>{{ $item->name }}</td>
-                            <td>{{ $item->description }}</td>
+                            <td class="text-break">{{ $item->description }}</td>
                             <td class="text-nowrap">
                                 <span class="d-none">{{ $item->created_at->format('Y m d H:i') }}</span>
                                 {{ $item->created_at->format('d M Y H:i') }} WIB
