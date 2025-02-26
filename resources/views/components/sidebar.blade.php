@@ -35,7 +35,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="side-link {{ $active === 'history' ? 'active' : '' }}"
+                    <a href="{{ route('history.index') }}" class="side-link {{ $active === 'history' ? 'active' : '' }}"
                         data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="History">
                         <i class='bx bx-history icon fs-4'></i>
                         <span class="nav-text px-0 mx-0">History</span>

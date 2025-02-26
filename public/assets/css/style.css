@@ -9,7 +9,8 @@
 
 :root {
     --primary-color: #2D6CDF;
-    --primary-color-opacity: #275bbd;
+    --primary-color-active: #275bbd;
+    --primary-color-opacity: #e0f0fb;
     --secondary-color: #fa967d;
     --background-color: #f1f5f8;
     --card-color: #fefffe !important;
@@ -73,15 +74,15 @@ td span {
     border: none;
 }
 .btn-primary:hover {
-    background-color: var(--primary-color-opacity);
+    background-color: var(--primary-color-active);
     border: none;
 }
 .btn-primary:focus {
-    background-color: var(--primary-color-opacity) !important;
+    background-color: var(--primary-color-active) !important;
     border: none;
 }
 .btn-primary:active {
-    background-color: var(--primary-color-opacity) !important;
+    background-color: var(--primary-color-active) !important;
     border: none;
 }
 
@@ -90,11 +91,11 @@ td span {
     color: var(--text-color-dark) !important;
 }
 .btn-outline-primary:hover {
-    background-color: var(--primary-color-opacity) !important;
+    background-color: var(--primary-color-active) !important;
     color: var(--text-color-white) !important;
 }
 .btn-outline-primary.active {
-    background-color: var(--primary-color-opacity) !important;
+    background-color: var(--primary-color-active) !important;
     color: var(--text-color-white) !important;
 }
 
@@ -554,3 +555,20 @@ input[type="checkbox"] {
     text-decoration: underline;
 }
 /* Breadcrumb End */
+
+
+
+.history-container .col .card .icon {
+    padding: 0;
+    margin: 0;
+}
+.history-container .col .card .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    padding: 10px;
+}
+.history-container .col .card .icon {
+    background-color: var(--sidebar-color-opacity);
+}

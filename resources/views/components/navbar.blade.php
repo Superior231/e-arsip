@@ -45,7 +45,7 @@
 
                         @if ($histories->isNotEmpty())
                             <div class="notification-footer d-flex justify-content-center align-items-center w-100">
-                                <a href="#" class="fs-7 text-center text-primary w-100">See all notifications</a>
+                                <a href="{{ route('history.index') }}" class="fs-7 text-center text-primary w-100">See all notifications</a>
                             </div>
                         @endif
                     </div>
@@ -132,7 +132,7 @@
                 </a>
             </li>
             <li class="{{ $active == 'history' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center gap-2">
+                <a href="{{ route('history.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bx-history fs-3'></i>
                     <span class="my-0 py-0">History</span>
                 </a>
