@@ -10,7 +10,7 @@
 :root {
     --primary-color: #2D6CDF;
     --primary-color-opacity: #275bbd;
-    --secondary-color: #f1f1f0;
+    --secondary-color: #fa967d;
     --background-color: #f1f5f8;
     --card-color: #fefffe !important;
     --sidebar-color: #fefffe;
@@ -418,6 +418,9 @@ input {
     background-color: transparent !important;
     color: var(--text-color);
     border-radius: 10px;
+}
+input.form-control.is-invalid {
+    border-color: #dd3445 !important;
 }
 textarea::placeholder,
 select::placeholder,

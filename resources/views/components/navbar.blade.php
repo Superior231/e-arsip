@@ -76,10 +76,10 @@
                     <span class="my-0 py-0">Dashboard</span>
                 </a>
             </li>
-            <li class="{{ $active == 'inventory' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center gap-2">
+            <li class="{{ $active == 'category' ? 'active' : '' }}">
+                <a href="{{ route('category.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bxs-purchase-tag fs-4'></i>
-                    <span class="my-0 py-0">Category</span>
+                    <span class="my-0 py-0">Kategori</span>
                 </a>
             </li>
             <li class="{{ $active == 'archive' ? 'active' : '' }}">

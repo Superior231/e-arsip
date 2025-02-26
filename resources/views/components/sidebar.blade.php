@@ -4,7 +4,7 @@
         <a href="{{ route('index') }}" class="d-flex align-items-center text-decoration-none">
             <img src="{{ url('/assets/img/logo_ppj.png') }}" alt="logo" style="width: 50px;" class="logo"
                 id="logo">
-            <span class="nav-name-brand ms-2 fw-semibold text-color" id="navNameBrand">e-Arsip PPJ</span>
+            <span class="nav-name-brand ms-2 fw-semibold text-color fs-5" id="navNameBrand">e-Arsip PPJ</span>
         </a>
         <i class='bx bx-chevron-left toggle' id="sidebarToggle" style="cursor: pointer;"></i>
     </header>
@@ -19,11 +19,11 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"
+                    <a href="{{ route('category.index') }}"
                         class="side-link {{ $active === 'category' ? 'active' : '' }}" data-bs-toggle="tooltip"
-                        data-bs-placement="right" data-bs-title="Category">
+                        data-bs-placement="right" data-bs-title="Katagori">
                         <i class='bx bxs-purchase-tag icon'></i>
-                        <span class="nav-text px-0 mx-0">Category</span>
+                        <span class="nav-text px-0 mx-0">Kategori</span>
                     </a>
                 </li>
                 <li>
