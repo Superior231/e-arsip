@@ -35,7 +35,7 @@
                             </div>
                             <div class="notification-body d-flex flex-column px-3 gap-0 mb-2">
                                 <p class="my-0 py-0 fs-6 fw-bold">{{ $item->name }}</p>
-                                <p class="my-0 py-0 fs-7">{{ $item->description }}</p>
+                                <p class="my-0 py-0 fs-7 text-break">{{ $item->description }}</p>
                             </div>
                         @empty
                             <div class="d-flex justify-content-center align-items-center w-100">
@@ -66,13 +66,13 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end position-absolute" aria-labelledby="navbarDropdownMenuLink">
                     <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile.index') }}">
                             <i class='bx bx-user'></i>
                             Profile
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('pengaturan.index') }}">
                             <i class='bx bx-cog'></i>
                             Pengaturan
                         </a>
@@ -153,7 +153,7 @@
             <div class="bottom-content position-absolute bottom-0 mb-2" style="width: calc(100% - 1px);">
                 <hr class="border-secondary pb-1 mb-1">
                 <li class="{{ $active == 'pengaturan' ? 'active' : '' }}">
-                    <a href="#" class="d-flex align-items-center justify-content-between">
+                    <a href="{{ route('pengaturan.index') }}" class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-2">
                             <i class='bx bxs-cog fs-4'></i>
                             <span class="my-0 py-0">Pengaturan</span>

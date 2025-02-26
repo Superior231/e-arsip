@@ -3,6 +3,8 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PengaturanController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -13,5 +15,8 @@ Auth::routes(['register' => false]);
 Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
     Route::resource('category', CategoryController::class);
+    Route::resource('profile', ProfileController::class);
+    Route::delete('/profile/{id}/delete-avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
 });

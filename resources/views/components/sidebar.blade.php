@@ -59,7 +59,7 @@
 
         <div class="bottom-content position-absolute bottom-0 mb-2" style="width: calc(100% - 40px);">
             <li class="setting">
-                <a href="#" class="d-flex align-items-center justify-content-between"
+                <a href="{{ route('pengaturan.index') }}" class="d-flex align-items-center justify-content-between"
                     data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Pengaturan">
                     <div class="d-flex align-items-center">
                         <i class='bx bxs-cog icon'></i>
