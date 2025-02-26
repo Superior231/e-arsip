@@ -138,7 +138,7 @@
                 </a>
             </li>
             <li class="{{ $active == 'staff' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center gap-2">
+                <a href="{{ route('staff.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bxs-group fs-4'></i>
                     <span class="my-0 py-0">Staff</span>
                 </a>

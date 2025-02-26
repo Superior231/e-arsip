@@ -42,7 +42,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="side-link {{ $active === 'staff' ? 'active' : '' }}"
+                    <a href="{{ route('staff.index') }}" class="side-link {{ $active === 'staff' ? 'active' : '' }}"
                         data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Staff">
                         <i class='bx bxs-group icon'></i>
                         <span class="nav-text px-0 mx-0">Staff</span>
