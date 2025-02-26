@@ -9,7 +9,7 @@
 
 :root {
     --primary-color: #2D6CDF;
-    --primary-color-opacity: #275bbd;
+    --primary-color-active: #275bbd;
     --secondary-color: #ACACAC;
     --background-color: #FEFEFF;
     --background-input: #F0F0F0;
@@ -173,7 +173,7 @@ form .btn {
     padding: 10px 15px;
 }
 form .btn:hover {
-    background-color: var(--primary-color-opacity) !important;
+    background-color: var(--primary-color-active) !important;
 }
 
 #hero {
