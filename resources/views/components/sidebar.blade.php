@@ -19,6 +19,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('division.index') }}"
+                        class="side-link {{ $active === 'division' ? 'active' : '' }}" data-bs-toggle="tooltip"
+                        data-bs-placement="right" data-bs-title="Divisi">
+                        <i class='bx bxs-label icon'></i>
+                        <span class="nav-text px-0 mx-0">Divisi</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('category.index') }}"
                         class="side-link {{ $active === 'category' ? 'active' : '' }}" data-bs-toggle="tooltip"
                         data-bs-placement="right" data-bs-title="Katagori">

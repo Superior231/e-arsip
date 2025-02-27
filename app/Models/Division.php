@@ -8,9 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Division extends Model
 {
     use HasFactory;
-    
-    protected $connection = 'mysql_inventory';
+
+    protected $connection = 'mysql_earsip';
     protected $table = 'divisions';
 
     protected $fillable = ['name', 'place', 'status'];
+
+    public function archives()
+    {
+        return $this->hasMany(Archive::class);
+    }
 }

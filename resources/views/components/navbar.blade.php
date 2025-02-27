@@ -119,6 +119,12 @@
                     <span class="my-0 py-0">Dashboard</span>
                 </a>
             </li>
+            <li class="{{ $active == 'division' ? 'active' : '' }}">
+                <a href="{{ route('division.index') }}" class="d-flex align-items-center gap-2">
+                    <i class='bx bxs-label fs-4'></i>
+                    <span class="my-0 py-0">Divisi</span>
+                </a>
+            </li>
             <li class="{{ $active == 'category' ? 'active' : '' }}">
                 <a href="{{ route('category.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bxs-purchase-tag fs-4'></i>
