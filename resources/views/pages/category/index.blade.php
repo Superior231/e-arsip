@@ -64,7 +64,7 @@
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center pe-2">
                                             <span
-                                                class="badge {{ $category->status == 'active' ? 'bg-success' : 'bg-danger' }}">{{ $category->status }}</span>
+                                                class="badge {{ $category->status == 'active' ? 'bg-success' : 'bg-secondary' }}">{{ $category->status }}</span>
                                         </div>
                                     </td>
                                     <td>
