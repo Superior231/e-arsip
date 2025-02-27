@@ -31,6 +31,8 @@ class Category extends Model
             'Administrasi' => 'ADM',
             'Faktur' => 'FKT',
             'Surat' => 'SRT',
+            'Surat Masuk' => 'SMK',
+            'Surat Keluar' => 'SKL',
             'Laporan' => 'LPR',
         ];
 
