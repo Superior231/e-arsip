@@ -9,5 +9,8 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql_earsip';
+    protected $table = 'categories';
+
     protected $fillable = ['name', 'status'];
 }

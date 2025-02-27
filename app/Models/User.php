@@ -12,6 +12,9 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $connection = 'mysql_earsip';
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
