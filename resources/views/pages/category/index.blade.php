@@ -49,7 +49,8 @@
                     <table id="myDataTable" class="table table-striped table-hover" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Nama</th>
+                                <th class="text-nowrap">Nama</th>
+                                <th>Kode</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Tanggal</th>
                                 <th class="text-center">Actions</th>
@@ -59,7 +60,26 @@
                             @foreach ($categories as $category)
                                 <tr class="align-middle">
                                     <td>
-                                        <span>{{ $category->name }}</span>
+                                        <div class="d-flex flex-column">
+                                            <span>{{ $category->name }}</span>
+                                            {{-- @if ($category->subCategories->isNotEmpty()) --}}
+                                            <a class="text-decoration-underline" style="cursor: pointer;"
+                                                id="showItem-{{ $category->id }}" onclick="showItems({{ $category->id }})">
+                                                <span>Lihat items</span>
+                                            </a>
+
+                                            <div class="show-items-container d-none flex-column"
+                                                id="showItemContainer-{{ $category->id }}">
+                                                {{-- @foreach ($category->items as $item) --}}
+                                                <span class="py-0 my-0">- Keluar</span>
+                                                <span class="py-0 my-0">- Masuk</span>
+                                                {{-- @endforeach --}}
+                                            </div>
+                                            {{-- @endif --}}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span>{{ $category->slug }}</span>
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center pe-2">
@@ -74,12 +94,45 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="actions d-flex justify-content-center pe-3 gap-2">
-                                            <button type="button" class="btn btn-primary d-flex align-items-center p-2"
-                                                data-bs-toggle="modal" data-bs-target="#editCategoryonModal"
-                                                onclick="editCategory('{{ $category->id }}', '{{ $category->status }}', '{{ $category->name }}')">
-                                                <i class='bx bx-pencil p-0 m-0'></i>
-                                            </button>
+                                        <div class="actions d-flex justify-content-center pe-3">
+                                            <div class="dropdown">
+                                                <i class="bx bx-cog fs-4" id="action-{{ $category->id }}"
+                                                    data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"
+                                                    title="Actions"></i>
+
+                                                <ul class="dropdown-menu dropdown-menu-end"
+                                                    aria-labelledby="action-{{ $category->id }}">
+                                                    <li>
+                                                        <div class="d-flex justify-content-center mb-1 fw-bold">
+                                                            {{ $category->name }}
+                                                        </div>
+                                                    </li>
+                                                    <hr class="dropdown-divider py-0 my-0">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center gap-1"
+                                                            href="#">
+                                                            <i class='bx bx-show fs-5'></i>
+                                                            Lihat detail
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center gap-1"
+                                                            href="#">
+                                                            <i class='bx bx-plus fs-5'></i>
+                                                            Tambah sub kategori
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a style="cursor: pointer;"
+                                                            class="dropdown-item d-flex align-items-center gap-1"
+                                                            data-bs-toggle="modal" data-bs-target="#editCategoryonModal"
+                                                            onclick="editCategory('{{ $category->id }}', '{{ $category->status }}', '{{ $category->name }}')">
+                                                            <i class='bx bx-pencil fs-5'></i>
+                                                            Edit data
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -246,6 +299,13 @@
                 }
             });
         });
+
+        function showItems(categoryId) {
+            var container = document.getElementById('showItemContainer-' + categoryId);
+
+            container.classList.toggle('d-none');
+            container.classList.toggle('d-flex');
+        }
 
         function editCategory(id, status, name) {
             $('#editCategoryStatus').val(status);

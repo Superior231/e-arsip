@@ -12,5 +12,35 @@ class Category extends Model
     protected $connection = 'mysql_earsip';
     protected $table = 'categories';
 
-    protected $fillable = ['name', 'status'];
+    protected $fillable = ['name', 'slug', 'status'];
+
+    
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucwords($value);
+
+        // Jika slug belum diatur, maka generate otomatis
+        if (!isset($this->attributes['slug']) || empty($this->attributes['slug'])) {
+            $this->attributes['slug'] = $this->generateSlug($this->attributes['name']);
+        }
+    }
+
+    private function generateSlug($name)
+    {
+        $nameToSlug = [
+            'Administrasi' => 'ADM',
+            'Faktur' => 'FKT',
+            'Surat' => 'SRT',
+            'Laporan' => 'LPR',
+        ];
+
+        return $nameToSlug[$name] ?? strtoupper(substr($name, 0, 3));
+    }
+
+
+
+    public function subCategories()
+    {
+        return $this->hasMany(SubCategory::class);
+    }
 }

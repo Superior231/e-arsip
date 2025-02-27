@@ -26,13 +26,19 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories'
+            'name' => 'required|string|max:255|unique:categories',
         ], [
             'name.required' => 'Nama kategori wajib diisi!',
             'name.string' => 'Nama kategori harus berupa teks!',
             'name.max' => 'Nama kategori maksimal 255 karakter!',
-            'name.unique' => 'Nama kategori sudah digunakan!'
+            'name.unique' => 'Nama kategori sudah digunakan!',
         ]);
+
+        // Cek apakah kategori sudah ada
+        $existingCategory = Category::where('name', $request->name)->first();
+        if ($existingCategory) {
+            return redirect()->route('category.index', $existingCategory->slug)->with('error', 'Nama kategori sudah digunakan!');
+        }
 
         $data = $request->all();
         $category = Category::create($data);
@@ -62,8 +68,14 @@ class CategoryController extends Controller
             'name.required' => 'Nama kategori wajib diisi!',
             'name.string' => 'Nama kategori harus berupa teks!',
             'name.max' => 'Nama kategori maksimal 255 karakter!',
-            'name.unique' => 'Nama kategori sudah digunakan!'
+            'name.unique' => 'Nama kategori sudah digunakan!',
         ]);
+
+        // Cek apakah kategori sudah ada
+        $existingCategory = Category::where('name', $request->name)->where('id', '!=', $id)->first();
+        if ($existingCategory) {
+            return redirect()->route('category.index', $existingCategory->slug)->with('error', 'Nama kategori sudah digunakan!');
+        }
 
         $data = $request->all();
         $category = Category::findOrFail($id);
