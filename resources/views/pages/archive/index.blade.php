@@ -130,7 +130,6 @@
                                             '{{ $archive->date }}'
                                         )">
                                             <span class="py-0 my-0 text-primary">{{ $archive->archive_id }}</span>
-                                            <i class='bx bx-info-circle fs-7'></i>
                                         </div>
                                     </td>
                                     <td>

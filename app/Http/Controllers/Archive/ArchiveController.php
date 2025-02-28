@@ -86,7 +86,7 @@ class ArchiveController extends Controller
         // Generate code archive
         $division = Division::find($data['division_id']);
         $category = Category::find($data['category_id']);
-        $archive_code = $division->name . '/' . $division->place . '/' . $category->slug;
+        $archive_code = $division->name . '/' . $division->place . '/' . $category->slug . '/' .  $data['name'];
         $data['archive_code'] = $archive_code;
 
         $archive = Archive::create($data);
@@ -212,9 +212,9 @@ class ArchiveController extends Controller
             $archive->image = $fileName;
         }
 
-        // Update archive_code jika division atau category berubah
-        if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id) {
-            $archive_code = $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug;
+        // Update archive_code jika division, category, atau name berubah
+        if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id || $oldName !== $request->name) {
+            $archive_code = $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug . '/' . $request->name;
             $archive->archive_code = $archive_code;
 
             $updates[] = "Kode arsip dari '$oldCode' menjadi '$oldId/$archive_code'";
