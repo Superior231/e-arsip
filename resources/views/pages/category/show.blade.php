@@ -27,7 +27,7 @@
 
 @section('content')
     <!-- Breadcrumb -->
-    <ol class="breadcrumb py-0 my-0 mb-3">
+    <ol class="breadcrumb py-0 my-0">
         <a href="{{ route('category.index') }}" class="breadcrumb-items">Kategori</a>
         <a href="" class="breadcrumb-items active">{{ $category->name }}</a>
     </ol>
