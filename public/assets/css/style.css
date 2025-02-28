@@ -226,6 +226,14 @@ td span {
 .sidebar .menu {
     margin-top: 35px;
 }
+.sidebar .menu-bar {
+    height: calc(100% - 110px);
+    overflow-y: auto;
+}
+.sidebar .menu-bar::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
 
 .sidebar .nav-text {
     font-size: 16px;

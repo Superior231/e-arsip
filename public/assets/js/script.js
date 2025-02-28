@@ -4,6 +4,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const navNameBrand = document.getElementById("navNameBrand");
     const navTexts = document.querySelectorAll(".nav-text");
 
+    const archiveMenu = document.querySelector('.archive-menu');
+    const archiveMenuMobile = document.querySelector('.archive-menu-mobile');
+
     let tooltipList = [];
 
     function tooltips() {
@@ -23,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
         navTexts.forEach(navText => navText.style.display = "none");
         toggle.classList.remove("bx-chevron-left");
         toggle.classList.add("bx-chevron-right");
+        archiveMenu.classList.add('d-none');
         localStorage.setItem("sidebar", "closed");
         tooltipList = tooltips();
     }
@@ -72,3 +76,13 @@ try {
     console.log('Image preview not found!');
 }
 // Image Preview End
+
+
+
+const toggleArchive = () => {
+    const archiveMenu = document.querySelector('.archive-menu');
+    const archiveMenuMobile = document.querySelector('.archive-menu-mobile');
+
+    archiveMenuMobile.classList.toggle('d-none');
+    archiveMenu.classList.toggle('d-none');
+}

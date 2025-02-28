@@ -132,11 +132,19 @@
                 </a>
             </li>
             <li class="{{ $active == 'archive' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center gap-2">
+                <a href="#" class="d-flex align-items-center gap-2" onclick="toggleArchive()">
                     <i class='bx bxs-archive fs-4'></i>
                     <span class="my-0 py-0">Arsip</span>
                 </a>
             </li>
+            <ul class="archive-menu-mobile d-none d-flex flex-column gap-2 my-2 ms-2" style="height: 100%;">
+                <a href="#" class="text-decoration-none text-secondary">- Semua</a>
+                <a href="#" class="text-decoration-none text-secondary">- Administrasi</a>
+                <a href="#" class="text-decoration-none text-secondary">- Faktur</a>
+                <a href="#" class="text-decoration-none text-secondary">- Surat Masuk</a>
+                <a href="#" class="text-decoration-none text-secondary">- Surat Keluar</a>
+                <a href="#" class="text-decoration-none text-secondary">- Laporan</a>
+            </ul>
             <li class="{{ $active == 'history' ? 'active' : '' }}">
                 <a href="{{ route('history.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bx-history fs-3'></i>
@@ -156,7 +164,7 @@
                 </a>
             </li>
 
-            <div class="bottom-content position-absolute bottom-0 mb-2" style="width: calc(100% - 1px);">
+            <div class="bottom-content position-absolute bottom-0 mb-2 mt-3" style="width: calc(100% - 1px);">
                 <hr class="border-secondary pb-1 mb-1">
                 <li class="{{ $active == 'pengaturan' ? 'active' : '' }}">
                     <a href="{{ route('pengaturan.index') }}" class="d-flex align-items-center justify-content-between">
