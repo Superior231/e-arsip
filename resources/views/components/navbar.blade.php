@@ -132,13 +132,16 @@
                 </a>
             </li>
             <li class="{{ $active == 'archive' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center gap-2" onclick="toggleArchive()">
-                    <i class='bx bxs-archive fs-4'></i>
-                    <span class="my-0 py-0">Arsip</span>
+                <a href="#" class="d-flex align-items-center justify-content-between gap-2" onclick="toggleArchive()">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class='bx bxs-archive fs-4'></i>
+                        <span class="my-0 py-0">Arsip</span>
+                    </div>
+                    <i class='bx bx-chevron-right fs-3' id="archiveIconMobile"></i>
                 </a>
             </li>
             <ul class="archive-menu-mobile d-none d-flex flex-column gap-2 my-2 ms-2" style="height: 100%;">
-                <a href="#" class="text-decoration-none text-secondary">- Semua</a>
+                <a href="{{ route('archive.index') }}" class="text-decoration-none text-secondary">- Semua</a>
                 <a href="#" class="text-decoration-none text-secondary">- Administrasi</a>
                 <a href="#" class="text-decoration-none text-secondary">- Faktur</a>
                 <a href="#" class="text-decoration-none text-secondary">- Surat Masuk</a>

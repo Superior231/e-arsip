@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Archive\ArchiveController;
 use App\Http\Controllers\Category\CategoryController;
 use App\Http\Controllers\Category\SubCategoryController;
 use App\Http\Controllers\DivisionController;
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('division', DivisionController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('subcategory', SubCategoryController::class);
+    Route::resource('archive', ArchiveController::class);
     Route::resource('profile', ProfileController::class);
     Route::resource('staff', StaffController::class);
 });

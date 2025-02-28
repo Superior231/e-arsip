@@ -13,4 +13,9 @@ class Division extends Model
     protected $table = 'divisions';
 
     protected $fillable = ['name', 'place', 'status'];
+
+    public function archives()
+    {
+        return $this->hasMany(Archive::class);
+    }
 }

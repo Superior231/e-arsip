@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const navTexts = document.querySelectorAll(".nav-text");
 
     const archiveMenu = document.querySelector('.archive-menu');
-    const archiveMenuMobile = document.querySelector('.archive-menu-mobile');
+    const archiveIcon = document.getElementById('archiveIcon');
 
     let tooltipList = [];
 
@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
         toggle.classList.remove("bx-chevron-left");
         toggle.classList.add("bx-chevron-right");
         archiveMenu.classList.add('d-none');
+        archiveIcon.classList.remove("bx-chevron-down");
+        archiveIcon.classList.add("bx-chevron-right");
         localStorage.setItem("sidebar", "closed");
         tooltipList = tooltips();
     }
@@ -82,7 +84,25 @@ try {
 const toggleArchive = () => {
     const archiveMenu = document.querySelector('.archive-menu');
     const archiveMenuMobile = document.querySelector('.archive-menu-mobile');
+    const archiveIcon = document.getElementById('archiveIcon');
+    const archiveIconMobile = document.getElementById('archiveIconMobile');
 
     archiveMenuMobile.classList.toggle('d-none');
     archiveMenu.classList.toggle('d-none');
+
+    if (archiveIcon.classList.contains("bx-chevron-right")) {
+        archiveIcon.classList.remove("bx-chevron-right");
+        archiveIcon.classList.add("bx-chevron-down");
+    } else {
+        archiveIcon.classList.remove("bx-chevron-down");
+        archiveIcon.classList.add("bx-chevron-right");
+    }
+
+    if (archiveIconMobile.classList.contains("bx-chevron-right")) {
+        archiveIconMobile.classList.remove("bx-chevron-right");
+        archiveIconMobile.classList.add("bx-chevron-down");
+    } else {
+        archiveIconMobile.classList.remove("bx-chevron-down");
+        archiveIconMobile.classList.add("bx-chevron-right");
+    }
 }

@@ -50,4 +50,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function archives()
+    {
+        return $this->hasMany(Archive::class);
+    }
 }

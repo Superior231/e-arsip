@@ -45,4 +45,9 @@ class Category extends Model
     {
         return $this->hasMany(SubCategory::class);
     }
+
+    public function archives()
+    {
+        return $this->hasMany(Archive::class);
+    }
 }

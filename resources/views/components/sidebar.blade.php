@@ -33,14 +33,17 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="side-link {{ $active === 'archive' ? 'active' : '' }}" data-bs-toggle="tooltip"
+                <a href="#" class="side-link justify-content-between {{ $active === 'archive' ? 'active' : '' }}" data-bs-toggle="tooltip"
                     data-bs-placement="right" data-bs-title="Arsip" onclick="toggleArchive()">
-                    <i class='bx bxs-archive icon'></i>
-                    <span class="nav-text px-0 mx-0">Arsip</span>
+                    <div class="d-flex align-items-center">
+                        <i class='bx bxs-archive icon'></i>
+                        <span class="nav-text px-0 mx-0">Arsip</span>
+                    </div>
+                    <i class='bx bx-chevron-right nav-text fs-5 me-3' id="archiveIcon"></i>
                 </a>
             </li>
             <li class="archive-menu d-none d-flex flex-column gap-2 mb-3 ms-3" style="height: 100%;">
-                <a href="#" class="side-link text-secondary">- Semua</a>
+                <a href="{{ route('archive.index') }}" class="side-link text-secondary">- Semua</a>
                 <a href="#" class="side-link text-secondary">- Administrasi</a>
                 <a href="#" class="side-link text-secondary">- Faktur</a>
                 <a href="#" class="side-link text-secondary">- Surat Masuk</a>
