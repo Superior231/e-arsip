@@ -196,7 +196,7 @@
                 <form action="{{ route('category.store') }}" method="POST">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createCategoryModalLabel">Buat Kategori</h5>
+                        <h4 class="modal-title" id="createCategoryModalLabel">Buat Kategori</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -234,7 +234,7 @@
                     @csrf @method('PUT')
 
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editCategoryModalLabel">Edit Kategori</h5>
+                        <h4 class="modal-title" id="editCategoryModalLabel">Edit Kategori</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -291,7 +291,7 @@
                 <form action="{{ route('subcategory.store') }}" method="POST">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createSubCategoryModalLabel">Buat Sub Kategori</h5>
+                        <h4 class="modal-title" id="createSubCategoryModalLabel">Buat Sub Kategori</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

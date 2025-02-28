@@ -221,8 +221,8 @@
                 @csrf
 
                 <div class="modal-content">
-                    <div class="modal-header mb-0 pb-0 border-0 d-flex align-items-center justify-content-between">
-                        <h5 class="modal-title" id="tambahStaffLabel">Tambah Staff</h5>
+                    <div class="modal-header d-flex align-items-center justify-content-between">
+                        <h4 class="modal-title" id="tambahStaffLabel">Tambah Staff</h4>
                         <div class="close-btn" data-bs-dismiss="modal" aria-label="Close" style="cursor: pointer;">
                             <i class='bx bx-x fs-2 icon'></i>
                         </div>
@@ -272,8 +272,8 @@
     <div class="modal fade" id="editStaffModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-body-dark">
             <div class="modal-content">
-                <div class="modal-header border-0 d-flex align-items-center justify-content-between">
-                    <h5 class="modal-title" id="editStaffLabel">Edit Staff</h5>
+                <div class="modal-header d-flex align-items-center justify-content-between">
+                    <h4 class="modal-title" id="editStaffLabel">Edit Staff</h4>
                     <div class="close-btn" data-bs-dismiss="modal" aria-label="Close" style="cursor: pointer;">
                         <i class='bx bx-x text-color fs-2 icon'></i>
                     </div>
