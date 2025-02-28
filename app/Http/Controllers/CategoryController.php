@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use App\Models\History;
-
-use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::with('subCategories')->latest()->get();
+        $categories = Category::latest()->get();
         $histories = History::latest()->get();
         $histories_categories = History::where('type', 'category')->latest()->get();
 
@@ -139,22 +137,5 @@ class CategoryController extends Controller
         } else {
             return redirect()->route('category.index')->with('error', 'Tidak ada perubahan yang dilakukan!');
         }
-    }
-
-    public function show(string $slug)
-    {
-        $category = Category::where('slug', $slug)->with('subCategories')->firstOrFail();
-        $categories = Category::where('slug', $slug)->firstOrFail();
-        $histories = History::latest()->get();
-        $history_subcategory = $histories->where('type', 'subcategory')->whereIn('type_id', $categories->id);
-
-        return view('pages.category.show', [
-            'title' => 'Kategori - Putra Panggil Jaya',
-            'navTitle' => 'Detail Kategori',
-            'active' => 'category',
-            'category' => $category,
-            'histories' => $histories,
-            'history_subcategory' => $history_subcategory
-        ]);
     }
 }

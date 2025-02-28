@@ -60,23 +60,7 @@
                             @foreach ($categories as $category)
                                 <tr class="align-middle">
                                     <td>
-                                        <div class="d-flex flex-column">
-                                            <span>{{ $category->name }}</span>
-                                            @if ($category->subCategories->isNotEmpty())
-                                                <a class="text-decoration-underline" style="cursor: pointer;"
-                                                    id="showItem-{{ $category->id }}"
-                                                    onclick="showItems({{ $category->id }})">
-                                                    <span>Lihat items</span>
-                                                </a>
-
-                                                <div class="show-items-container d-none flex-column"
-                                                    id="showItemContainer-{{ $category->id }}">
-                                                    @foreach ($category->subCategories as $item)
-                                                        <span class="py-0 my-0">- {{ $item->name }}</span>
-                                                    @endforeach
-                                                </div>
-                                            @endif
-                                        </div>
+                                        <span>{{ $category->name }}</span>
                                     </td>
                                     <td>
                                         <span>{{ $category->slug }}</span>
@@ -94,47 +78,14 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="actions d-flex justify-content-center pe-3">
-                                            <div class="dropdown">
-                                                <i class="bx bx-cog fs-4" id="action-{{ $category->id }}"
-                                                    data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;"
-                                                    title="Actions"></i>
-
-                                                <ul class="dropdown-menu dropdown-menu-end"
-                                                    aria-labelledby="action-{{ $category->id }}">
-                                                    <li>
-                                                        <div class="d-flex justify-content-center mb-1 fw-bold">
-                                                            {{ $category->name }}
-                                                        </div>
-                                                    </li>
-                                                    <hr class="dropdown-divider py-0 my-0">
-                                                    <li>
-                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="{{ route('category.show', $category->slug) }}">
-                                                            <i class='bx bx-show fs-5'></i>
-                                                            Lihat detail
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a style="cursor: pointer;"
-                                                            class="dropdown-item d-flex align-items-center gap-1"
-                                                            data-bs-toggle="modal" data-bs-target="#createSubCategoryModal"
-                                                            onclick="createSubCategory('{{ $category->id }}')">
-                                                            <i class='bx bx-plus fs-5'></i>
-                                                            Tambah sub kategori
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a style="cursor: pointer;"
-                                                            class="dropdown-item d-flex align-items-center gap-1"
-                                                            data-bs-toggle="modal" data-bs-target="#editCategoryonModal"
-                                                            onclick="editCategory('{{ $category->id }}', '{{ $category->status }}', '{{ $category->name }}')">
-                                                            <i class='bx bx-pencil fs-5'></i>
-                                                            Edit data
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        <div class="actions d-flex justify-content-center pe-3 gap-2">
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary d-flex align-items-center p-2"
+                                                data-bs-toggle="modal" data-bs-target="#editCategoryonModal"
+                                                onclick="editCategory('{{ $category->id }}', '{{ $category->status }}', '{{ $category->name }}')">
+                                                <i class='bx bx-pencil p-0 m-0'></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -283,44 +234,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="createSubCategoryModal" tabindex="-1" aria-labelledby="createSubCategoryModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form action="{{ route('subcategory.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="createSubCategoryModalLabel">Buat Sub Kategori</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <input type="hidden" name="category_id" id="add_category_id">
-                            <label for="name" class="form-label">Nama sub kategori</label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1" style="width: 45px">
-                                    <i class='bx bx-purchase-tag'></i>
-                                </span>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" aria-describedby="name" value="{{ old('name') }}"
-                                    placeholder="Masukkan nama kategori">
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
@@ -353,10 +266,6 @@
 
             $('#editCategoryForm').attr('action', "{{ route('category.update', '') }}" + '/' + id);
             $('#editCategoryModal').modal('show');
-        }
-
-        function createSubCategory(categoryId) {
-            $('#add_category_id').val(categoryId);
         }
 
         function historyCategory() {

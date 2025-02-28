@@ -41,11 +41,6 @@ class Category extends Model
 
 
 
-    public function subCategories()
-    {
-        return $this->hasMany(SubCategory::class);
-    }
-
     public function archives()
     {
         return $this->hasMany(Archive::class);
