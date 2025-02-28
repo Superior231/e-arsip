@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('name');
             $table->enum('status', ['pending', 'inactive', 'approve'])->default('pending');
             $table->string('image')->nullable();
-            $table->text('description')->nullable();
+            $table->text('detail')->nullable();
             $table->date('date');
             $table->timestamps();
         });

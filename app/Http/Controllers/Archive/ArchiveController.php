@@ -155,7 +155,7 @@ class ArchiveController extends Controller
         $oldName = $archive->name;
         $oldStatus = $archive->status;
         $oldImage = $archive->image;
-        $oldDescription = $archive->description;
+        $oldDetail = $archive->detail;
         $oldDate = $archive->date;
 
         // Ambil data division dan category baru
@@ -182,8 +182,8 @@ class ArchiveController extends Controller
             $updates[] = "Tanggal pengadaan arsip dari '$oldDate' menjadi '$request->date'";
             $isUpdate = true;
         }
-        if ($oldDescription !== $request->description) {
-            $updates[] = "Detail arsip dari '$oldDescription' menjadi '$request->description'";
+        if ($oldDetail !== $request->detail) {
+            $updates[] = "Detail arsip dari '$oldDetail' menjadi '$request->detail'";
             $isUpdate = true;
         }
 
@@ -232,7 +232,7 @@ class ArchiveController extends Controller
         $archive->division_id = $newDivision->id;
         $archive->category_id = $newCategory->id;
         $archive->name = $request->name;
-        $archive->description = $request->description;
+        $archive->detail = $request->detail;
         $archive->date = $request->date;
         $archive->save();
 

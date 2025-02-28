@@ -159,8 +159,8 @@
                     </div>
 
                     <div class="mt-3">
-                        <label for="description" class="form-label">Deskripsi</label>
-                        <textarea class="form-control" id="description" name="description" rows="3">{{ $archive->description }}</textarea>
+                        <label for="detail" class="form-label">Detail</label>
+                        <textarea class="form-control" id="detail" name="detail" rows="3">{{ $archive->detail }}</textarea>
                     </div>
                 </div>
             </div>

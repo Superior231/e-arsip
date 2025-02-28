@@ -21,7 +21,7 @@ class Archive extends Model
         'name',
         'status',
         'image',
-        'description',
+        'detail',
         'date',
     ];
 

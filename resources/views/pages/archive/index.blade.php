@@ -126,7 +126,7 @@
                                             '{{ $archive->archive_code }}',
                                             '{{ $archive->name }}',
                                             '{{ $archive->status }}',
-                                            '{{ $archive->description }}',
+                                            '{{ $archive->detail }}',
                                             '{{ $archive->date }}'
                                         )">
                                             <span class="py-0 my-0 text-primary">{{ $archive->archive_id }}</span>
@@ -192,7 +192,7 @@
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="#">
+                                                            href="{{ route('archive.show', $archive->archive_id) }}">
                                                             <i class='bx bx-show fs-5'></i>
                                                             Lihat detail
                                                         </a>
@@ -388,13 +388,13 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <h5>Deskripsi</h5>
+                                    <h5>Detail</h5>
                                 </td>
                                 <td>
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5 id="detailArchiveDescription"></h5>
+                                    <h5 id="detailArchiveDetail"></h5>
                                 </td>
                             </tr>
                         </table>
@@ -466,7 +466,7 @@
         function showDetailArchive(
             divisionName, divisionPlace, categoryName,
             archiveId, archiveCode, archiveName,
-            archiveStatus, archiveDescription, archiveDate) {
+            archiveStatus, archiveDetail, archiveDate) {
 
             $('#detailArchiveId').text(archiveId);
             $('#detailArchiveCode').text(archiveId + '/' + archiveCode);
@@ -478,7 +478,7 @@
                 month: 'long',
                 day: 'numeric'
             }).format(new Date(archiveDate)));
-            $('#detailArchiveDescription').text(archiveDescription ? archiveDescription : '-');
+            $('#detailArchiveDetail').text(archiveDetail ? archiveDetail : '-');
 
             // Atur status dengan warna yang sesuai
             let statusClass = archiveStatus === 'approve' ? 'bg-success' :
