@@ -293,16 +293,16 @@
                 historyDiv.style.display = 'block';
                 subCategoryList.classList.remove('col-lg-12');
                 subCategoryList.classList.add('col-lg-8');
-                subCategoryContainer.classList.remove('row-cols-lg-1', 'mt-4');
-                subCategoryContainer.classList.add('row-cols-lg-2', 'mt-0');
+                subCategoryContainer.classList.remove('row-cols-lg-1');
+                subCategoryContainer.classList.add('row-cols-lg-2');
                 historyIcon.classList.remove('d-flex');
                 historyIcon.classList.add('d-none');
             } else {
                 historyDiv.style.display = 'none';
                 subCategoryList.classList.remove('col-lg-8');
                 subCategoryList.classList.add('col-lg-12');
-                subCategoryContainer.classList.remove('row-cols-lg-2', 'mt-0');
-                subCategoryContainer.classList.add('row-cols-lg-1', 'mt-4');
+                subCategoryContainer.classList.remove('row-cols-lg-2');
+                subCategoryContainer.classList.add('row-cols-lg-1');
                 historyIcon.classList.remove('d-none');
                 historyIcon.classList.add('d-flex');
             }
