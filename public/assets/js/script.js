@@ -19,30 +19,30 @@ document.addEventListener("DOMContentLoaded", function () {
         tooltipList = [];
     }
 
-    function closeSidebar() {
+    window.closeSidebar = function () {
         sidebar.classList.add("closed");
         sidebar.style.width = "80px";
         navNameBrand.style.display = "none";
         navTexts.forEach(navText => navText.style.display = "none");
-        toggle.classList.remove("bx-chevron-left");
-        toggle.classList.add("bx-chevron-right");
+        toggle.classList.replace("bx-chevron-left", "bx-chevron-right");
+
         archiveMenu.classList.add('d-none');
-        archiveIcon.classList.remove("bx-chevron-down");
-        archiveIcon.classList.add("bx-chevron-right");
+        archiveIcon.classList.replace("bx-chevron-down", "bx-chevron-right");
+
         localStorage.setItem("sidebar", "closed");
         tooltipList = tooltips();
-    }
+    };
 
-    function openSidebar() {
+    window.openSidebar = function () {
         sidebar.classList.remove("closed");
         sidebar.style.width = "250px";
         navNameBrand.style.display = "flex";
         navTexts.forEach(navText => navText.style.display = "flex");
-        toggle.classList.remove("bx-chevron-right");
-        toggle.classList.add("bx-chevron-left");
+        toggle.classList.replace("bx-chevron-right", "bx-chevron-left");
+
         localStorage.setItem("sidebar", "open");
         removeTooltips();
-    }
+    };
 
     // Cek apakah sidebar sebelumnya ditutup
     if (localStorage.getItem("sidebar") === "closed") {
@@ -57,6 +57,32 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+window.toggleArchive = function () {
+    const sidebar = document.querySelector(".sidebar");
+    const archiveMenu = document.querySelector('.archive-menu');
+    const archiveMenuMobile = document.querySelector('.archive-menu-mobile');
+    const archiveIcon = document.getElementById('archiveIcon');
+    const archiveIconMobile = document.getElementById('archiveIconMobile');
+
+    if (sidebar.classList.contains("closed")) {
+        openSidebar();
+    }
+
+    archiveMenu.classList.toggle('d-none');
+    if (archiveMenuMobile) {
+        archiveMenuMobile.classList.toggle('d-none');
+    }
+
+    archiveIcon.classList.toggle("bx-chevron-down");
+    archiveIcon.classList.toggle("bx-chevron-right");
+
+    if (archiveIconMobile) {
+        archiveIconMobile.classList.toggle("bx-chevron-down");
+        archiveIconMobile.classList.toggle("bx-chevron-right");
+    }
+};
 
 
 
@@ -78,31 +104,3 @@ try {
     console.log('Image preview not found!');
 }
 // Image Preview End
-
-
-
-const toggleArchive = () => {
-    const archiveMenu = document.querySelector('.archive-menu');
-    const archiveMenuMobile = document.querySelector('.archive-menu-mobile');
-    const archiveIcon = document.getElementById('archiveIcon');
-    const archiveIconMobile = document.getElementById('archiveIconMobile');
-
-    archiveMenuMobile.classList.toggle('d-none');
-    archiveMenu.classList.toggle('d-none');
-
-    if (archiveIcon.classList.contains("bx-chevron-right")) {
-        archiveIcon.classList.remove("bx-chevron-right");
-        archiveIcon.classList.add("bx-chevron-down");
-    } else {
-        archiveIcon.classList.remove("bx-chevron-down");
-        archiveIcon.classList.add("bx-chevron-right");
-    }
-
-    if (archiveIconMobile.classList.contains("bx-chevron-right")) {
-        archiveIconMobile.classList.remove("bx-chevron-right");
-        archiveIconMobile.classList.add("bx-chevron-down");
-    } else {
-        archiveIconMobile.classList.remove("bx-chevron-down");
-        archiveIconMobile.classList.add("bx-chevron-right");
-    }
-}
