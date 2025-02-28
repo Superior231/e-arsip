@@ -34,6 +34,12 @@ class Category extends Model
             'Surat Masuk' => 'SMK',
             'Surat Keluar' => 'SKL',
             'Laporan' => 'LPR',
+            'Inventaris' => 'INV',
+            'Pengadaan' => 'PGD',
+            'Notulen' => 'NTL',
+            'Proposal' => 'PRP',
+            'Pengumuman' => 'PGM',
+            'Permohonan' => 'PMH'
         ];
 
         return $nameToSlug[$name] ?? strtoupper(substr($name, 0, 3));
