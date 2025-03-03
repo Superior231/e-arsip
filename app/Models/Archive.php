@@ -40,4 +40,9 @@ class Archive extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function letters()
+    {
+        return $this->hasMany(Letter::class);
+    }
 }

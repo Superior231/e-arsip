@@ -39,7 +39,10 @@ class Category extends Model
             'Notulen' => 'NTL',
             'Proposal' => 'PRP',
             'Pengumuman' => 'PGM',
-            'Permohonan' => 'PMH'
+            'Permohonan' => 'PMH',
+            'Panggilan' => 'PGL',
+            'Surat Panggilan' => 'PGL',
+            'Pemberitahuan' => 'PBM',
         ];
 
         return $nameToSlug[$name] ?? strtoupper(substr($name, 0, 3));

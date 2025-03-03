@@ -86,7 +86,7 @@ class ArchiveController extends Controller
         // Generate code archive
         $division = Division::find($data['division_id']);
         $category = Category::find($data['category_id']);
-        $archive_code = $division->name . '/' . $division->place . '/' . $category->slug . '/' .  $data['name'];
+        $archive_code = $division->name . '/' . $division->place . '/' . $category->slug;
         $data['archive_code'] = $archive_code;
 
         $archive = Archive::create($data);
@@ -214,7 +214,7 @@ class ArchiveController extends Controller
 
         // Update archive_code jika division, category, atau name berubah
         if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id || $oldName !== $request->name) {
-            $archive_code = $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug . '/' . $request->name;
+            $archive_code = $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug;
             $archive->archive_code = $archive_code;
 
             $updates[] = "Kode arsip dari '$oldCode' menjadi '$oldId/$archive_code'";
@@ -266,5 +266,22 @@ class ArchiveController extends Controller
         } else {
             return redirect()->route('archive.index')->with('error', 'Tidak ada perubahan yang dilakukan!');
         }
+    }
+
+    public function show(string $archive_id)
+    {
+        $archive = Archive::where('archive_id', $archive_id)->with('letters')->firstOrFail();
+        $archives = Archive::where('archive_id', $archive_id)->firstOrFail();
+        $histories = History::latest()->get();
+        $history_letter = $histories->where('type', 'letter')->whereIn('type_id', $archives->id);
+
+        return view('pages.archive.show', [
+            'title' => 'Detail Arsip',
+            'navTitle' => 'Detail Arsip',
+            'active' => 'archive',
+            'archive' => $archive,
+            'histories' => $histories,
+            'history_letter' => $history_letter,
+        ]);
     }
 }

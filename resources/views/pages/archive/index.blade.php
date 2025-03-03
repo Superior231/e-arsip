@@ -344,6 +344,17 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <h5>Nama Arsip</h5>
+                                </td>
+                                <td>
+                                    <h5>&nbsp;:&nbsp;</h5>
+                                </td>
+                                <td>
+                                    <h5 id="detailArchiveName"></h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <h5>Divisi</h5>
                                 </td>
                                 <td>
@@ -362,17 +373,6 @@
                                 </td>
                                 <td>
                                     <h5 id="detailArchiveCategory"></h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h5>Nama Arsip</h5>
-                                </td>
-                                <td>
-                                    <h5>&nbsp;:&nbsp;</h5>
-                                </td>
-                                <td>
-                                    <h5 id="detailArchiveName"></h5>
                                 </td>
                             </tr>
                             <tr>
@@ -406,7 +406,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="" class="btn btn-primary">More Detail</a>
+                    <a href="" class="btn btn-primary" id="detailArchiveLink">More Detail</a>
                 </div>
             </div>
         </div>
@@ -470,7 +470,7 @@
 
             $('#detailArchiveId').text(archiveId);
             $('#detailArchiveCode').text(archiveId + '/' + archiveCode);
-            $('#detailArchiveDivision').text(divisionName + ' - ' + divisionPlace);
+            $('#detailArchiveDivision').text(divisionName + ' (' + divisionPlace + ')');
             $('#detailArchiveCategory').text(categoryName);
             $('#detailArchiveName').text(archiveName);
             $('#detailArchiveDate').text(new Intl.DateTimeFormat('id-ID', {
@@ -492,6 +492,8 @@
             let archiveQrCode =
                 `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent('{{ request()->getHost() }}/print/archive/' + archiveId)}&size=100x100`;
             $('#detailArchiveQrCode').attr('src', archiveQrCode);
+
+            $('#detailArchiveLink').attr('href', `/archive/${archiveId}`);
         }
 
         function confirmDeleteArchive(archiveId, archiveCode, archiveName) {
