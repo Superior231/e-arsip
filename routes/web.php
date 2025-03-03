@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Archive\ArchiveController;
+use App\Http\Controllers\Archive\LetterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\HistoryController;
@@ -23,6 +24,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('division', DivisionController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('archive', ArchiveController::class);
+    Route::get('/letter/create/{archive_id}', [LetterController::class, 'create'])->name('letter.create');
+    Route::post('/letter', [LetterController::class, 'store'])->name('letter.store');
+    Route::get('/letter/{archive_id}/edit', [LetterController::class, 'edit'])->name('letter.edit');
+    Route::put('/letter/{archive_id}', [LetterController::class, 'update'])->name('letter.update');
+    Route::delete('/letter/{id}', [LetterController::class, 'destroy'])->name('letter.destroy');
     Route::resource('profile', ProfileController::class);
     Route::resource('staff', StaffController::class);
 });

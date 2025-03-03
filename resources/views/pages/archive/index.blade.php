@@ -79,7 +79,7 @@
                         <thead>
                             <tr>
                                 <th>
-                                    <div class="d-flex justify-content-end align-items-center" style="max-width: 30px;">
+                                    <div class="d-flex justify-content-center align-items-center" style="max-width: 30px;">
                                         <input type="checkbox" id="checkAll">
                                     </div>
                                 </th>
@@ -135,21 +135,20 @@
                                     <td>
                                         <div class="d-flex flex-column">
                                             <span>{{ $archive->name }}</span>
-                                            {{-- @if ($archive->letters->isNotEmpty()) --}}
-                                            <a class="text-decoration-underline" style="cursor: pointer;"
-                                                id="showItem-{{ $archive->id }}"
-                                                onclick="showItems({{ $archive->id }})">
-                                                <span>Lihat items</span>
-                                            </a>
+                                            @if ($archive->letters->isNotEmpty())
+                                                <a class="text-decoration-underline" style="cursor: pointer;"
+                                                    id="showItem-{{ $archive->id }}"
+                                                    onclick="showItems({{ $archive->id }})">
+                                                    <span>Lihat items</span>
+                                                </a>
 
-                                            <div class="show-items-container d-none flex-column"
-                                                id="showItemContainer-{{ $archive->id }}">
-                                                {{-- @foreach ($archive->letters as $letter)
+                                                <div class="show-items-container d-none flex-column"
+                                                    id="showItemContainer-{{ $archive->id }}">
+                                                    @foreach ($archive->letters as $letter)
                                                         <span class="py-0 my-0">- {{ $letter->name }}</span>
-                                                    @endforeach --}}
-                                                <span class="py-0 my-0">- Surat Pengajuan</span>
-                                            </div>
-                                            {{-- @endif --}}
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     </td>
                                     <td>
@@ -200,9 +199,9 @@
 
                                                     <li>
                                                         <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="#">
+                                                            href="{{ route('letter.create', $archive->archive_id) }}">
                                                             <i class='bx bx-plus fs-5'></i>
-                                                            Tambah item
+                                                            Tambah surat
                                                         </a>
                                                     </li>
                                                     <li>
@@ -215,13 +214,13 @@
                                                     @if ($archive->status !== 'approve')
                                                         <li>
                                                             <form id="deleteArchiveForm-{{ $archive->id }}"
-                                                                action="#" method="post" class="d-inline">
+                                                                action="{{ route('archive.destroy', $archive->id) }}" method="post" class="d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
 
-                                                                <a href="#"
+                                                                <a style="cursor: pointer;"
                                                                     class="dropdown-item d-flex align-items-center gap-1"
-                                                                    onclick="confirmDeleteArchive('{{ $archive->id }}', '{{ $archive->code_archive }}', '{{ $archive->name }}')">
+                                                                    onclick="confirmDeleteArchive('{{ $archive->id }}', '{{ $archive->archive_id }}', '{{ $archive->name }}')">
                                                                     <i class='bx bx-trash fs-5'></i>
                                                                     Hapus
                                                                 </a>
@@ -469,7 +468,7 @@
             archiveStatus, archiveDetail, archiveDate) {
 
             $('#detailArchiveId').text(archiveId);
-            $('#detailArchiveCode').text(archiveId + '/' + archiveCode);
+            $('#detailArchiveCode').text(archiveCode);
             $('#detailArchiveDivision').text(divisionName + ' (' + divisionPlace + ')');
             $('#detailArchiveCategory').text(categoryName);
             $('#detailArchiveName').text(archiveName);

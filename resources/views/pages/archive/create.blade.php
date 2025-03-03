@@ -63,7 +63,7 @@
                                     class="text-danger">*</strong></label>
                             <div class="input-group">
                                 <span class="input-group-text" id="basic-addon1" style="width: 45px;">
-                                    <i class='bx bx-buildings'></i>
+                                    <i class='bx bx-label'></i>
                                 </span>
                                 <select class="form-select @error('division_id') is-invalid @enderror" id="division_id"
                                     name="division_id" required>

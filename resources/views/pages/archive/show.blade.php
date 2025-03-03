@@ -26,7 +26,7 @@
 @endpush
 
 @section('content')
-<div class="detail-archive">
+    <div class="detail-archive">
         <!-- Breadcrumb -->
         <ol class="breadcrumb py-0 my-0 mb-3">
             <a href="{{ route('archive.index') }}" class="breadcrumb-items">Arsip</a>
@@ -96,7 +96,7 @@
                                         <h5>&nbsp;:&nbsp;</h5>
                                     </td>
                                     <td>
-                                        <h5>{{ $archive->archive_code }}</h5>
+                                        <h5>{{ $archive->archive_id }}/{{ $archive->archive_code }}</h5>
                                     </td>
                                 </tr>
                                 <tr>
@@ -183,7 +183,7 @@
                                 </a>
                             </div>
 
-                            <a href="#"
+                            <a href="{{ route('letter.create', $archive->archive_id) }}"
                                 class="btn btn-primary d-flex align-items-center gap-1">
                                 <i class='bx bx-plus fs-5'></i>
                                 <span class="my-0 py-0">Tambah surat</span>
@@ -195,13 +195,17 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <div class="d-flex justify-content-end align-items-center" style="width: 30px;">
+                                            <div class="d-flex justify-content-center align-items-center"
+                                                style="width: 30px;">
                                                 <input type="checkbox" id="checkAll">
                                             </div>
                                         </th>
                                         <th class="text-center">Foto</th>
                                         <th class="text-nowrap">No Surat</th>
-                                        <th class="text-nowrap">Kode Surat</th>
+                                        <th class="text-nowrap" style="min-width: 200px;">Kode Surat</th>
+                                        @if ($archive->category->name == 'Faktur')
+                                            <th class="text-nowrap" style="min-width: 150px;">Inventory</th>
+                                        @endif
                                         <th class="text-nowrap" style="min-width: 200px;">Nama Surat</th>
                                         <th>Tanggal</th>
                                         <th class="text-center w-100">Status</th>
@@ -213,7 +217,7 @@
                                         <tr class="align-middle">
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center me-3">
-                                                    <input type="checkbox" value="{{ $letter->sub_code }}">
+                                                    <input type="checkbox" value="{{ $letter->no_letter }}">
                                                 </div>
                                             </td>
                                             <td>
@@ -223,7 +227,7 @@
                                                         data-bs-target="#showImageModal"
                                                         onclick="showImage('{{ $letter->image }}')">
                                                         @if (!empty($letter->image))
-                                                            <img src="{{ asset('storage/letter/' . $letter->image) }}"
+                                                            <img src="{{ asset('storage/letter_image/' . $letter->image) }}"
                                                                 alt="gambar" class="img-fluid">
                                                         @else
                                                             <img src="{{ url('assets/img/logo_ppj.png') }}" alt="gambar"
@@ -233,20 +237,29 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="link-primary"
-                                                    style="cursor: pointer;" title="Detail Surat"
+                                                <span class="link-primary" style="cursor: pointer;" title="Detail Surat"
                                                     data-bs-toggle="modal" data-bs-target="#detailLetterModal"
                                                     onclick="showDetailLetter(
                                                     '{{ $letter->status }}',
-                                                    '{{ $letter->archive->division->name }}',
-                                                    '{{ $letter->archive->division->place }}',
+                                                    '{{ $letter->no_letter }}',
+                                                    '{{ $letter->letter_code }}',
+                                                    '{{ $letter->item ? $letter->item->inventory->name : '' }}',
+                                                    '{{ $letter->item ? $letter->item->name : '' }}',
                                                     '{{ $letter->name }}',
-                                                    '{{ $letter->detail }}',
                                                     '{{ $letter->date }}',
+                                                    '{{ $letter->detail }}',
                                                 )">
                                                     {{ $letter->no_letter }}
                                                 </span>
                                             </td>
+                                            <td><span>{{ $letter->letter_code }}</span></td>
+                                            @if ($archive->category->name == 'Faktur')
+                                                <td>
+                                                    <span>
+                                                        {{ $letter->item ? $letter->item->inventory->name : '-' }}
+                                                    </span>
+                                                </td>
+                                            @endif
                                             <td><span>{{ $letter->name }}</span></td>
                                             <td>
                                                 <span class="d-none">{{ $letter->date }}</span>
@@ -270,7 +283,8 @@
                                                         <ul class="dropdown-menu dropdown-menu-end"
                                                             aria-labelledby="action-{{ $letter->id }}">
                                                             <li>
-                                                                <div class="d-flex justify-content-center mb-1 fw-bold">
+                                                                <div
+                                                                    class="d-flex justify-content-center text-center mb-1 fw-bold">
                                                                     {{ $letter->name }}
                                                                 </div>
                                                             </li>
@@ -279,8 +293,7 @@
 
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="#"
-                                                                    target="_blank">
+                                                                    href="#" target="_blank">
                                                                     <i class='bx bx-printer fs-5'></i>
                                                                     Print
                                                                 </a>
@@ -294,21 +307,20 @@
                                                             </li>
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="#">
+                                                                    href="{{ route('letter.edit', $letter->no_letter) }}">
                                                                     <i class='bx bx-pencil fs-5'></i>
                                                                     Edit data
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <form id="deleteItemForm-{{ $letter->id }}"
-                                                                    action="#"
-                                                                    method="post" class="d-inline">
+                                                                <form id="deleteLetterForm-{{ $letter->id }}"
+                                                                    action="{{ route('letter.destroy', $letter->id) }}" method="post" class="d-inline">
                                                                     @csrf
                                                                     @method('DELETE')
 
-                                                                    <a href="#"
+                                                                    <a style="cursor: pointer;"
                                                                         class="dropdown-item d-flex align-items-center gap-1"
-                                                                        onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->sub_code }}', '{{ $letter->name }}')">
+                                                                        onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
                                                                         <i class='bx bx-trash fs-5'></i>
                                                                         Hapus
                                                                     </a>
@@ -410,51 +422,64 @@
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5><span id="detailItemStatus" class="badge fs-8"></span></h5>
+                                    <h5><span id="detailLetterStatus" class="badge fs-8"></span></h5>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <h5>Kode</h5>
+                                    <h5>No Surat</h5>
                                 </td>
                                 <td>
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5 id="detailItemCode"></h5>
+                                    <h5 id="detailNoLetter"></h5>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <h5>Kode Aset</h5>
+                                    <h5>Kode Surat</h5>
                                 </td>
                                 <td>
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5 id="detailItemCodeAset"></h5>
+                                    <h5 id="detailLetterCode"></h5>
                                 </td>
                             </tr>
+                            @if ($archive->category->name === 'Faktur')
+                                <tr>
+                                    <td>
+                                        <h5>Inventory</h5>
+                                    </td>
+                                    <td>
+                                        <h5>&nbsp;:&nbsp;</h5>
+                                    </td>
+                                    <td>
+                                        <h5 id="detailInventory"></h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Item</h5>
+                                    </td>
+                                    <td>
+                                        <h5>&nbsp;:&nbsp;</h5>
+                                    </td>
+                                    <td>
+                                        <h5 id="detailItem"></h5>
+                                    </td>
+                                </tr>
+                            @endif
                             <tr>
                                 <td>
-                                    <h5>Nama Item</h5>
+                                    <h5>Nama Surat</h5>
                                 </td>
                                 <td>
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5 id="detailItemName"></h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h5>Detail</h5>
-                                </td>
-                                <td>
-                                    <h5>&nbsp;:&nbsp;</h5>
-                                </td>
-                                <td>
-                                    <h5 id="detailItemDetail"></h5>
+                                    <h5 id="detailLetterName"></h5>
                                 </td>
                             </tr>
                             <tr>
@@ -465,46 +490,24 @@
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5 id="detailItemDate"></h5>
+                                    <h5 id="detailLetterDate"></h5>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <h5>Quantity</h5>
+                                    <h5>Detail</h5>
                                 </td>
                                 <td>
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5 id="detailItemQuantity"></h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h5>Harga Satuan</h5>
-                                </td>
-                                <td>
-                                    <h5>&nbsp;:&nbsp;</h5>
-                                </td>
-                                <td>
-                                    <h5 id="detailItemPrice"></h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h5>Subtotal</h5>
-                                </td>
-                                <td>
-                                    <h5>&nbsp;:&nbsp;</h5>
-                                </td>
-                                <td>
-                                    <h5 id="detailItemSubtotal"></h5>
+                                    <h5 id="detailLetterDetail"></h5>
                                 </td>
                             </tr>
                         </table>
 
                         <div class="qr-code py-3 py-md-0">
-                            <img src="" alt="QR Code" id="detailItemQrCode">
+                            <img src="" alt="QR Code" id="detailLetterQrCode">
                         </div>
                     </div>
                 </div>
@@ -554,46 +557,44 @@
         });
 
         function showImage(image) {
-            let imageUrl = image ? '{{ asset('storage/letter') }}/' + image :
+            let imageUrl = image ? '{{ asset('storage/letter_image') }}/' + image :
                 '{{ url('assets/img/logo_ppj.png') }}';
             $('#showImage').attr('src', imageUrl);
         }
 
         function showDetailLetter(
-            itemStatus, itemCode, divisionName,
-            divisionPlace, itemName, itemDetail,
-            itemDate, itemQuantity, itemPrice) {
-            $('#detailItemStatus').text(itemStatus);
-            $('#detailItemCode').text(itemCode);
-            $('#detailItemCodeAset').text(`${itemCode}/${divisionName}/${divisionPlace}`);
-            $('#detailItemName').text(itemName);
-            $('#detailItemDetail').text(itemDetail ? itemDetail : '-');
-            $('#detailItemQuantity').text(itemQuantity);
-            $('#detailItemPrice').text('Rp. ' + new Intl.NumberFormat('id-ID').format(itemPrice));
-            $('#detailItemSubtotal').text('Rp. ' + new Intl.NumberFormat('id-ID').format(itemPrice * itemQuantity));
-            $('#detailItemDate').text(new Intl.DateTimeFormat('id-ID', {
+            letterStatus, noLetter, letterCode, inventory, item,
+            letterName, letterDate, letterDetail) {
+            $('#detailLetterStatus').text(letterStatus);
+            $('#detailNoLetter').text(noLetter);
+            $('#detailLetterCode').text(letterCode);
+            $('#detailInventory').text(inventory);
+            $('#detailItem').text(item);
+            $('#detailLetterName').text(letterName);
+            $('#detailLetterDetail').text(letterDetail ? letterDetail : '-');
+            $('#detailLetterDate').text(new Intl.DateTimeFormat('id-ID', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-            }).format(new Date(itemDate)));
+            }).format(new Date(letterDate)));
 
-            let statusClass = itemStatus === 'active' ? 'bg-success' : 'bg-warning text-dark';
+            let statusClass = letterStatus === 'active' ? 'bg-success' : 'bg-warning text-dark';
 
-            $('#detailItemStatus').text(itemStatus).removeClass('bg-success bg-warning text-dark bg-secondary')
+            $('#detailLetterStatus').text(letterStatus).removeClass('bg-success bg-warning text-dark bg-secondary')
                 .addClass(statusClass);
 
-            let itemQrCode =
-                `https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/item/${itemCode}&size=100x100`;
-            $('#detailItemQrCode').attr('src', itemQrCode);
+            let letterQrCode =
+                `https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/letter/${letterCode}&size=100x100`;
+            $('#detailLetterQrCode').attr('src', letterQrCode);
 
-            $('#detailItemLink').attr('href', `/letter/${letterCode}`);
+            $('#detailLetterLink').attr('href', `/letter/${letterCode}`);
         }
 
-        function confirmDeleteLetter(letterId, letterCode, letterName) {
+        function confirmDeleteLetter(letterId, noLetter, letterName) {
             Swal.fire({
                 icon: 'question',
                 title: 'Anda Yakin?',
-                html: `Menghapus surat <b class="text-danger">${letterCode} - ${letterName}</b> akan menghapus data dari sistem secara permanen!`,
+                html: `Menghapus surat <b class="text-danger">${noLetter} - ${letterName}</b> akan menghapus data dari sistem secara permanen!`,
                 showCancelButton: true,
                 confirmButtonText: 'Delete',
                 customClass: {

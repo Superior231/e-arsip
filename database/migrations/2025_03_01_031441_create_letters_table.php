@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('letters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('archive_id')->constrained('archives');
+            $table->foreignId('archive_id')->constrained('archives')->onDelete('cascade');
             $table->unsignedBigInteger('item_id')->nullable();
             $table->string('letter_id')->nullable()->constrained('letters');
             $table->string('no_letter');

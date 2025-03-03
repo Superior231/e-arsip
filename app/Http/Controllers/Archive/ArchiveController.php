@@ -87,7 +87,7 @@ class ArchiveController extends Controller
         $division = Division::find($data['division_id']);
         $category = Category::find($data['category_id']);
         $archive_code = $division->name . '/' . $division->place . '/' . $category->slug;
-        $data['archive_code'] = $archive_code;
+        $data['archive_code'] = $data['archive_id'] . '.' . $archive_code;
 
         $archive = Archive::create($data);
 
@@ -283,5 +283,36 @@ class ArchiveController extends Controller
             'histories' => $histories,
             'history_letter' => $history_letter,
         ]);
+    }
+
+    public function destroy(string $id)
+    {
+        $archive = Archive::findOrFail($id);
+        $oldCode = $archive->archive_id;
+        $oldName = $archive->name;
+
+        if ($archive->status !== 'approve') {
+            $archive->delete();
+    
+            $description = "Arsip [" . $oldCode . ' - ' . $oldName . "] dihapus oleh " . Auth::user()->name . ".";
+            
+            if ($archive) {
+                History::create([
+                    'type_id' => $archive->id,
+                    'title' => "Hapus Arsip",
+                    'name' => $oldCode . ' - ' . $oldName,
+                    'description' => $description,
+                    'type' => 'archive',
+                    'method' => 'delete',
+                    'user_id' => Auth::user()->id,
+                ]);
+    
+                return redirect()->route('archive.index')->with('success', 'Arsip berhasil dihapus!');
+            } else {
+                return redirect()->route('archive.index')->with('error', 'Arsip gagal dihapus!');
+            }
+        } else {
+            return redirect()->route('archive.index')->with('error', 'Arsip tidak dapat dihapus karena sudah diapprove!');
+        }
     }
 }
