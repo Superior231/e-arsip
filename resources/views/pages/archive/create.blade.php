@@ -48,7 +48,7 @@
                                 <i class='bx bx-archive'></i>
                             </span>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                name="name" placeholder="Masukan nama aset" required>
+                                name="name" placeholder="Masukan nama arsip" required>
                             @error('name')
                                 <div class="invalid-feedback">
                                     {{ $message }}
