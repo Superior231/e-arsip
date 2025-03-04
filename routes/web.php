@@ -29,9 +29,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan', [ArchiveController::class, 'laporan_index'])->name('laporan.index');
     Route::get('/letter/create/{archive_id}', [LetterController::class, 'create'])->name('letter.create');
     Route::post('/letter', [LetterController::class, 'store'])->name('letter.store');
+    Route::get('/letter/{no_letter}', [LetterController::class, 'show'])->name('letter.show');
     Route::get('/letter/{archive_id}/edit', [LetterController::class, 'edit'])->name('letter.edit');
     Route::put('/letter/{archive_id}', [LetterController::class, 'update'])->name('letter.update');
     Route::delete('/letter/{id}', [LetterController::class, 'destroy'])->name('letter.destroy');
+    Route::get('/letter/inventory/{no_letter}', [ArchiveController::class, 'inventory_detail'])->name('inventory.detail');
     Route::resource('profile', ProfileController::class);
     Route::resource('staff', StaffController::class);
 });

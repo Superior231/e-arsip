@@ -175,10 +175,10 @@
                                                 <ul class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="action-{{ $archive->id }}">
                                                     <li>
-                                                        <span
+                                                        <div
                                                             class="d-flex justify-content-center text-center mb-1 fw-bold">
-                                                            {{ $archive->name }}
-                                                        </span>
+                                                            {{ $archive->archive_id }}
+                                                        </div>
                                                     </li>
 
                                                     <hr class="dropdown-divider py-0 my-0">

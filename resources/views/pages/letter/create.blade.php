@@ -157,7 +157,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
-        $('#item_id').select2({
+        $('#inventorySelect').select2({
             tags: false,
             placeholder: "Select item",
             allowClear: true

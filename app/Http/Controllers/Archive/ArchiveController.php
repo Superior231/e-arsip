@@ -7,6 +7,7 @@ use App\Models\Archive;
 use App\Models\Category;
 use App\Models\Division;
 use App\Models\History;
+use App\Models\Letter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -352,6 +353,24 @@ class ArchiveController extends Controller
             'archive' => $archive,
             'histories' => $histories,
             'history_letter' => $history_letter,
+        ]);
+    }
+
+    public function inventory_detail(string $no_letter)
+    {
+        $letter = Letter::where('no_letter', $no_letter)->with('item.inventory')->firstOrFail();
+        $item = $letter->item;
+        $inventory = $item ? $item->inventory : null;
+        $histories = History::latest()->get();
+
+        return view('pages.archive.inventory-detail', [
+            'title' => 'Detail Inventory',
+            'navTitle' => 'Detail Inventory',
+            'active' => 'archive',
+            'letter' => $letter,
+            'item' => $item,
+            'inventory' => $inventory,
+            'histories' => $histories
         ]);
     }
 

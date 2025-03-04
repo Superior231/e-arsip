@@ -131,6 +131,22 @@ class LetterController extends Controller
         }
     }
 
+    public function show(string $no_letter)
+    {
+        $letter = Letter::where('no_letter', $no_letter)->firstOrFail();
+        $archive = $letter->archive;
+        $histories = History::latest()->get();
+
+        return view('pages.letter.show', [
+            'title' => 'Detail Surat',
+            'navTitle' => 'Detail Surat',
+            'active' => 'archive',
+            'letter' => $letter,
+            'archive' => $archive,
+            'histories' => $histories
+        ]);
+    }
+
     public function edit(string $no_letter)
     {
         $letter = Letter::where('no_letter', $no_letter)->with('archive')->firstOrFail();

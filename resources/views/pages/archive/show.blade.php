@@ -22,6 +22,11 @@
             padding: 5px 10px;
             border-radius: 30px 0px 0px 30px;
         }
+
+        table tr td>* {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
     </style>
 @endpush
 
@@ -283,10 +288,10 @@
                                                         <ul class="dropdown-menu dropdown-menu-end"
                                                             aria-labelledby="action-{{ $letter->id }}">
                                                             <li>
-                                                                <span
+                                                                <div
                                                                     class="d-flex justify-content-center text-center mb-1 fw-bold">
-                                                                    {{ $letter->name }}
-                                                                </span>
+                                                                    {{ $letter->no_letter }}
+                                                                </div>
                                                             </li>
 
                                                             <hr class="dropdown-divider py-0 my-0">
@@ -300,11 +305,20 @@
                                                             </li>
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="#">
+                                                                    href="{{ route('letter.show', $letter->no_letter) }}">
                                                                     <i class='bx bx-show fs-5'></i>
                                                                     Lihat detail
                                                                 </a>
                                                             </li>
+                                                            @if ($archive->category->name == 'Faktur')
+                                                                <li>
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('inventory.detail', ['no_letter' => $letter->no_letter]) }}">
+                                                                        <i class='bx bx-box fs-5'></i>
+                                                                        Detail inventory
+                                                                    </a>
+                                                                </li>
+                                                            @endif
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
                                                                     href="{{ route('letter.edit', $letter->no_letter) }}">
@@ -514,7 +528,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a href="" class="btn btn-primary" id="detailItemLink">More detail</a>
+                    <a href="" class="btn btn-primary" id="detailLetterLink">More detail</a>
                 </div>
             </div>
         </div>
@@ -585,10 +599,10 @@
                 .addClass(statusClass);
 
             let letterQrCode =
-                `https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/letter/${letterCode}&size=100x100`;
+                `https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/letter/${noLetter}&size=100x100`;
             $('#detailLetterQrCode').attr('src', letterQrCode);
 
-            $('#detailLetterLink').attr('href', `/letter/${letterCode}`);
+            $('#detailLetterLink').attr('href', `/letter/${noLetter}`);
         }
 
         function confirmDeleteLetter(letterId, noLetter, letterName) {
