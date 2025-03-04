@@ -4,13 +4,18 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <style>
-        .select2.select2-container.select2-container--default {
-            width: 100% !important;
-            border-radius: 10px;
+        .select2-selection.select2-selection--single.select2-selection--clearable {
+            border-radius: 0px 5px 5px 0px !important;
+        }
+        @media (min-width: 520px) {
+            .select2.select2-container.select2-container--default {
+                width: 100% !important;
+            }
         }
 
         .select2-selection.select2-selection--single {
             height: 40px !important;
+            padding: 0px 5px !important;
         }
 
         .select2-selection__rendered,
@@ -81,19 +86,24 @@
                     <hr class="bg-secondary">
                     @if ($archive->category->name === 'Faktur')
                         <div class="w-100 mb-3">
-                            <label for="item_id" class="form-label">Inventory</label>
-                            <select class="form-select @error('item_id') is-invalid @enderror" name="item_id" id="inventorySelect">
-                                @foreach ($items as $item)
-                                    <option value="{{ $item->id }}">{{ $item->inventory->name }} =>
-                                        {{ $item->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('item_id')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
+                            <label for="inventorySelect" class="form-label">Inventory</label>
+                            <div class="d-flex" style="width: 100%;">
+                                <span class="input-group-text" for="inventorySelect" style="width: 45px; border-radius: 5px 0px 0px 5px;">
+                                    <i class='bx bx-box'></i>
+                                </span>
+                                <select class="form-select @error('item_id') is-invalid @enderror" name="item_id" id="inventorySelect">
+                                    @foreach ($items as $item)
+                                        <option value="{{ $item->id }}">{{ $item->inventory->name }} =>
+                                            {{ $item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('item_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
                         </div>
                     @endif
                     <div class="d-flex flex-column flex-md-row gap-3 w-100">
@@ -102,7 +112,7 @@
                                     class="text-danger">*</strong></label>
                             <div class="input-group">
                                 <span class="input-group-text" id="basic-addon1" style="width: 45px">
-                                    <i class="bx bx-box"></i>
+                                    <i class='bx bx-receipt'></i>
                                 </span>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror"
                                     id="name" name="name" placeholder="Masukkan nama surat" required>
