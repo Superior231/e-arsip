@@ -82,14 +82,13 @@
                     @if ($archive->category->name === 'Faktur')
                         <div class="w-100 mb-3">
                             <label for="item_id" class="form-label">Inventory</label>
-                            <select class="form-select @error('item_id') is-invalid @enderror" id="inventorySelect">
+                            <select class="form-select @error('item_id') is-invalid @enderror" name="item_id" id="inventorySelect">
                                 @foreach ($items as $item)
                                     <option value="{{ $item->id }}">{{ $item->inventory->name }} =>
                                         {{ $item->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            <input type="hidden" name="item_id" id="item_id" value="">
                             @error('item_id')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -162,10 +161,6 @@
             tags: false,
             placeholder: "Select item",
             allowClear: true
-        });
-        $('#inventorySelect').change(function() {
-            var selectedValues = $(this).val();
-            $('#item_id').val(selectedValues);
         });
     </script>
 @endpush

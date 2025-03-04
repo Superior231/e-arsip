@@ -191,9 +191,5 @@
             placeholder: "Select item",
             allowClear: true
         });
-        $('#inventorySelect').change(function() {
-            var selectedValues = $(this).val();
-            $('#item_id').val(selectedValues);
-        });
     </script>
 @endpush
