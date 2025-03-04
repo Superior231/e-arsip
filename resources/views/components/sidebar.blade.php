@@ -46,9 +46,9 @@
                 <a href="{{ route('archive.index') }}" class="side-link text-secondary">- Semua</a>
                 <a href="#" class="side-link text-secondary">- Surat Masuk</a>
                 <a href="#" class="side-link text-secondary">- Surat Keluar</a>
-                <a href="#" class="side-link text-secondary">- Administrasi</a>
-                <a href="#" class="side-link text-secondary">- Faktur</a>
-                <a href="#" class="side-link text-secondary">- Laporan</a>
+                <a href="{{ route('administrasi.index') }}" class="side-link text-secondary">- Administrasi</a>
+                <a href="{{ route('faktur.index') }}" class="side-link text-secondary">- Faktur</a>
+                <a href="{{ route('laporan.index') }}" class="side-link text-secondary">- Laporan</a>
             </li>
             <li>
                 <a href="{{ route('history.index') }}" class="side-link {{ $active === 'history' ? 'active' : '' }}"

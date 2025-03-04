@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('division', DivisionController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('archive', ArchiveController::class);
+    Route::get('/faktur', [ArchiveController::class, 'faktur_index'])->name('faktur.index');
+    Route::get('/administrasi', [ArchiveController::class, 'administrasi_index'])->name('administrasi.index');
+    Route::get('/laporan', [ArchiveController::class, 'laporan_index'])->name('laporan.index');
     Route::get('/letter/create/{archive_id}', [LetterController::class, 'create'])->name('letter.create');
     Route::post('/letter', [LetterController::class, 'store'])->name('letter.store');
     Route::get('/letter/{archive_id}/edit', [LetterController::class, 'edit'])->name('letter.edit');

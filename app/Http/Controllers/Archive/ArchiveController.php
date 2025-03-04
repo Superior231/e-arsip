@@ -23,6 +23,76 @@ class ArchiveController extends Controller
         return view('pages.archive.index', [
             'title' => 'Semua Arsip - Putra Panggil Jaya',
             'navTitle' => 'Semua Arsip',
+            'tableTitle' => 'Daftar Semua Arsip',
+            'active' => 'archive',
+            'archives' => $archives,
+            'histories' => $histories,
+            'history_archive' => $history_archive,
+        ]);
+    }
+
+    public function faktur_index()
+    {
+        $category = Category::where('name', 'Faktur')->first();
+        if (!empty($category) && $category) {
+            $archives = Archive::with('category')->where('category_id', $category->id)->latest()->get();
+        } else {
+            $archives = collect();
+        }
+        
+        $histories = History::latest()->get();
+        $history_archive = $histories->where('type', 'archive');
+        
+        return view('pages.archive.index', [
+            'title' => 'Arsip Faktur - Putra Panggil Jaya',
+            'navTitle' => 'Arsip Faktur',
+            'tableTitle' => 'Daftar Semua Faktur',
+            'active' => 'archive',
+            'archives' => $archives,
+            'histories' => $histories,
+            'history_archive' => $history_archive,
+        ]);
+    }
+
+    public function administrasi_index()
+    {
+        $category = Category::where('name', 'Administrasi')->first();
+        if (!empty($category) && $category) {
+            $archives = Archive::with('category')->where('category_id', $category->id)->latest()->get();
+        } else {
+            $archives = collect();
+        }
+
+        $histories = History::latest()->get();
+        $history_archive = $histories->where('type', 'archive');
+        
+        return view('pages.archive.index', [
+            'title' => 'Arsip Administrasi - Putra Panggil Jaya',
+            'navTitle' => 'Arsip Administrasi',
+            'tableTitle' => 'Daftar Semua Administrasi',
+            'active' => 'archive',
+            'archives' => $archives,
+            'histories' => $histories,
+            'history_archive' => $history_archive,
+        ]);
+    }
+
+    public function laporan_index()
+    {
+        $category = Category::where('name', 'Laporan')->first();
+        if (!empty($category) && $category) {
+            $archives = Archive::with('category')->where('category_id', $category->id)->latest()->get();
+        } else {
+            $archives = collect();
+        }
+        
+        $histories = History::latest()->get();
+        $history_archive = $histories->where('type', 'archive');
+        
+        return view('pages.archive.index', [
+            'title' => 'Arsip Laporan - Putra Panggil Jaya',
+            'navTitle' => 'Arsip Laporan',
+            'tableTitle' => 'Daftar Semua Laporan',
             'active' => 'archive',
             'archives' => $archives,
             'histories' => $histories,

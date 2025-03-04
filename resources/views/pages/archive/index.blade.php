@@ -67,7 +67,7 @@
         <div class="col col-12 col-lg-8" id="archiveList">
             <div class="card p-4 pt-3">
                 <div class="actions d-flex align-items-center justify-content-between">
-                    <h4 class="fw-semibold py-0 my-0">Daftar Semua Arsip</h4>
+                    <h4 class="fw-semibold py-0 my-0">{{ $tableTitle }}</h4>
                     <a href="{{ route('archive.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
                         <i class='bx bx-plus'></i>
                         Arsip
