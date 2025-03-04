@@ -7,6 +7,10 @@ use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PengaturanController;
+use App\Http\Controllers\Print\PrintArchiveController;
+use App\Http\Controllers\Print\PrintBarcodeArchiveController;
+use App\Http\Controllers\Print\PrintBarcodeLetterController;
+use App\Http\Controllers\Print\PrintLetterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Auth;
@@ -36,4 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/letter/inventory/{no_letter}', [ArchiveController::class, 'inventory_detail'])->name('inventory.detail');
     Route::resource('profile', ProfileController::class);
     Route::resource('staff', StaffController::class);
+
+
+    Route::get('/print/archive/{archive_id}', [PrintArchiveController::class, 'show'])->name('print.archive');
+    Route::get('/print/letter/{no_letter}', [PrintLetterController::class, 'show'])->name('print.letter');
+    Route::get('/print/barcode/archive/{archive_id}', [PrintBarcodeArchiveController::class, 'show'])->name('print.barcode.archive');
+    Route::get('/print/barcode/letter/{no_letter}', [PrintBarcodeLetterController::class, 'show'])->name('print.barcode.letter');
 });

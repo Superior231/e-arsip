@@ -298,7 +298,7 @@
 
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="#" target="_blank">
+                                                                    href="{{ route('print.letter', $letter->no_letter) }}" target="_blank">
                                                                     <i class='bx bx-printer fs-5'></i>
                                                                     Print
                                                                 </a>

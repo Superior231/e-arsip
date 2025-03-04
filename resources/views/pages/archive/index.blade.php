@@ -37,12 +37,12 @@
     <div class="actions d-flex flex-column flex-md-row align-items-center justify-content-between gap-2"
         id="actionsContainer">
         <div class="print d-flex align-items-center gap-2 w-100">
-            <a href="#" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
+            <a href="{{ route('print.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
                 target="_blank">
                 <i class='bx bx-printer'></i>
                 Print all list
             </a>
-            <a href="#" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
+            <a href="{{ route('print.barcode.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
                 target="_blank">
                 <i class='bx bx-barcode'></i>
                 Print all barcode
@@ -97,7 +97,7 @@
                                 <tr class="align-middle">
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center me-3">
-                                            <input type="checkbox" value="{{ $archive->code_archive }}">
+                                            <input type="checkbox" value="{{ $archive->archive_id }}">
                                         </div>
                                     </td>
                                     <td>
@@ -185,7 +185,7 @@
 
                                                     <li>
                                                         <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="#" target="_blank">
+                                                            href="{{ route('print.archive', $archive->archive_id) }}" target="_blank">
                                                             <i class='bx bx-printer fs-5'></i>
                                                             Print
                                                         </a>
