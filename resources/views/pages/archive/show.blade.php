@@ -146,7 +146,7 @@
                                     </td>
                                     <td>
                                         <h5>
-                                            {{ \Carbon\Carbon::parse($archive->date)->format('d M Y') }}
+                                            {{ \Carbon\Carbon::parse($archive->date)->locale('id_ID')->isoFormat('d MMMM Y') }}
                                         </h5>
                                     </td>
                                 </tr>
