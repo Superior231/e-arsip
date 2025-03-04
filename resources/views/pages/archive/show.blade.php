@@ -283,10 +283,10 @@
                                                         <ul class="dropdown-menu dropdown-menu-end"
                                                             aria-labelledby="action-{{ $letter->id }}">
                                                             <li>
-                                                                <div
+                                                                <span
                                                                     class="d-flex justify-content-center text-center mb-1 fw-bold">
                                                                     {{ $letter->name }}
-                                                                </div>
+                                                                </span>
                                                             </li>
 
                                                             <hr class="dropdown-divider py-0 my-0">
@@ -314,7 +314,8 @@
                                                             </li>
                                                             <li>
                                                                 <form id="deleteLetterForm-{{ $letter->id }}"
-                                                                    action="{{ route('letter.destroy', $letter->id) }}" method="post" class="d-inline">
+                                                                    action="{{ route('letter.destroy', $letter->id) }}"
+                                                                    method="post" class="d-inline">
                                                                     @csrf
                                                                     @method('DELETE')
 

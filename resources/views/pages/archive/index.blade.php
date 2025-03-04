@@ -175,9 +175,10 @@
                                                 <ul class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="action-{{ $archive->id }}">
                                                     <li>
-                                                        <div class="d-flex justify-content-center text-center mb-1 fw-bold">
+                                                        <span
+                                                            class="d-flex justify-content-center text-center mb-1 fw-bold">
                                                             {{ $archive->name }}
-                                                        </div>
+                                                        </span>
                                                     </li>
 
                                                     <hr class="dropdown-divider py-0 my-0">
@@ -214,7 +215,8 @@
                                                     @if ($archive->status !== 'approve')
                                                         <li>
                                                             <form id="deleteArchiveForm-{{ $archive->id }}"
-                                                                action="{{ route('archive.destroy', $archive->id) }}" method="post" class="d-inline">
+                                                                action="{{ route('archive.destroy', $archive->id) }}"
+                                                                method="post" class="d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
 
