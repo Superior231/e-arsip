@@ -109,7 +109,7 @@
                                 </td>
                                 <td>
                                     <h5>
-                                        {{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}
+                                        {{ \Carbon\Carbon::parse($item->date)->locale('id')->translatedFormat('d F Y') }}
                                     </h5>
                                 </td>
                             </tr>

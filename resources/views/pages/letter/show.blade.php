@@ -117,7 +117,7 @@
                             <h5>&nbsp;:&nbsp;</h5>
                         </td>
                         <td>
-                            <h5>{{ \Carbon\Carbon::parse($letter->date)->locale('id_ID')->isoFormat('d MMMM Y') }}</h5>
+                            <h5>{{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('d F Y') }}</h5>
                         </td>
                     </tr>
                     <tr>

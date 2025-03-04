@@ -162,7 +162,7 @@
                                     <tr>
                                         <td><strong>Tanggal</strong></td>
                                         <td>&nbsp;:&nbsp;</td>
-                                        <td>{{ \Carbon\Carbon::parse($archive->date)->locale('id_ID')->isoFormat('d MMMM Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($archive->date)->locale('id')->translatedFormat('d F Y') }}</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Detail Surat</strong></td>
