@@ -4,6 +4,7 @@
     <!-- Breadcrumb -->
     <ol class="breadcrumb py-0 my-0 mb-3">
         <a href="{{ route('archive.index') }}" class="breadcrumb-items">Arsip</a>
+        <a href="{{ route('archive.show', $archive->archive_id) }}" class="breadcrumb-items active">{{ $archive->archive_id }}</a>
         <a href="" class="breadcrumb-items active">{{ $navTitle }}</a>
     </ol>
     <!-- Breadcrumb End -->

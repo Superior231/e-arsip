@@ -16,7 +16,7 @@
             <a href="{{ route('archive.index') }}" class="breadcrumb-items">Arsip</a>
             <a href="{{ route('archive.show', $letter->archive->archive_id) }}"
                 class="breadcrumb-items">{{ $letter->archive->archive_id }}</a>
-            <a href="" class="breadcrumb-items">{{ $letter->no_letter }}</a>
+            <a href="{{ route('letter.show', $letter->no_letter) }}" class="breadcrumb-items">{{ $letter->no_letter }}</a>
             <a href="" class="breadcrumb-items active">{{ $navTitle }}</a>
         </ol>
         <!-- Breadcrumb End -->
@@ -76,6 +76,17 @@
                                 <td>
                                     <h5>{{ $item->sub_code }}/{{ $inventory->division->name }}/{{ $inventory->division->place }}
                                     </h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5>Nama Inventory</h5>
+                                </td>
+                                <td>
+                                    <h5>&nbsp;:&nbsp;</h5>
+                                </td>
+                                <td>
+                                    <h5>{{ $item->inventory->name }}</h5>
                                 </td>
                             </tr>
                             <tr>
