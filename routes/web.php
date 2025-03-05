@@ -4,6 +4,7 @@ use App\Http\Controllers\Archive\ArchiveController;
 use App\Http\Controllers\Archive\LetterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PengaturanController;
@@ -40,6 +41,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/letter/inventory/{no_letter}', [ArchiveController::class, 'inventory_detail'])->name('inventory.detail');
     Route::resource('profile', ProfileController::class);
     Route::resource('staff', StaffController::class);
+
+    Route::post('/document', [DocumentController::class, 'store'])->name('document.store');
+    Route::put('/document/{id}', [DocumentController::class, 'update'])->name('document.update');
+    Route::delete('/document/{id}/delete', [DocumentController::class, 'delete_document'])->name('document.delete');
 
 
     Route::get('/print/archive/{archive_id}', [PrintArchiveController::class, 'show'])->name('print.archive');

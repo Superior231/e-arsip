@@ -173,9 +173,9 @@ class ArchiveController extends Controller
                 'user_id' => Auth::user()->id,
             ]);
 
-            return redirect()->route('archive.index')->with('success', 'Arsip berhasil ditambahkan!');
+            return redirect()->route('archive.index')->with('success', 'Arsip berhasil dibuat!');
         } else {
-            return redirect()->route('archive.index')->with('error', 'Arsip gagal ditambahkan!');
+            return redirect()->route('archive.index')->with('error', 'Arsip gagal dibuat!');
         }
     }
 

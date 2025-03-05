@@ -24,8 +24,6 @@ return new class extends Migration
             $table->string('perihal')->nullable();
             $table->string('name');
             $table->enum('status', ['active', 'inactive', 'rusak', 'hilang'])->default('active');
-            $table->string('image')->nullable();
-            $table->string('file')->nullable();
             $table->longText('content')->nullable();;
             $table->text('detail')->nullable();
             $table->date('date');

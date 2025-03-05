@@ -23,9 +23,6 @@ class Letter extends Model
         'lampiran',
         'perihal',
         'name',
-        'status',
-        'image',
-        'file',
         'content',
         'detail',
         'date',
@@ -50,5 +47,10 @@ class Letter extends Model
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
     }
 }

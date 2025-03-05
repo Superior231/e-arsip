@@ -227,18 +227,22 @@
                                             </td>
                                             <td>
                                                 <div class="position-relative d-flex justify-content-center">
-                                                    <div class="image d-flex justify-content-center"
-                                                        style="cursor: pointer;" data-bs-toggle="modal"
-                                                        data-bs-target="#showImageModal"
-                                                        onclick="showImage('{{ $letter->image }}')">
-                                                        @if (!empty($letter->image))
-                                                            <img src="{{ asset('storage/letter_image/' . $letter->image) }}"
+                                                    @if ($letter->documents->where('type', 'image')->where('status', 'active')->isNotEmpty())
+                                                        <div class="image d-flex justify-content-center"
+                                                            style="cursor: pointer;" data-bs-toggle="modal"
+                                                            data-bs-target="#showImageModal"
+                                                            onclick="showImages({{ json_encode($letter->documents->where('type', 'image')->where('status', 'active')->pluck('file')->toArray()) }})">
+                                                            <img src="{{ asset('storage/documents/' . $letter->documents->where('type', 'image')->where('status', 'active')->first()->file) }}"
                                                                 alt="gambar" class="img-fluid">
-                                                        @else
+                                                        </div>
+                                                    @else
+                                                        <div class="image d-flex justify-content-center"
+                                                            style="cursor: pointer;" data-bs-toggle="modal"
+                                                            data-bs-target="#showImageModal" onclick="showImages([])">
                                                             <img src="{{ url('assets/img/logo_ppj.png') }}" alt="gambar"
                                                                 class="img-fluid">
-                                                        @endif
-                                                    </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td>
@@ -298,7 +302,8 @@
 
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="{{ route('print.letter', $letter->no_letter) }}" target="_blank">
+                                                                    href="{{ route('print.letter', $letter->no_letter) }}"
+                                                                    target="_blank">
                                                                     <i class='bx bx-printer fs-5'></i>
                                                                     Print
                                                                 </a>
@@ -545,8 +550,8 @@
                     </div>
                 </div>
                 <div class="modal-body d-flex justify-content-center">
-                    <div class="item-image" style="max-width: 100vw;">
-                        <img src="" alt="image" id="showImage" style="width: 100%;">
+                    <div class="item-image d-flex flex-column gap-3" style="max-width: 100%;" id="modalImagesContainer">
+                        <img src="">
                     </div>
                 </div>
             </div>
@@ -571,10 +576,22 @@
             });
         });
 
-        function showImage(image) {
-            let imageUrl = image ? '{{ asset('storage/letter_image') }}/' + image :
-                '{{ url('assets/img/logo_ppj.png') }}';
-            $('#showImage').attr('src', imageUrl);
+        function showImages(images) {
+            let container = document.getElementById("modalImagesContainer");
+            container.innerHTML = "";
+
+            if (images.length === 0) {
+                container.innerHTML =
+                    `
+                    <img src="{{ url('assets/img/logo_ppj.png') }}" class="img-fluid" alt="No Image" style="max-width: 100%;">`;
+            } else {
+                images.forEach(image => {
+                    let imageUrl = image ? `{{ asset('storage/documents') }}/${image}` :
+                        `{{ url('assets/img/logo_ppj.png') }}`;
+                    container.innerHTML += `
+                        <img src="${imageUrl}" alt="image">`;
+                });
+            }
         }
 
         function showDetailLetter(

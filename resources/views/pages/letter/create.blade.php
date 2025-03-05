@@ -46,31 +46,10 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Gambar</h4>
-                    <hr class="bg-secondary">
-                    <div class="previwe-img d-flex justify-content-center mb-2 py-3">
-                        <img src="{{ url('assets/img/logo_ppj.png') }}" alt="image preview" id="img"
-                            style="width: 120px;">
-                    </div>
-                    <div class="mb-2">
-                        <input type="file" accept="image/*" class="form-control @error('image') is-invalid @enderror"
-                            id="input-img" name="image">
-                        @error('image')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mt-3">
-                <div class="card-body">
                     <h4 class="card-title">File</h4>
                     <hr class="bg-secondary">
                     <div class="mb-2">
-                        <input type="file" accept=".doc,.docx,.pdf"
-                            class="form-control @error('file') is-invalid @enderror" name="file">
+                        <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.doc,.docx,.pdf" class="form-control @error('file') is-invalid @enderror" name="file[]">
                         @error('file')
                             <div class="invalid-feedback">
                                 {{ $message }}

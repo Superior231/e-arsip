@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Archive;
 
 use App\Http\Controllers\Controller;
 use App\Models\Archive;
+use App\Models\Document;
 use App\Models\History;
 use App\Models\Item;
 use App\Models\Letter;
@@ -46,19 +47,14 @@ class LetterController extends Controller
             'no_letter' => 'required',
             'letter_code' => 'required',
             'name' => 'required',
-            'image' => 'image|mimes:jpg,jpeg,png,webp|max:10048',
-            'letter' => 'file|mimes:pdf,doc,docx|max:5048',
+            'file.*' => 'mimes:jpg,jpeg,png,webp,doc,docx,pdf|max:10048',
         ], [
             'archive_id.required' => 'Arsip harus dipilih!',
             'no_letter.required' => 'Nomor surat harus diisi!',
             'letter_code.required' => 'Kode surat harus diisi!',
             'name.required' => 'Judul surat harus diisi!',
-            'image.image' => 'File gambar harus berupa gambar!',
-            'image.mimes' => 'File gambar harus berekstensi jpg, jpeg, png, atau webp!',
-            'image.max' => 'Ukuran file gambar maksimal 10MB!',
-            'letter.file' => 'File surat harus berupa file!',
-            'letter.mimes' => 'File surat harus berekstensi pdf, doc, atau docx!',
-            'letter.max' => 'Ukuran file maksimal 5MB!',
+            'file.*.mimes' => 'File harus berekstensi jpg, jpeg, png, webp, doc, docx, atau pdf!',
+            'file.*.max' => 'Ukuran file maksimal 10MB!',
         ]);
 
         $date = Carbon::parse($request->date);
@@ -69,25 +65,36 @@ class LetterController extends Controller
         $data = $request->all();
         $data['letter_code'] = $formattedLetterCode;
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = time() . '_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
-            $image = Image::make($file)->resize(500, 500, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })->encode('webp', 90);
-
-            Storage::disk('public')->put('letter_image/' . $fileName, (string) $image);
-            $data['image'] = $fileName;
-        }
+        $letter = Letter::create($data);
 
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->put('letter/' . $fileName, file_get_contents($file));
-            $data['file'] = $fileName;
+            foreach ($request->file('file') as $file) {
+                $originalExtension = $file->getClientOriginalExtension();
+                $fileName = time() . '_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $originalExtension;
+                $imageExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+                if (in_array($originalExtension, $imageExtensions)) {
+                    $fileName = time() . '_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
+                    $image = Image::make($file);
+                    $image->resize(500, 500, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })->encode('webp', 90);
+
+                    Storage::disk('public')->put('documents/' . $fileName, $image->stream()->__toString());
+                    $fileType = 'image';
+                } else {
+                    Storage::disk('public')->put('documents/' . $fileName, file_get_contents($file));
+                    $fileType = 'file';
+                }
+
+                Document::create([
+                    'letter_id' => $letter->id,
+                    'file' => $fileName,
+                    'type' => $fileType,
+                ]);
+            }
         }
-        $letter = Letter::create($data);
 
         $archive = Archive::findOrFail($request->archive_id);
         $oldStatus = $archive->status;
@@ -125,9 +132,9 @@ class LetterController extends Controller
                 'method' => 'create',
                 'user_id' => Auth::user()->id,
             ]);
-            return redirect()->route('archive.show', $letter->archive->archive_id)->with('success', 'Surat berhasil ditambahkan!');
+            return redirect()->route('archive.show', $letter->archive->archive_id)->with('success', 'Surat berhasil dibuat!');
         } else {
-            return redirect()->route('archive.show', $letter->archive->archive_id)->with('error', 'Surat gagal ditambahkan!');
+            return redirect()->route('archive.show', $letter->archive->archive_id)->with('error', 'Surat gagal dibuat!');
         }
     }
 
@@ -151,6 +158,7 @@ class LetterController extends Controller
     {
         $letter = Letter::where('no_letter', $no_letter)->with('archive')->firstOrFail();
         $archive = $letter->archive;
+        $documents = $letter->documents;
         $histories = History::latest()->get();
         $items = Item::latest()->get();
 
@@ -160,6 +168,7 @@ class LetterController extends Controller
             'active' => 'archive',
             'letter' => $letter,
             'archive' => $archive,
+            'documents' => $documents,
             'histories' => $histories,
             'items' => $items
         ]);
@@ -171,14 +180,10 @@ class LetterController extends Controller
             'no_letter' => 'required',
             'letter_code' => 'required',
             'name' => 'required',
-            'letter' => 'file|mimes:pdf,doc,docx|max:5048',
         ], [
             'no_letter.required' => 'Nomor surat harus diisi!',
             'letter_code.required' => 'Kode surat harus diisi!',
             'name.required' => 'Judul surat harus diisi!',
-            'letter.file' => 'File surat harus berupa file!',
-            'letter.mimes' => 'File surat harus berekstensi pdf, doc, atau docx!',
-            'letter.max' => 'Ukuran file maksimal 5MB!',
         ]);
 
         $letter = Letter::findOrFail($no_letter);
@@ -193,7 +198,6 @@ class LetterController extends Controller
         $oldContent = $letter->content;
         $oldDetail = $letter->detail;
         $oldDate = $letter->date;
-        $oldImage = $letter->image;
         $oldFile = $letter->file;
 
         $letter->letter_code = $request->letter_code;
@@ -208,25 +212,6 @@ class LetterController extends Controller
 
         $newItem = Item::find($request->item_id);
         $newItemName = $newItem ? '[' . $newItem->inventory->name . ' => ' . $newItem->name . ']' : $oldItemId;
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = time() . '_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.webp';
-            $image = Image::make($file)->resize(500, 500, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })->encode('webp', 90);
-
-            Storage::disk('public')->put('letter_image/' . $fileName, (string) $image);
-            $data['image'] = $fileName;
-        }
-
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $file->getClientOriginalExtension();
-            Storage::disk('public')->put('letter/' . $fileName, file_get_contents($file));
-            $data['file'] = $fileName;
-        }
 
         $letter->save();
 
@@ -259,12 +244,6 @@ class LetterController extends Controller
         }
         if ($oldDate !== $request->date) {
             $updates[] = "Tanggal surat dari '$oldDate' menjadi '$request->date'";
-        }
-        if ($request->hasFile('image') && $oldImage !== $data['image']) {
-            $updates[] = "Gambar surat dari '$oldImage' menjadi '$data[image]'";
-        }
-        if ($request->hasFile('file') && $oldFile !== $data['file']) {
-            $updates[] = "File surat dari '$oldFile' menjadi '$data[file]'";
         }
         if (!empty(array_diff($updates, ["Status item dari '$oldStatus' menjadi '$request->status'"]))) {
             $methods[] = 'update';
@@ -335,7 +314,7 @@ class LetterController extends Controller
             $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penghapusan surat";
 
             // Buat deskripsi perubahan
-            $description = "Archive telah diupdate oleh " . Auth::user()->name . ".";
+            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
             if (!empty($updates)) {
                 $description .= "\n" . implode(", \n", $updates);
             }

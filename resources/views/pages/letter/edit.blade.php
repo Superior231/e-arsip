@@ -2,11 +2,13 @@
 
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 
     <style>
         .select2-selection.select2-selection--single.select2-selection--clearable {
             border-radius: 0px 5px 5px 0px !important;
         }
+
         @media (min-width: 520px) {
             .select2.select2-container.select2-container--default {
                 width: 100% !important;
@@ -49,41 +51,105 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Gambar</h4>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 class="card-title py-0 my-0">File</h4>
+                        <button type="button" class="btn btn-primary d-flex align-items-center gap-1"
+                            data-bs-toggle="modal" data-bs-target="#addDocumentModal">
+                            <i class='bx bx-plus fs-5'></i>
+                            <span class="my-0 py-0">Tambah</span>
+                        </button>
+                    </div>
                     <hr class="bg-secondary">
-                    <div class="previwe-img d-flex justify-content-center mb-2 py-3">
-                        @if ($letter->image)
-                            <img src="{{ url('storage/letter_image/' . $letter->image) }}" alt="image preview"
-                                id="img" style="width: 120px;">
-                        @else
-                            <img src="{{ url('assets/img/logo_ppj.png') }}" alt="image preview" id="img"
-                                style="width: 120px;">
-                        @endif
-                    </div>
                     <div class="mb-2">
-                        <input type="file" accept="image/*" class="form-control @error('image') is-invalid @enderror"
-                            id="input-img" name="image">
-                        @error('image')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
-                </div>
-            </div>
+                        <div class="table-responsive">
+                            <table id="myDataTable" class="table table-striped table-hover" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-nowrap">File</th>
+                                        <th class="text-nowrap">Name</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($documents->where('status', 'active') as $document)
+                                        <tr class="align-middle">
+                                            <td>
+                                                <div class="position-relative d-flex justify-content-center">
+                                                    @if ($document->type === 'image')
+                                                        <div class="image d-flex justify-content-center"
+                                                            style="cursor: pointer;" data-bs-toggle="modal"
+                                                            data-bs-target="#showImageModal"
+                                                            onclick="showImages([{{ json_encode(asset('storage/documents/' . $document->file)) }}])">
+                                                            <img src="{{ asset('storage/documents/' . $document->file) }}"
+                                                                alt="gambar" class="img-fluid">
+                                                        </div>
+                                                    @elseif (Str::endsWith($document->file, ['.doc', '.docx']))
+                                                        <div class="image d-flex justify-content-center align-items-center"
+                                                            style="cursor: pointer;">
+                                                            <i class='bx bxs-file-doc text-primary fs-2 text-center'></i>
+                                                        </div>
+                                                    @else
+                                                        <div class="image d-flex justify-content-center align-items-center"
+                                                            style="cursor: pointer;">
+                                                            <i class='bx bxs-file-pdf text-danger fs-2 text-center'></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="text-break">{{ $document->file }}</span>
+                                            </td>
+                                            <td>
+                                                <div class="actions d-flex justify-content-center">
+                                                    <div class="dropdown pe-3">
+                                                        <i class="bx bx-cog fs-4" id="action-{{ $document->id }}"
+                                                            data-bs-toggle="dropdown" aria-expanded="false"
+                                                            style="cursor: pointer;" title="Actions"></i>
 
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h4 class="card-title">File</h4>
-                    <hr class="bg-secondary">
-                    <div class="mb-2">
-                        <input type="file" accept=".doc,.docx,.pdf"
-                            class="form-control @error('file') is-invalid @enderror" name="file">
-                        @error('file')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                        @enderror
+                                                        <ul class="dropdown-menu dropdown-menu-end"
+                                                            aria-labelledby="action-{{ $document->id }}">
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                    href="#">
+                                                                    <i class='bx bx-arrow-to-bottom fs-5'></i>
+                                                                    Download
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#editDocumentModal"
+                                                                    style="cursor: pointer;"
+                                                                    onclick="editDocument(
+                                                                    '{{ $document->id }}',
+                                                                    '{{ $document->file }}')">
+                                                                    <i class='bx bx-pencil fs-5'></i>
+                                                                    Edit data
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <form id="deleteDocumentForm-{{ $document->id }}"
+                                                                    action="{{ route('document.delete', $document->id) }}"
+                                                                    method="POST" style="display: none;">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                </form>
+
+                                                                <a style="cursor: pointer;"
+                                                                    class="dropdown-item d-flex align-items-center gap-1"
+                                                                    onclick="confirmDeleteDocument({{ $document->id }})">
+                                                                    <i class='bx bx-trash fs-5'></i> Hapus
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,7 +164,8 @@
                             <span class="input-group-text" id="basic-addon1" style="width: 45px;">
                                 <i class='bx bx-loader-circle'></i>
                             </span>
-                            <select class="form-select @error('status') is-invalid @enderror" id="status" name="status">
+                            <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                name="status">
                                 <option value="active" {{ $letter->status == 'active' ? 'selected' : '' }}>Active</option>
                                 <option value="inactive" {{ $letter->status == 'inactive' ? 'selected' : '' }}>Inactive
                                 </option>
@@ -116,7 +183,8 @@
                         <div class="w-100 mb-3">
                             <label for="inventorySelect" class="form-label">Inventory</label>
                             <div class="d-flex" style="width: 100%;">
-                                <span class="input-group-text" for="inventorySelect" style="width: 45px; border-radius: 5px 0px 0px 5px;">
+                                <span class="input-group-text" for="inventorySelect"
+                                    style="width: 45px; border-radius: 5px 0px 0px 5px;">
                                     <i class='bx bx-box'></i>
                                 </span>
                                 <select class="form-select @error('item_id') is-invalid @enderror" id="inventorySelect"
@@ -191,6 +259,61 @@
             </div>
         </form>
     </div>
+
+
+    <div class="modal fade" id="addDocumentModal" tabindex="-1" aria-labelledby="addDocumentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="addDocumentModalLabel">Tambah Dokumen</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('document.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="letter_id" value="{{ $letter->id }}">
+                        <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.doc,.docx,.pdf"
+                            class="form-control @error('file') is-invalid @enderror" name="file[]">
+                        @error('file')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editDocumentModal" tabindex="-1" aria-labelledby="editDocumentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="editDocumentModalLabel">Update Dokumen</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="" method="POST" enctype="multipart/form-data" id="editDocumentForm">
+                    @csrf @method('PUT')
+                    <div class="modal-body">
+                        <input type="hidden" name="letter_id" value="{{ $letter->id }}">
+                        <span id="editFileName"></span>
+                        <input type="file" accept=".jpg,.jpeg,.png,.webp,.doc,.docx,.pdf"
+                            class="form-control @error('file') is-invalid @enderror" name="file" id="editFile">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -198,12 +321,48 @@
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
+        $(document).ready(function() {
+            $('#myDataTable').DataTable({
+                "language": {
+                    "searchPlaceholder": "Search..."
+                }
+            });
+        });
+
         $('#inventorySelect').select2({
             tags: false,
             placeholder: "Select item",
             allowClear: true
         });
+
+        function editDocument(id, file) {
+            $('#editFile').val('');
+            $('#editFileName').text(file);
+            $('#editDocumentForm').attr('action', "{{ route('document.update', '') }}" + '/' + id);
+        }
+
+        function confirmDeleteDocument(id) {
+            Swal.fire({
+                icon: "question",
+                title: "Apakah Anda yakin?",
+                text: "Apakah Anda yakin ingin menghapus dokumen ini?",
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                customClass: {
+                    popup: 'sw-popup',
+                    title: 'sw-title',
+                    closeButton: 'sw-close',
+                    confirmButton: 'btn-danger bg-danger',
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let form = document.getElementById(`deleteDocumentForm-${id}`).submit();
+                }
+            });
+        }
     </script>
 @endpush
