@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/document', [DocumentController::class, 'store'])->name('document.store');
     Route::put('/document/{id}', [DocumentController::class, 'update'])->name('document.update');
-    Route::delete('/document/{id}/delete', [DocumentController::class, 'delete_document'])->name('document.delete');
+    Route::put('/document/delete/{id}', [DocumentController::class, 'delete_document'])->name('document.delete');
 
 
     Route::get('/print/archive/{archive_id}', [PrintArchiveController::class, 'show'])->name('print.archive');

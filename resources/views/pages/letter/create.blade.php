@@ -46,7 +46,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">File</h4>
+                    <h4 class="card-title">Dokumen</h4>
                     <hr class="bg-secondary">
                     <div class="mb-2">
                         <input type="file" multiple accept=".jpg,.jpeg,.png,.webp,.doc,.docx,.pdf" class="form-control @error('file') is-invalid @enderror" name="file[]">

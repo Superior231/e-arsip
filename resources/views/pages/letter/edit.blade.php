@@ -52,7 +52,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h4 class="card-title py-0 my-0">File</h4>
+                        <h4 class="card-title py-0 my-0">Dokumen</h4>
                         <button type="button" class="btn btn-primary d-flex align-items-center gap-1"
                             data-bs-toggle="modal" data-bs-target="#addDocumentModal">
                             <i class='bx bx-plus fs-5'></i>
@@ -128,13 +128,6 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <form id="deleteDocumentForm-{{ $document->id }}"
-                                                                    action="{{ route('document.delete', $document->id) }}"
-                                                                    method="POST" style="display: none;">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                </form>
-
                                                                 <a style="cursor: pointer;"
                                                                     class="dropdown-item d-flex align-items-center gap-1"
                                                                     onclick="confirmDeleteDocument({{ $document->id }})">
@@ -260,6 +253,12 @@
         </form>
     </div>
 
+    <form id="deleteDocumentForm" action="" method="POST"
+        style="display: none;">
+        @csrf 
+        @method('PUT')
+            <input type="hidden" class="form-control" id="status" name="status" value="delete">
+    </form>
 
     <div class="modal fade" id="addDocumentModal" tabindex="-1" aria-labelledby="addDocumentModalLabel"
         aria-hidden="true">
@@ -360,7 +359,9 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    let form = document.getElementById(`deleteDocumentForm-${id}`).submit();
+                    let form = document.getElementById('deleteDocumentForm');
+                    form.action = "{{ route('document.delete', '') }}" + '/' + id;
+                    form.submit();
                 }
             });
         }

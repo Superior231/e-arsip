@@ -83,7 +83,7 @@ class DocumentController extends Controller
                     'user_id' => Auth::user()->id,
                 ]);
             }
-            return redirect()->route('archive.show', $letter->archive->archive_id)->with('success', 'Surat berhasil diupdate!');
+            return redirect()->route('archive.show', $letter->archive->archive_id)->with('success', 'Dokumen surat berhasil ditambahkan!');
         } else {
             return redirect()->route('archive.show', $letter->archive->archive_id)->with('error', 'Tidak ada perubahan yang dilakukan!');
         }
@@ -176,12 +176,13 @@ class DocumentController extends Controller
         }
     }
     
-    public function delete_document($id)
+    public function delete_document(Request $request, $id)
     {
         $letter = Document::findOrFail($id)->letter;
         $document = Document::findOrFail($id);
         $oldName = $document->file;
-        $document->update(['status' => 'delete']);
+        $document->status = $request->status;
+        $document->save();
 
         $archive = $letter->archive;
         if ($archive->status !== 'pending') {
