@@ -123,11 +123,8 @@
                             $bgClass = match ($history->method) {
                                 'create' => 'bg-success text-light',
                                 'update' => 'bg-warning text-dark',
-                                'mutate' => 'bg-primary text-light',
-                                'mutate, update' => 'bg-dark text-light',
-                                'mutate, delete' => 'bg-danger text-light',
-                                'mutate, in' => 'bg-primary text-light',
-                                'mutate, out' => 'bg-danger text-light',
+                                'update status' => 'bg-primary text-light',
+                                'update status, update' => 'bg-dark text-light',
                                 'delete' => 'bg-danger text-light',
                                 default => 'bg-secondary text-dark',
                             };
@@ -143,50 +140,6 @@
                             <td class="text-nowrap">
                                 <span class="d-none">{{ $history->created_at->format('Y m d H:i') }}</span>
                                 {{ $history->created_at->format('d M Y H:i') }} WIB
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="mutate mt-4">
-        <h3 class="fw-semibold">Mutasi</h3>
-        <div class="table-responsive card p-4">
-            <table id="mutateTable" class="table table-striped table-hover" style="width:100%">
-                <thead>
-                    <tr>
-                        <th class="text-center">Method</th>
-                        <th>Type</th>
-                        <th>Name</th>
-                        <th style="min-width: 250px;">Description</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($history_mutate as $item)
-                        @php
-                            $bgClass = match ($item->method) {
-                                'mutate' => 'bg-primary text-light',
-                                'mutate, update' => 'bg-dark text-light',
-                                'mutate, delete' => 'bg-danger text-light',
-                                'mutate, in' => 'bg-primary text-light',
-                                'mutate, out' => 'bg-danger text-light',
-                                default => 'bg-secondary text-dark',
-                            };
-                        @endphp
-
-                        <tr>
-                            <td class="text-center pe-4">
-                                <span class="badge {{ $bgClass }}">{{ $item->method }}</span>
-                            </td>
-                            <td>{{ $item->type }}</td>
-                            <td>{{ $item->name }}</td>
-                            <td class="text-break">{{ $item->description }}</td>
-                            <td class="text-nowrap">
-                                <span class="d-none">{{ $item->created_at->format('Y m d H:i') }}</span>
-                                {{ $item->created_at->format('d M Y H:i') }} WIB
                             </td>
                         </tr>
                     @endforeach

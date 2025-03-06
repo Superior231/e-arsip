@@ -233,13 +233,13 @@ class ArchiveController extends Controller
         $newDivision = Division::findOrFail($request->division_id);
         $newCategory = Category::findOrFail($request->category_id);
 
-        $isMutate = false;
+        $isUpdateStatus = false;
         $isUpdate = false;
         $updates = [];
 
         if ($oldDivision->id !== $newDivision->id) {
             $updates[] = "Divisi dari '{$oldDivision->name} ({$oldDivision->place})' menjadi '{$newDivision->name} ({$newDivision->place})'";
-            $isMutate = true;
+            $isUpdate = true;
         }
         if ($oldCategory->id !== $newCategory->id) {
             $updates[] = "Kategori dari '{$oldCategory->name}' menjadi '{$newCategory->name}'";
@@ -261,7 +261,7 @@ class ArchiveController extends Controller
         // Cek perubahan status (hanya superadmin yang bisa mengubahnya)
         if (Auth::user()->roles == 'superadmin' && $oldStatus !== $request->status) {
             $updates[] = "Status arsip dari '$oldStatus' menjadi '$request->status'";
-            $isMutate = true;
+            $isUpdateStatus = true;
             $archive->status = $request->status;
         }
 
@@ -284,18 +284,18 @@ class ArchiveController extends Controller
         }
 
         // Update archive_code jika division, category, atau name berubah
-        if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id || $oldName !== $request->name) {
+        if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id) {
             $archive_code = $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug;
             $archive->archive_code = $archive_code;
 
             $updates[] = "Kode arsip dari '$oldCode' menjadi '$oldId/$archive_code'";
-            $isMutate = true;
+            $isUpdate = true;
         }
 
         // Jika ada perubahan selain status dan status saat ini bukan pending, ubah status menjadi pending
         if ($isUpdate && $oldStatus !== 'pending') {
             $archive->status = 'pending';
-            $isMutate = true;
+            $isUpdateStatus = true;
             $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada perubahan data";
         }
 
@@ -307,16 +307,15 @@ class ArchiveController extends Controller
         $archive->date = $request->date;
         $archive->save();
 
-        // Tentukan method yang digunakan
         $methods = [];
-        if ($isMutate) {
-            $methods[] = 'mutate';
+        if ($isUpdateStatus) {
+            $methods[] = 'update status';
         }
         if ($isUpdate) {
             $methods[] = 'update';
         }
 
-        $title = count($methods) > 1 ? "Mutasi dan Update Arsip" : (in_array('mutate', $methods) ? "Mutasi Arsip" : "Update Arsip");
+        $title = count($methods) > 1 ? "Update Arsip dan Status" : (in_array('update status', $methods) ? "Update Status Arsip" : "Update Arsip");
         $method = implode(', ', $methods);
         $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
 

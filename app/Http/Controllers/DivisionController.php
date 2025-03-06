@@ -77,14 +77,14 @@ class DivisionController extends Controller
         $oldStatus = $division->status;
 
         // Variabel untuk pengecekan perubahan
-        $isMutate = false;
+        $isUpdateStatus = false;
         $isUpdate = false;
         $updates = [];
 
-        // Cek perubahan status (mutate)
+        // Cek perubahan status
         if ($oldStatus !== $request->status) {
             $updates[] = "Status divisi dari '$oldStatus' menjadi '$request->status'";
-            $isMutate = true;
+            $isUpdateStatus = true;
         }
 
         // Cek perubahan name & place (update)
@@ -105,15 +105,14 @@ class DivisionController extends Controller
 
         // Tentukan metode yang digunakan
         $methods = [];
-        if ($isMutate) {
-            $methods[] = 'mutate';
+        if ($isUpdateStatus) {
+            $methods[] = 'update status';
         }
         if ($isUpdate) {
             $methods[] = 'update';
         }
 
-        // Tentukan judul berdasarkan metode yang digunakan
-        $title = count($methods) > 1 ? "Mutasi dan Update Divisi" : (in_array('mutate', $methods) ? "Mutasi Divisi" : "Update Divisi");
+        $title = count($methods) > 1 ? "Update Divisi dan Status" : (in_array('update status', $methods) ? "Update Status Divisi" : "Update Divisi");
         $method = implode(', ', $methods);
         $description = "Divisi telah diupdate oleh " . Auth::user()->name . ".";
 

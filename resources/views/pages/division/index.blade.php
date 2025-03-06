@@ -109,9 +109,8 @@
                                 $bgClass = match ($history->method) {
                                     'create' => 'bg-success text-light',
                                     'update' => 'bg-warning',
-                                    'mutate' => 'bg-primary text-light',
-                                    'mutate, update' => 'bg-dark text-light',
-                                    'mutate, delete' => 'bg-danger text-light',
+                                    'update status' => 'bg-primary text-light',
+                                    'update status, update' => 'bg-dark text-light',
                                     'delete' => 'bg-danger text-light',
                                     default => 'bg-secondary text-dark',
                                 };

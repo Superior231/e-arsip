@@ -38,11 +38,11 @@ class DocumentController extends Controller
 
                 History::create([
                     'type_id' => $archive->id,
-                    'title' => 'Mutasi Arsip',
+                    'title' => 'Update Status Arsip',
                     'name' => $archive->archive_id . ' - ' . $archive->name,
                     'description' => $description . '.',
                     'type' => 'archive',
-                    'method' => 'mutate',
+                    'method' => 'update status',
                     'user_id' => Auth::user()->id,
                 ]);
             }
@@ -122,11 +122,11 @@ class DocumentController extends Controller
 
                 History::create([
                     'type_id' => $archive->id,
-                    'title' => 'Mutasi Arsip',
+                    'title' => 'Update Status Arsip',
                     'name' => $archive->archive_id . ' - ' . $archive->name,
                     'description' => $description . '.',
                     'type' => 'archive',
-                    'method' => 'mutate',
+                    'method' => 'update status',
                     'user_id' => Auth::user()->id,
                 ]);
             }
@@ -178,9 +178,32 @@ class DocumentController extends Controller
     
     public function delete_document($id)
     {
+        $letter = Document::findOrFail($id)->letter;
         $document = Document::findOrFail($id);
         $oldName = $document->file;
         $document->update(['status' => 'delete']);
+
+        $archive = $letter->archive;
+        if ($archive->status !== 'pending') {
+            $archive->status = 'pending';
+            $archive->save();
+            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penghapusan dokumen pada surat";
+
+            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
+            if (!empty($updates)) {
+                $description .= "\n" . implode(", \n", $updates);
+            }
+
+            History::create([
+                'type_id' => $archive->id,
+                'title' => 'Update Status Arsip',
+                'name' => $archive->archive_id . ' - ' . $archive->name,
+                'description' => $description . '.',
+                'type' => 'archive',
+                'method' => 'update status',
+                'user_id' => Auth::user()->id,
+            ]);
+        }
 
         History::create([
             'type_id' => $document->letter->archive->id,

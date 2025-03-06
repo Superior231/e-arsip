@@ -89,7 +89,7 @@ class CategoryController extends Controller
         $oldName = $category->name;
         $oldStatus = $category->status;
 
-        $isMutate = false;
+        $isUpdateStatus = false;
         $isUpdate = false;
         $updates = [];
 
@@ -99,7 +99,7 @@ class CategoryController extends Controller
         }
         if ($oldStatus !== $request->status) {
             $updates[] = "Status kategori dari '$oldStatus' menjadi '$request->status'";
-            $isMutate = true;
+            $isUpdateStatus = true;
         }
 
         // Update data dengan nilai baru
@@ -109,14 +109,14 @@ class CategoryController extends Controller
 
         // Tentukan metode yang digunakan
         $methods = [];
-        if ($isMutate) {
-            $methods[] = 'mutate';
+        if ($isUpdateStatus) {
+            $methods[] = 'update status';
         }
         if ($isUpdate) {
             $methods[] = 'update';
         }
 
-        $title = count($methods) > 1 ? "Mutasi dan Update Kategori" : (in_array('mutate', $methods) ? "Mutasi Kategori" : "Update Kategori");
+        $title = count($methods) > 1 ? "Update Kategori dan Status" : (in_array('update status', $methods) ? "Update Status Kategori" : "Update Kategori");
         $method = implode(', ', $methods);
 
         // Cek apakah ada perubahan atau tidak

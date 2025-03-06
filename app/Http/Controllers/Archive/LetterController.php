@@ -113,11 +113,11 @@ class LetterController extends Controller
 
             History::create([
                 'type_id' => $archive->id,
-                'title' => 'Mutasi Arsip',
+                'title' => 'Update Status Arsip',
                 'name' => $archive->archive_id . ' - ' . $archive->name,
                 'description' => $description . '.',
                 'type' => 'archive',
-                'method' => 'mutate',
+                'method' => 'update status',
                 'user_id' => Auth::user()->id,
             ]);
         }
@@ -215,42 +215,57 @@ class LetterController extends Controller
 
         $letter->save();
 
+        $isUpdateStatus = false;
+        $isUpdate = false;
         $updates = [];
-        $methods = [];
 
         if ($oldStatus !== $request->status) {
             $updates[] = "Status surat dari '$oldStatus' menjadi '$request->status'";
+            $isUpdateStatus = true;
         }
         if ($oldItemId != $request->item_id) {
             $updates[] = "Inventory dari '$oldItemName' menjadi '$newItemName'";
+            $isUpdate = true;
         }
         if ($oldLetterName !== $request->name) {
             $updates[] = "Nama surat dari '$oldLetterName' menjadi '$request->name'";
+            $isUpdate = true;
         }
         if ($oldLetterCode !== $request->letter_code) {
             $updates[] = "Kode surat dari '$oldLetterCode' menjadi '$request->letter_code'";
+            $isUpdate = true;
         }
         if ($oldLampiran !== $request->lampiran) {
             $updates[] = "Lampiran surat dari '$oldLampiran' menjadi '$request->lampiran'";
+            $isUpdate = true;
         }
         if ($oldPerihal !== $request->perihal) {
             $updates[] = "Perihal surat dari '$oldPerihal' menjadi '$request->perihal'";
+            $isUpdate = true;
         }
         if ($oldContent !== $request->content) {
             $updates[] = "Isi surat dari '$oldContent' menjadi '$request->content'";
+            $isUpdate = true;
         }
         if ($oldDetail !== $request->detail) {
             $updates[] = "Detail surat dari '$oldDetail' menjadi '$request->detail'";
+            $isUpdate = true;
         }
         if ($oldDate !== $request->date) {
             $updates[] = "Tanggal surat dari '$oldDate' menjadi '$request->date'";
+            $isUpdate = true;
         }
-        if (!empty(array_diff($updates, ["Status item dari '$oldStatus' menjadi '$request->status'"]))) {
+
+
+        $methods = [];
+        if ($isUpdateStatus) {
+            $methods[] = 'update status';
+        }
+        if ($isUpdate) {
             $methods[] = 'update';
         }
 
-        $methods = array_unique($methods);
-        $title = count($methods) > 1 ? "Mutasi dan Update Surat" : (in_array('mutate', $methods) ? "Mutasi Surat" : "Update Surat");
+        $title = count($methods) > 1 ? "Update Surat dan Status" : (in_array('update status', $methods) ? "Update Status Surat" : "Update Surat");
         $method = implode(', ', $methods);
 
         if (empty($updates)) {
@@ -271,11 +286,11 @@ class LetterController extends Controller
 
             History::create([
                 'type_id' => $archive->id,
-                'title' => 'Mutasi Arsip',
+                'title' => 'Update Status Arsip',
                 'name' => $archive->archive_id . ' - ' . $archive->name,
                 'description' => $description . '.',
                 'type' => 'archive',
-                'method' => 'mutate',
+                'method' => 'update status',
                 'user_id' => Auth::user()->id,
             ]);
         }
@@ -322,11 +337,11 @@ class LetterController extends Controller
             // Simpan history perubahan
             History::create([
                 'type_id' => $archive->id,
-                'title' => 'Mutasi Arsip',
+                'title' => 'Update Status Arsip',
                 'name' => $archive->archive_id . ' - ' . $archive->name,
                 'description' => $description . '.',
                 'type' => 'archive',
-                'method' => 'mutate',
+                'method' => 'update status',
                 'user_id' => Auth::user()->id,
             ]);
         }
