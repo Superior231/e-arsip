@@ -751,3 +751,13 @@ input[type="checkbox"] {
     }
 }
 /* Profile End */
+
+
+
+/* CKeditor */
+.ck-editor__editable {
+    height: 400px;
+    overflow-y: auto !important;
+    border-radius: 0px 0px 10px 10px !important;
+}
+/* CKeditor End */

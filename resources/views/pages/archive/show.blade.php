@@ -212,6 +212,7 @@
                                             <th class="text-nowrap" style="min-width: 150px;">Inventory</th>
                                         @endif
                                         <th class="text-nowrap" style="min-width: 200px;">Nama Surat</th>
+                                        <th class="text-center">Type</th>
                                         <th>Tanggal</th>
                                         <th class="text-center w-100">Status</th>
                                         <th class="text-center">Actions</th>
@@ -270,6 +271,7 @@
                                                 </td>
                                             @endif
                                             <td><span>{{ $letter->name }}</span></td>
+                                            <td><span>{{ $letter->type }}</span></td>
                                             <td>
                                                 <span class="d-none">{{ $letter->date }}</span>
                                                 <span>

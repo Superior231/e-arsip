@@ -57,10 +57,14 @@ class LetterController extends Controller
             'file.*.max' => 'Ukuran file maksimal 10MB!',
         ]);
 
-        $date = Carbon::parse($request->date);
-        $month = str_pad($date->month, 2, '0', STR_PAD_LEFT);
-        $year = $date->year;
-        $formattedLetterCode = "{$request->letter_code}/{$month}/{$year}";
+        if ($request->type == 'letter_out') {
+            $date = Carbon::parse($request->date);
+            $month = str_pad($date->month, 2, '0', STR_PAD_LEFT);
+            $year = $date->year;
+            $formattedLetterCode = "{$request->letter_code}/{$month}/{$year}";
+        } else {
+            $formattedLetterCode = $request->letter_code;
+        }
 
         $data = $request->all();
         $data['letter_code'] = $formattedLetterCode;
@@ -195,6 +199,7 @@ class LetterController extends Controller
         $oldLampiran = $letter->lampiran;
         $oldPerihal = $letter->perihal;
         $oldStatus = $letter->status;
+        $oldType = $letter->type;
         $oldContent = $letter->content;
         $oldDetail = $letter->detail;
         $oldDate = $letter->date;
@@ -206,6 +211,7 @@ class LetterController extends Controller
         $letter->lampiran = $request->lampiran;
         $letter->perihal = $request->perihal;
         $letter->status = $request->status;
+        $letter->type = $request->type;
         $letter->content = $request->content;
         $letter->detail = $request->detail;
         $letter->date = $request->date;
@@ -222,6 +228,10 @@ class LetterController extends Controller
         if ($oldStatus !== $request->status) {
             $updates[] = "Status surat dari '$oldStatus' menjadi '$request->status'";
             $isUpdateStatus = true;
+        }
+        if ($oldType !== $request->type) {
+            $updates[] = "Type surat dari '$oldType' menjadi '$request->type'";
+            $isUpdate = true;
         }
         if ($oldItemId != $request->item_id) {
             $updates[] = "Inventory dari '$oldItemName' menjadi '$newItemName'";

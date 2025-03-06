@@ -343,7 +343,7 @@ class ArchiveController extends Controller
         $archive = Archive::where('archive_id', $archive_id)->with('letters')->firstOrFail();
         $archives = Archive::where('archive_id', $archive_id)->firstOrFail();
         $histories = History::latest()->get();
-        $history_letter = $histories->where('type', 'letter')->whereIn('type_id', $archives->id);
+        $history_letter = $histories->whereIn('type_id', $archives->id);
 
         return view('pages.archive.show', [
             'title' => 'Detail Arsip',
@@ -372,7 +372,6 @@ class ArchiveController extends Controller
             'histories' => $histories
         ]);
     }
-
 
     public function delete_archive(Request $request, $id)
     {

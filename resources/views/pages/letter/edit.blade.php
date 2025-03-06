@@ -46,8 +46,6 @@
             <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ Auth::user()->id }}">
             <input type="hidden" class="form-control" id="archive_id" name="archive_id" value="{{ $archive->id }}">
             <input type="hidden" class="form-control" id="no_letter" name="no_letter" value="{{ $letter->no_letter }}">
-            <input type="hidden" class="form-control" id="letter_code" name="letter_code"
-                value="{{ $letter->letter_code }}">
 
             <div class="card">
                 <div class="card-body">
@@ -149,26 +147,43 @@
 
             <div class="card mt-3">
                 <div class="card-body">
+                    <h4 class="card-title">Kode Surat</h4>
+                    <hr class="bg-secondary">
+                    <div class="w-100 mb-3">
+                        <label for="name" class="form-label">Kode Surat<strong class="text-danger">*</strong></label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1" style="width: 45px">
+                                <i class='bx bx-code-alt'></i>
+                            </span>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                id="letter_code" name="letter_code" value="{{ $letter->letter_code }}"
+                                placeholder="Masukkan kode surat">
+                            @error('letter_code')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-body">
                     <h4 class="card-title">Data</h4>
                     <hr class="bg-secondary">
                     <div class="mb-3">
-                        <label for="status" class="form-label">Status<strong class="text-danger">*</strong></label>
+                        <label for="name" class="form-label">Nama Surat<strong class="text-danger">*</strong></label>
                         <div class="input-group">
-                            <span class="input-group-text" id="basic-addon1" style="width: 45px;">
-                                <i class='bx bx-loader-circle'></i>
+                            <span class="input-group-text" id="basic-addon1" style="width: 45px">
+                                <i class='bx bx-receipt'></i>
                             </span>
-                            <select class="form-select @error('status') is-invalid @enderror" id="status"
-                                name="status">
-                                <option value="active" {{ $letter->status == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ $letter->status == 'inactive' ? 'selected' : '' }}>Inactive
-                                </option>
-                                <option value="rusak" {{ $letter->status == 'rusak' ? 'selected' : '' }}>Rusak</option>
-                                <option value="hilang" {{ $letter->status == 'hilang' ? 'selected' : '' }}>Hilang</option>
-                            </select>
-                            @error('status')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
+                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
+                                name="name" placeholder="Masukkan nama surat" required value="{{ $letter->name }}">
+                            @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                             @enderror
                         </div>
                     </div>
@@ -198,18 +213,49 @@
                             </div>
                         </div>
                     @endif
+
                     <div class="d-flex flex-column flex-md-row gap-3 w-100">
                         <div class="w-100">
-                            <label for="name" class="form-label">Nama Surat<strong
+                            <label for="status" class="form-label">Status<strong class="text-danger">*</strong></label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1" style="width: 45px;">
+                                    <i class='bx bx-loader-circle'></i>
+                                </span>
+                                <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                    name="status">
+                                    <option value="active" {{ $letter->status == 'active' ? 'selected' : '' }}>Active
+                                    </option>
+                                    <option value="inactive" {{ $letter->status == 'inactive' ? 'selected' : '' }}>
+                                        Inactive
+                                    </option>
+                                    <option value="rusak" {{ $letter->status == 'rusak' ? 'selected' : '' }}>Rusak
+                                    </option>
+                                    <option value="hilang" {{ $letter->status == 'hilang' ? 'selected' : '' }}>Hilang
+                                    </option>
+                                </select>
+                                @error('status')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="w-100">
+                            <label for="type" class="form-label">Type Surat<strong
                                     class="text-danger">*</strong></label>
                             <div class="input-group">
                                 <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                     <i class='bx bx-receipt'></i>
                                 </span>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                    id="name" name="name" placeholder="Masukkan nama surat" required
-                                    value="{{ $letter->name }}">
-                                @error('name')
+                                <select class="form-select @error('type') is-invalid @enderror" id="type"
+                                    type="type" name="type" required>
+                                    <option value="">Pilih</option>
+                                    <option value="letter_in" {{ $letter->type == 'letter_in' ? 'selected' : '' }}>Surat
+                                        Masuk</option>
+                                    <option value="letter_out" {{ $letter->type == 'letter_out' ? 'selected' : '' }}>Surat
+                                        Keluar</option>
+                                </select>
+                                @error('type')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -253,11 +299,10 @@
         </form>
     </div>
 
-    <form id="deleteDocumentForm" action="" method="POST"
-        style="display: none;">
-        @csrf 
+    <form id="deleteDocumentForm" action="" method="POST" style="display: none;">
+        @csrf
         @method('PUT')
-            <input type="hidden" class="form-control" id="status" name="status" value="delete">
+        <input type="hidden" class="form-control" id="status" name="status" value="delete">
     </form>
 
     <div class="modal fade" id="addDocumentModal" tabindex="-1" aria-labelledby="addDocumentModalLabel"

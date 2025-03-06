@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('letter_id')->nullable()->constrained('letters');
             $table->string('no_letter');
             $table->string('letter_code');
-            $table->enum('type', ['letter', 'letter_in', 'letter_out'])->default('letter');
+            $table->enum('type', ['letter_in', 'letter_out'])->default('letter_out');
             $table->integer('lampiran')->nullable();
             $table->string('perihal')->nullable();
             $table->string('name');
