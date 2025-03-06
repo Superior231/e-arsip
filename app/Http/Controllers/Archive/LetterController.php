@@ -314,7 +314,7 @@ class LetterController extends Controller
         }
     }
 
-    public function destroy(string $id)
+    public function delete_letter(Request $request, $id)
     {
         $letter = Letter::findOrFail($id);
         $oldArchiveId = $letter->archive->id;
@@ -359,7 +359,8 @@ class LetterController extends Controller
                 'user_id' => Auth::user()->id,
             ]);
 
-            $letter->delete();
+            $letter->status = $request->status;
+            $letter->save();
 
             return redirect()->route('archive.show', $letter->archive->archive_id)->with('success', 'Surat berhasil dihapus!');
         } else {

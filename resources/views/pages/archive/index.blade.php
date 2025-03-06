@@ -93,7 +93,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($archives as $archive)
+                            @foreach ($archives->where('status', '!=', 'delete') as $archive)
                                 <tr class="align-middle">
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center me-3">
@@ -135,7 +135,7 @@
                                     <td>
                                         <div class="d-flex flex-column">
                                             <span>{{ $archive->name }}</span>
-                                            @if ($archive->letters->isNotEmpty())
+                                            @if ($archive->letters->where('status', '!=', 'delete')->isNotEmpty())
                                                 <a class="text-decoration-underline" style="cursor: pointer;"
                                                     id="showItem-{{ $archive->id }}"
                                                     onclick="showItems({{ $archive->id }})">
@@ -144,7 +144,7 @@
 
                                                 <div class="show-items-container d-none flex-column"
                                                     id="showItemContainer-{{ $archive->id }}">
-                                                    @foreach ($archive->letters as $letter)
+                                                    @foreach ($archive->letters->where('status', '!=', 'delete') as $letter)
                                                         <span class="py-0 my-0">- {{ $letter->name }}</span>
                                                     @endforeach
                                                 </div>
@@ -215,10 +215,11 @@
                                                     @if ($archive->status !== 'approve')
                                                         <li>
                                                             <form id="deleteArchiveForm-{{ $archive->id }}"
-                                                                action="{{ route('archive.destroy', $archive->id) }}"
-                                                                method="post" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
+                                                                action="{{ route('archive.delete', $archive->id) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf @method('PUT')
+
+                                                                <input type="hidden" class="form-control" id="status" name="status" value="delete">
 
                                                                 <a style="cursor: pointer;"
                                                                     class="dropdown-item d-flex align-items-center gap-1"
@@ -500,7 +501,7 @@
             Swal.fire({
                 icon: 'question',
                 title: 'Anda Yakin?',
-                html: `Menghapus Arsip <b class="text-danger">${archiveCode} - ${archiveName}</b> akan menghapus semua data yang terkait dari sistem secara permanen!`,
+                html: `Apakah Anda yakin ingin menghapus <b class="text-danger">${archiveCode} - ${archiveName}</b>?`,
                 showCancelButton: true,
                 confirmButtonText: 'Delete',
                 customClass: {

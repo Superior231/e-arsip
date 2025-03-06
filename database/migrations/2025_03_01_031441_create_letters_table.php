@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('lampiran')->nullable();
             $table->string('perihal')->nullable();
             $table->string('name');
-            $table->enum('status', ['active', 'inactive', 'rusak', 'hilang'])->default('active');
+            $table->enum('status', ['active', 'rusak', 'hilang', 'delete'])->default('active');
             $table->longText('content')->nullable();;
             $table->text('detail')->nullable();
             $table->date('date');

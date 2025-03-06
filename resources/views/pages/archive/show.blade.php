@@ -218,7 +218,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($archive->letters as $letter)
+                                    @foreach ($archive->letters->where('status', '!=', 'delete') as $letter)
                                         <tr class="align-middle">
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center me-3">
@@ -333,10 +333,11 @@
                                                             </li>
                                                             <li>
                                                                 <form id="deleteLetterForm-{{ $letter->id }}"
-                                                                    action="{{ route('letter.destroy', $letter->id) }}"
-                                                                    method="post" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
+                                                                    action="{{ route('letter.delete', $letter->id) }}"
+                                                                    method="POST" class="d-inline">
+                                                                    @csrf @method('PUT')
+
+                                                                    <input type="hidden" class="form-control" id="status" name="status" value="delete">
 
                                                                     <a style="cursor: pointer;"
                                                                         class="dropdown-item d-flex align-items-center gap-1"

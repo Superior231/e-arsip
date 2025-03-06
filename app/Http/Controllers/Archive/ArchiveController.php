@@ -373,17 +373,19 @@ class ArchiveController extends Controller
         ]);
     }
 
-    public function destroy(string $id)
+
+    public function delete_archive(Request $request, $id)
     {
         $archive = Archive::findOrFail($id);
         $oldCode = $archive->archive_id;
         $oldName = $archive->name;
 
-        if ($archive->status !== 'approve') {
-            $archive->delete();
-    
+        if ($archive->status !== 'approve' && $request->status !== 'approve') {
+            $archive->status = $request->status;
+            $archive->save();
+        
             $description = "Arsip [" . $oldCode . ' - ' . $oldName . "] dihapus oleh " . Auth::user()->name . ".";
-            
+
             if ($archive) {
                 History::create([
                     'type_id' => $archive->id,
@@ -394,13 +396,12 @@ class ArchiveController extends Controller
                     'method' => 'delete',
                     'user_id' => Auth::user()->id,
                 ]);
-    
                 return redirect()->route('archive.index')->with('success', 'Arsip berhasil dihapus!');
             } else {
                 return redirect()->route('archive.index')->with('error', 'Arsip gagal dihapus!');
             }
         } else {
-            return redirect()->route('archive.index')->with('error', 'Arsip tidak dapat dihapus karena sudah diapprove!');
+                return redirect()->route('archive.index')->with('error', 'Opss... terjadi kesalahan!');
         }
     }
 }

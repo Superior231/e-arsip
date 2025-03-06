@@ -52,8 +52,6 @@
                                     </option>
                                     <option value="approve" {{ $archive->status == 'approve' ? 'selected' : '' }}>Approve
                                     </option>
-                                    <option value="inactive" {{ $archive->status == 'inactive' ? 'selected' : '' }}>Inactive
-                                    </option>
                                 </select>
                                 @error('status')
                                     <div class="invalid-feedback">
