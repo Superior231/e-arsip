@@ -55,4 +55,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/print/letter/{no_letter}', [PrintLetterController::class, 'show'])->name('print.letter');
     Route::get('/print/barcode/archive/{archive_id}', [PrintBarcodeArchiveController::class, 'show'])->name('print.barcode.archive');
     Route::get('/print/barcode/letter/{no_letter}', [PrintBarcodeLetterController::class, 'show'])->name('print.barcode.letter');
+    Route::get('/letter/content/{no_letter}', [LetterController::class, 'letter_content'])->name('letter.content');
 });

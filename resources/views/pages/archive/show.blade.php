@@ -322,6 +322,16 @@
                                                                     Print
                                                                 </a>
                                                             </li>
+                                                            @if (!empty($letter->content))
+                                                                <li>
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('letter.content', $letter->no_letter) }}"
+                                                                        target="_blank">
+                                                                        <i class='bx bx-printer fs-5'></i>
+                                                                        Print surat keluar
+                                                                    </a>
+                                                                </li>
+                                                            @endif
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
                                                                     href="{{ route('letter.show', $letter->no_letter) }}">
@@ -351,7 +361,8 @@
                                                                     method="POST" class="d-inline">
                                                                     @csrf @method('PUT')
 
-                                                                    <input type="hidden" class="form-control" id="status" name="status" value="delete">
+                                                                    <input type="hidden" class="form-control"
+                                                                        id="status" name="status" value="delete">
 
                                                                     <a style="cursor: pointer;"
                                                                         class="dropdown-item d-flex align-items-center gap-1"

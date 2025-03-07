@@ -64,7 +64,7 @@
                             <table id="myDataTable" class="table table-striped table-hover" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th class="text-nowrap">File</th>
+                                        <th class="text-center">File</th>
                                         <th class="text-nowrap">Name</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
@@ -74,25 +74,17 @@
                                         <tr class="align-middle">
                                             <td>
                                                 <div class="position-relative d-flex justify-content-center">
-                                                    @if ($document->type === 'image')
-                                                        <div class="image d-flex justify-content-center"
-                                                            style="cursor: pointer;" data-bs-toggle="modal"
-                                                            data-bs-target="#showImageModal"
-                                                            onclick="showImages([{{ json_encode(asset('storage/documents/' . $document->file)) }}])">
+                                                    <div class="image d-flex justify-content-center align-items-center"
+                                                        style="cursor: pointer;">
+                                                        @if ($document->type === 'image')
                                                             <img src="{{ asset('storage/documents/' . $document->file) }}"
                                                                 alt="gambar" class="img-fluid">
-                                                        </div>
-                                                    @elseif (Str::endsWith($document->file, ['.doc', '.docx']))
-                                                        <div class="image d-flex justify-content-center align-items-center"
-                                                            style="cursor: pointer;">
+                                                        @elseif (Str::endsWith($document->file, ['.doc', '.docx']))
                                                             <i class='bx bxs-file-doc text-primary fs-2 text-center'></i>
-                                                        </div>
-                                                    @else
-                                                        <div class="image d-flex justify-content-center align-items-center"
-                                                            style="cursor: pointer;">
+                                                        @else
                                                             <i class='bx bxs-file-pdf text-danger fs-2 text-center'></i>
-                                                        </div>
-                                                    @endif
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td>
@@ -109,7 +101,8 @@
                                                             aria-labelledby="action-{{ $document->id }}">
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="#">
+                                                                    href="{{ asset('storage/documents/' . $document->file) }}"
+                                                                    download="{{ $document->file }}">
                                                                     <i class='bx bx-arrow-to-bottom fs-5'></i>
                                                                     Download
                                                                 </a>
@@ -376,7 +369,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    
+
     <script type="importmap">
         {
             "imports": {

@@ -146,6 +146,7 @@ class LetterController extends Controller
     {
         $letter = Letter::where('no_letter', $no_letter)->firstOrFail();
         $archive = $letter->archive;
+        // $documents = $letter->documents;
         $histories = History::latest()->get();
 
         return view('pages.letter.show', [
@@ -154,6 +155,7 @@ class LetterController extends Controller
             'active' => 'archive',
             'letter' => $letter,
             'archive' => $archive,
+            // 'documents' => $documents,
             'histories' => $histories
         ]);
     }
@@ -384,5 +386,15 @@ class LetterController extends Controller
         } else {
             return redirect()->route('archive.show', $letter->archive->archive_id)->with('error', 'Surat gagal dihapus!');
         }
+    }
+
+    public function letter_content(string $no_letter)
+    {
+        $letter = Letter::where('no_letter', $no_letter)->firstOrFail();
+        
+        return view('pages.print.letter-content', [
+            'letter' => $letter,
+            'title' => $letter->name
+        ]);
     }
 }

@@ -141,9 +141,48 @@
         </div>
     </div>
 
+    @if (!empty($letter->documents))
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nama Dokumen</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($letter->documents as $document)
+                                <tr class="align-middle">
+                                    <td>{{ $document->file }}</td>
+                                    <td>
+                                        <div class="actions d-flex justify-content-center align-items-center">
+                                            <a href="{{ asset('storage/documents/' . $document->file) }}"
+                                                download="{{ $document->file }}"
+                                                class="btn btn-primary d-flex align-items-center justify-content-center">
+                                                <i class="bx bx-arrow-to-bottom fs-4 p-0 m-0"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if (!empty($letter->content))
         <div class="card mt-3">
             <div class="card-body">
+                <div class="d-flex justify-content-end w-100">
+                    <a href="{{ route('letter.content', $letter->no_letter) }}" class="btn btn-primary d-flex align-items-center gap-1" target="_blank">
+                        <i class="bx bx-printer"></i>
+                        Print
+                    </a>
+                </div>
                 <div class="letter">
                     <div class="letter-header d-flex justify-content-between align-items-center gap-2">
                         <div class="logo">
