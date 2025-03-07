@@ -1,3 +1,8 @@
+@php
+    use App\Models\Archive;
+    $archive_pending = Archive::where('status', 'pending')->count();
+@endphp
+
 <nav class="navbar shadow-sm">
     <div class="container-fluid">
         <div class="navbar-brand d-flex align-items-center gap-3">
@@ -7,8 +12,7 @@
         </div>
         <ul class="navbar-nav me-2 me-md-3 d-flex flex-row align-items-center gap-4" id="dropdown">
             <li class="nav-item dropdown mt-0 mt-md-1">
-                <a class="nav-link d-flex align-items-center" href="#"
-                    onclick="toggleNotification(event)">
+                <a class="nav-link d-flex align-items-center" href="#" onclick="toggleNotification(event)">
                     <i class='bx bxs-bell fs-4'></i>
                 </a>
 
@@ -41,7 +45,8 @@
 
                         @if ($histories->isNotEmpty())
                             <div class="notification-footer d-flex justify-content-center align-items-center w-100">
-                                <a href="{{ route('history.index') }}" class="fs-7 text-center text-primary w-100">See all notifications</a>
+                                <a href="{{ route('history.index') }}" class="fs-7 text-center text-primary w-100">See
+                                    all notifications</a>
                             </div>
                         @endif
                     </div>
@@ -68,7 +73,8 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('pengaturan.index') }}">
+                        <a class="dropdown-item d-flex align-items-center gap-2"
+                            href="{{ route('pengaturan.index') }}">
                             <i class='bx bx-cog'></i>
                             Pengaturan
                         </a>
@@ -128,7 +134,8 @@
                 </a>
             </li>
             <li class="{{ $active == 'archive' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center justify-content-between gap-2" onclick="toggleArchive()">
+                <a href="#" class="d-flex align-items-center justify-content-between gap-2"
+                    onclick="toggleArchive()">
                     <div class="d-flex align-items-center gap-2">
                         <i class='bx bxs-archive fs-4'></i>
                         <span class="my-0 py-0">Arsip</span>
@@ -150,6 +157,19 @@
                     <span class="my-0 py-0">History</span>
                 </a>
             </li>
+            @if (Auth::user()->roles === 'superadmin')
+                <li class="{{ $active == 'pending' ? 'active' : '' }}">
+                    <a href="{{ route('archive.pending') }}" class="d-flex justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class='bx bxs-time-five fs-4'></i>
+                            <span class="my-0 py-0">Pending</span>
+                        </div>
+                        <div class="badge rounded-pill bg-danger d-flex align-items-center justify-content-center">
+                            <span>{{ $archive_pending }}</span>
+                        </div>
+                    </a>
+                </li>
+            @endif
             <li class="{{ $active == 'staff' ? 'active' : '' }}">
                 <a href="{{ route('staff.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bxs-group fs-4'></i>
@@ -166,7 +186,8 @@
             <div class="bottom-content position-absolute bottom-0 mb-2 mt-3" style="width: calc(100% - 1px);">
                 <hr class="border-secondary pb-1 mb-1">
                 <li class="{{ $active == 'pengaturan' ? 'active' : '' }}">
-                    <a href="{{ route('pengaturan.index') }}" class="d-flex align-items-center justify-content-between">
+                    <a href="{{ route('pengaturan.index') }}"
+                        class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-2">
                             <i class='bx bxs-cog fs-4'></i>
                             <span class="my-0 py-0">Pengaturan</span>

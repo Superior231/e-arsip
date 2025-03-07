@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('division', DivisionController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('archive', ArchiveController::class);
+    Route::get('/archive-pending', [ArchiveController::class, 'pending_index'])->name('archive.pending');
     Route::put('/archive/delete/{id}', [ArchiveController::class, 'delete_archive'])->name('archive.delete');
 
     Route::get('/letter/create/{archive_id}', [LetterController::class, 'create'])->name('letter.create');
