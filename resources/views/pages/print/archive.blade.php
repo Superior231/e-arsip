@@ -198,7 +198,9 @@
                                             <td>{{ $letter->letter_code }}</td>
                                             <td>{{ $letter->name }}</td>
                                             <td>{{ $letter->status }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($letter->date)->locale('id_ID')->isoFormat('d MMMM Y') }}</td>
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('d F Y') }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
