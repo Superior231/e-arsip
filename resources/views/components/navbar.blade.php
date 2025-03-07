@@ -177,7 +177,7 @@
                 </a>
             </li>
             <li class="{{ $active == 'scan' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center gap-2">
+                <a href="{{ route('scan.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bx-scan fs-4'></i>
                     <span class="my-0 py-0">Scan</span>
                 </a>

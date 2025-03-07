@@ -13,6 +13,7 @@ use App\Http\Controllers\Print\PrintBarcodeArchiveController;
 use App\Http\Controllers\Print\PrintBarcodeLetterController;
 use App\Http\Controllers\Print\PrintLetterController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScanController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -51,10 +52,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/document/{id}', [DocumentController::class, 'update'])->name('document.update');
     Route::put('/document/delete/{id}', [DocumentController::class, 'delete_document'])->name('document.delete');
 
-
     Route::get('/print/archive/{archive_id}', [PrintArchiveController::class, 'show'])->name('print.archive');
     Route::get('/print/letter/{no_letter}', [PrintLetterController::class, 'show'])->name('print.letter');
     Route::get('/print/barcode/archive/{archive_id}', [PrintBarcodeArchiveController::class, 'show'])->name('print.barcode.archive');
     Route::get('/print/barcode/letter/{no_letter}', [PrintBarcodeLetterController::class, 'show'])->name('print.barcode.letter');
     Route::get('/letter/content/{no_letter}', [LetterController::class, 'letter_content'])->name('letter.content');
+
+    Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
 });

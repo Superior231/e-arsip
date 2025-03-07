@@ -85,7 +85,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="side-link {{ $active === 'scan' ? 'active' : '' }}" data-bs-toggle="tooltip"
+                <a href="{{ route('scan.index') }}" class="side-link {{ $active === 'scan' ? 'active' : '' }}" data-bs-toggle="tooltip"
                     data-bs-placement="right" data-bs-title="Scan">
                     <i class='bx bx-scan icon'></i>
                     <span class="nav-text px-0 mx-0">Scan</span>
