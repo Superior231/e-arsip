@@ -250,7 +250,7 @@ class ArchiveController extends Controller
 
                 History::create([
                     'type_id' => $archive->id,
-                    'title' => "Update Status Archive",
+                    'title' => "Update Status Arsip",
                     'name' => $archive->archive_id . ' - ' . $archive->name,
                     'description' => $description . '.',
                     'type' => 'archive',
