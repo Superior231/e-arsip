@@ -22,11 +22,9 @@ use Illuminate\Support\Facades\Route;
 Auth::routes(['register' => false]);
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
-    Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
-    Route::delete('/profile/{id}/delete-avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
     Route::resource('division', DivisionController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('archive', ArchiveController::class);
@@ -45,18 +43,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/faktur', [ArchiveController::class, 'faktur_index'])->name('faktur.index');
     Route::get('/administrasi', [ArchiveController::class, 'administrasi_index'])->name('administrasi.index');
     Route::get('/laporan', [ArchiveController::class, 'laporan_index'])->name('laporan.index');
-    Route::resource('profile', ProfileController::class);
     Route::resource('staff', StaffController::class);
 
     Route::post('/document', [DocumentController::class, 'store'])->name('document.store');
     Route::put('/document/{id}', [DocumentController::class, 'update'])->name('document.update');
     Route::put('/document/delete/{id}', [DocumentController::class, 'delete_document'])->name('document.delete');
+});
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'dashboardUser'])->name('dashboard.user');
+    Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
+    Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
+    Route::resource('profile', ProfileController::class);
+    Route::delete('/profile/{id}/delete-avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
 
     Route::get('/print/archive/{archive_id}', [PrintArchiveController::class, 'show'])->name('print.archive');
     Route::get('/print/letter/{no_letter}', [PrintLetterController::class, 'show'])->name('print.letter');
     Route::get('/print/barcode/archive/{archive_id}', [PrintBarcodeArchiveController::class, 'show'])->name('print.barcode.archive');
     Route::get('/print/barcode/letter/{no_letter}', [PrintBarcodeLetterController::class, 'show'])->name('print.barcode.letter');
     Route::get('/letter/content/{no_letter}', [LetterController::class, 'letter_content'])->name('letter.content');
-
-    Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
 });

@@ -11,47 +11,51 @@
             <span class="fw-semibold my-0 py-0">{{ $navTitle }}</span>
         </div>
         <ul class="navbar-nav me-2 me-md-3 d-flex flex-row align-items-center gap-4" id="dropdown">
-            <li class="nav-item dropdown mt-0 mt-md-1">
-                <a class="nav-link d-flex align-items-center" href="#" onclick="toggleNotification(event)">
-                    <i class='bx bxs-bell fs-4'></i>
-                </a>
+            @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'superadmin')
+                <li class="nav-item dropdown mt-0 mt-md-1">
+                    <a class="nav-link d-flex align-items-center" href="#" onclick="toggleNotification(event)">
+                        <i class='bx bxs-bell fs-4'></i>
+                    </a>
 
-                <div class="notification-container text-dark py-2" id="notificationContainer">
-                    <div class="notification text-dark w-100">
-                        @forelse ($histories->take(5) as $item)
-                            @php
-                                $bgClass = match ($item->method) {
-                                    'create' => 'bg-success text-light',
-                                    'update' => 'bg-warning',
-                                    'update status' => 'bg-primary text-light',
-                                    'update status, update' => 'bg-dark text-light',
-                                    'delete' => 'bg-danger text-light',
-                                    default => 'bg-secondary text-dark',
-                                };
-                            @endphp
-                            <div class="notification-header d-flex justify-content-between px-3 {{ $bgClass }}">
-                                <span class="fs-7">{{ $item->title }}</span>
-                                <span class="fs-7">{{ $item->created_at->format('d M Y H:i') }} WIB</span>
-                            </div>
-                            <div class="notification-body d-flex flex-column px-3 gap-0 mb-2">
-                                <p class="my-0 py-0 fs-6 fw-bold">{{ $item->name }}</p>
-                                <p class="my-0 py-0 fs-7 text-break">{{ $item->description }}</p>
-                            </div>
-                        @empty
-                            <div class="d-flex justify-content-center align-items-center w-100">
-                                <p class="text-center my-0 py-0">Belum ada notifikasi</p>
-                            </div>
-                        @endforelse
+                    <div class="notification-container text-dark py-2" id="notificationContainer">
+                        <div class="notification text-dark w-100">
+                            @forelse ($histories->take(5) as $item)
+                                @php
+                                    $bgClass = match ($item->method) {
+                                        'create' => 'bg-success text-light',
+                                        'update' => 'bg-warning',
+                                        'update status' => 'bg-primary text-light',
+                                        'update status, update' => 'bg-dark text-light',
+                                        'delete' => 'bg-danger text-light',
+                                        default => 'bg-secondary text-dark',
+                                    };
+                                @endphp
+                                <div
+                                    class="notification-header d-flex justify-content-between px-3 {{ $bgClass }}">
+                                    <span class="fs-7">{{ $item->title }}</span>
+                                    <span class="fs-7">{{ $item->created_at->format('d M Y H:i') }} WIB</span>
+                                </div>
+                                <div class="notification-body d-flex flex-column px-3 gap-0 mb-2">
+                                    <p class="my-0 py-0 fs-6 fw-bold">{{ $item->name }}</p>
+                                    <p class="my-0 py-0 fs-7 text-break">{{ $item->description }}</p>
+                                </div>
+                            @empty
+                                <div class="d-flex justify-content-center align-items-center w-100">
+                                    <p class="text-center my-0 py-0">Belum ada notifikasi</p>
+                                </div>
+                            @endforelse
 
-                        @if ($histories->isNotEmpty())
-                            <div class="notification-footer d-flex justify-content-center align-items-center w-100">
-                                <a href="{{ route('history.index') }}" class="fs-7 text-center text-primary w-100">See
-                                    all notifications</a>
-                            </div>
-                        @endif
+                            @if ($histories->isNotEmpty())
+                                <div class="notification-footer d-flex justify-content-center align-items-center w-100">
+                                    <a href="{{ route('history.index') }}"
+                                        class="fs-7 text-center text-primary w-100">See
+                                        all notifications</a>
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            @endif
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink"
                     role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -115,67 +119,78 @@
 
     <div class="offcanvas-body mx-0 px-0">
         <ul class="list-unstyled">
-            <li class="{{ $active == 'dashboard' ? 'active' : '' }}">
-                <a href="{{ route('index') }}" class="d-flex align-items-center gap-2">
-                    <i class='bx bxs-home fs-4'></i>
-                    <span class="my-0 py-0">Dashboard</span>
-                </a>
-            </li>
-            <li class="{{ $active == 'division' ? 'active' : '' }}">
-                <a href="{{ route('division.index') }}" class="d-flex align-items-center gap-2">
-                    <i class='bx bxs-label fs-4'></i>
-                    <span class="my-0 py-0">Divisi</span>
-                </a>
-            </li>
-            <li class="{{ $active == 'category' ? 'active' : '' }}">
-                <a href="{{ route('category.index') }}" class="d-flex align-items-center gap-2">
-                    <i class='bx bxs-purchase-tag fs-4'></i>
-                    <span class="my-0 py-0">Kategori</span>
-                </a>
-            </li>
-            <li class="{{ $active == 'archive' ? 'active' : '' }}">
-                <a href="#" class="d-flex align-items-center justify-content-between gap-2"
-                    onclick="toggleArchive()">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class='bx bxs-archive fs-4'></i>
-                        <span class="my-0 py-0">Arsip</span>
-                    </div>
-                    <i class='bx bx-chevron-right fs-3' id="archiveIconMobile"></i>
-                </a>
-            </li>
-            <ul class="archive-menu-mobile d-none d-flex flex-column gap-2 my-2 ms-2" style="height: 100%;">
-                <a href="{{ route('archive.index') }}" class="text-decoration-none text-secondary">💠 Semua</a>
-                <a href="#" class="text-decoration-none text-secondary">💠 Surat Masuk</a>
-                <a href="#" class="text-decoration-none text-secondary">💠 Surat Keluar</a>
-                <a href="#" class="text-decoration-none text-secondary">💠 Administrasi</a>
-                <a href="#" class="text-decoration-none text-secondary">💠 Faktur</a>
-                <a href="#" class="text-decoration-none text-secondary">💠 Laporan</a>
-            </ul>
-            <li class="{{ $active == 'history' ? 'active' : '' }}">
-                <a href="{{ route('history.index') }}" class="d-flex align-items-center gap-2">
-                    <i class='bx bx-history fs-3'></i>
-                    <span class="my-0 py-0">History</span>
-                </a>
-            </li>
-            @if (Auth::user()->roles === 'superadmin')
-                <li class="{{ $active == 'pending' ? 'active' : '' }}">
-                    <a href="{{ route('archive.pending') }}" class="d-flex justify-content-between">
+            @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'superadmin')
+                <li class="{{ $active == 'dashboard' ? 'active' : '' }}">
+                    <a href="{{ route('index') }}" class="d-flex align-items-center gap-2">
+                        <i class='bx bxs-home fs-4'></i>
+                        <span class="my-0 py-0">Dashboard</span>
+                    </a>
+                </li>
+                <li class="{{ $active == 'division' ? 'active' : '' }}">
+                    <a href="{{ route('division.index') }}" class="d-flex align-items-center gap-2">
+                        <i class='bx bxs-label fs-4'></i>
+                        <span class="my-0 py-0">Divisi</span>
+                    </a>
+                </li>
+                <li class="{{ $active == 'category' ? 'active' : '' }}">
+                    <a href="{{ route('category.index') }}" class="d-flex align-items-center gap-2">
+                        <i class='bx bxs-purchase-tag fs-4'></i>
+                        <span class="my-0 py-0">Kategori</span>
+                    </a>
+                </li>
+                <li class="{{ $active == 'archive' ? 'active' : '' }}">
+                    <a href="#" class="d-flex align-items-center justify-content-between gap-2"
+                        onclick="toggleArchive()">
                         <div class="d-flex align-items-center gap-2">
-                            <i class='bx bxs-time-five fs-4'></i>
-                            <span class="my-0 py-0">Pending</span>
+                            <i class='bx bxs-archive fs-4'></i>
+                            <span class="my-0 py-0">Arsip</span>
                         </div>
-                        <div class="badge rounded-pill bg-danger d-flex align-items-center justify-content-center">
-                            <span>{{ $archive_pending }}</span>
-                        </div>
+                        <i class='bx bx-chevron-right fs-3' id="archiveIconMobile"></i>
+                    </a>
+                </li>
+                <ul class="archive-menu-mobile d-none d-flex flex-column gap-2 my-2 ms-2" style="height: 100%;">
+                    <a href="{{ route('archive.index') }}" class="text-decoration-none text-secondary">💠 Semua</a>
+                    <a href="#" class="text-decoration-none text-secondary">💠 Surat Masuk</a>
+                    <a href="#" class="text-decoration-none text-secondary">💠 Surat Keluar</a>
+                    <a href="#" class="text-decoration-none text-secondary">💠 Administrasi</a>
+                    <a href="#" class="text-decoration-none text-secondary">💠 Faktur</a>
+                    <a href="#" class="text-decoration-none text-secondary">💠 Laporan</a>
+                </ul>
+                <li class="{{ $active == 'history' ? 'active' : '' }}">
+                    <a href="{{ route('history.index') }}" class="d-flex align-items-center gap-2">
+                        <i class='bx bx-history fs-3'></i>
+                        <span class="my-0 py-0">History</span>
+                    </a>
+                </li>
+                @if (Auth::user()->roles === 'superadmin')
+                    <li class="{{ $active == 'pending' ? 'active' : '' }}">
+                        <a href="{{ route('archive.pending') }}" class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class='bx bxs-time-five fs-4'></i>
+                                <span class="my-0 py-0">Pending</span>
+                            </div>
+                            <div class="badge rounded-pill bg-danger d-flex align-items-center justify-content-center">
+                                <span>{{ $archive_pending }}</span>
+                            </div>
+                        </a>
+                    </li>
+                @endif
+                <li class="{{ $active == 'staff' ? 'active' : '' }}">
+                    <a href="{{ route('staff.index') }}" class="d-flex align-items-center gap-2">
+                        <i class='bx bxs-group fs-4'></i>
+                        <span class="my-0 py-0">Staff</span>
                     </a>
                 </li>
             @endif
-            <li class="{{ $active == 'staff' ? 'active' : '' }}">
-                <a href="{{ route('staff.index') }}" class="d-flex align-items-center gap-2">
-                    <i class='bx bxs-group fs-4'></i>
-                    <span class="my-0 py-0">Staff</span>
-                </a>
-            </li>
+
+            @if (Auth::user()->roles === 'user')
+                <li class="{{ $active == 'dashboard' ? 'active' : '' }}">
+                    <a href="{{ route('dashboard.user') }}" class="d-flex align-items-center gap-2">
+                        <i class='bx bxs-home fs-4'></i>
+                        <span class="my-0 py-0">Dashboard</span>
+                    </a>
+                </li>
+            @endif
             <li class="{{ $active == 'scan' ? 'active' : '' }}">
                 <a href="{{ route('scan.index') }}" class="d-flex align-items-center gap-2">
                     <i class='bx bx-scan fs-4'></i>

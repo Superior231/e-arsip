@@ -33,4 +33,13 @@ class HomeController extends Controller
             'histories' => $histories
         ]);
     }
+
+    public function dashboardUser()
+    {
+        return view('pages.dashboard-user', [
+            'title' => 'Putra Panggil Jaya',
+            'navTitle' => 'Dashboard',
+            'active' => 'dashboard',
+        ]);
+    }
 }
