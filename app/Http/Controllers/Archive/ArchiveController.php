@@ -199,6 +199,50 @@ class ArchiveController extends Controller
 
     public function update(Request $request, string $id)
     {
+        $archive = Archive::findOrFail($id);
+        $isUpdateStatus = false;
+        $isUpdate = false;
+        $updates = [];
+
+        // Simpan nilai lama sebelum update
+        $oldDivision = $archive->division;
+        $oldCategory = $archive->category;
+        $oldId = $archive->archive_id;
+        $oldCode = $archive->archive_id . '/' . $archive->archive_code;
+        $oldName = $archive->name;
+        $oldStatus = $archive->status;
+        $oldImage = $archive->image;
+        $oldDetail = $archive->detail;
+        $oldDate = $archive->date;
+
+        // Jika hanya status yang diupdate
+        if ($request->has('status')) {
+            if (Auth::user()->roles == 'superadmin' && $archive->status !== $request->status) {
+                $updates[] = "Status arsip dari '$oldStatus' menjadi '$request->status'";
+                $archive->status = $request->status;
+                $archive->save();
+
+                $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
+                if (!empty($updates)) {
+                    $description .= "\n" . implode(", \n", $updates);
+                }
+
+                History::create([
+                    'type_id' => $archive->id,
+                    'title' => "Update Status Archive",
+                    'name' => $archive->archive_id . ' - ' . $archive->name,
+                    'description' => $description . '.',
+                    'type' => 'archive',
+                    'method' => 'update status',
+                    'user_id' => Auth::user()->id,
+                ]);
+
+                return redirect()->route('archive.show', [$archive->archive_id])->with('success', 'Status arsip berhasil diperbarui!');
+            }
+        } else {
+            return redirect()->route('archive.show', [$archive->archive_id])->with('error', 'Opss... terjadi kesalahan!');
+        }
+
         $request->validate([
             'name' => 'required|max:255',
             'category_id' => 'required',
@@ -216,26 +260,10 @@ class ArchiveController extends Controller
             'image.max' => 'Ukuran file maksimal 10MB!',
         ]);
 
-        $archive = Archive::findOrFail($id);
-
-        // Simpan nilai lama sebelum update
-        $oldDivision = $archive->division;
-        $oldCategory = $archive->category;
-        $oldId = $archive->archive_id;
-        $oldCode = $archive->archive_id . '/' . $archive->archive_code;
-        $oldName = $archive->name;
-        $oldStatus = $archive->status;
-        $oldImage = $archive->image;
-        $oldDetail = $archive->detail;
-        $oldDate = $archive->date;
 
         // Ambil data division dan category baru
         $newDivision = Division::findOrFail($request->division_id);
         $newCategory = Category::findOrFail($request->category_id);
-
-        $isUpdateStatus = false;
-        $isUpdate = false;
-        $updates = [];
 
         if ($oldDivision->id !== $newDivision->id) {
             $updates[] = "Divisi dari '{$oldDivision->name} ({$oldDivision->place})' menjadi '{$newDivision->name} ({$newDivision->place})'";
@@ -343,7 +371,7 @@ class ArchiveController extends Controller
         $archive = Archive::where('archive_id', $archive_id)->with('letters')->firstOrFail();
         $archives = Archive::where('archive_id', $archive_id)->firstOrFail();
         $histories = History::latest()->get();
-        $history_letter = $histories->whereIn('type_id', $archives->id);
+        $history_letter = $histories->where('type', 'letter')->whereIn('type_id', $archives->id);
 
         return view('pages.archive.show', [
             'title' => 'Detail Arsip',

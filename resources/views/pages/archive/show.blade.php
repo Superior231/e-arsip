@@ -174,6 +174,15 @@
                         <div
                             class="actions d-flex flex-column flex-md-row gap-2 justify-content-between align-items-center mb-3 w-100">
                             <div class="print-select d-flex flex-column flex-md-row align-items-center gap-2">
+                                @if (Auth::user()->roles === 'superadmin')
+                                    <a style="cursor: pointer;"
+                                        class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
+                                        data-bs-toggle="modal" data-bs-target="#editStatusModal"
+                                        onclick="editStatus('{{ $archive->id }}', '{{ $archive->status }}')">
+                                        <i class='bx bx-loader-circle'></i>
+                                        Status
+                                    </a>
+                                @endif
                                 <a href="#"
                                     class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
                                     id="printSelectLetterList">
@@ -207,7 +216,7 @@
                                         </th>
                                         <th class="text-center">Foto</th>
                                         <th class="text-nowrap">No Surat</th>
-                                        <th class="text-nowrap" style="min-width: 200px;">Kode Surat</th>
+                                        <th class="text-nowrap" style="min-width: 150px;">Kode Surat</th>
                                         @if ($archive->category->name == 'Faktur')
                                             <th class="text-nowrap" style="min-width: 150px;">Inventory</th>
                                         @endif
@@ -271,7 +280,9 @@
                                                 </td>
                                             @endif
                                             <td><span>{{ $letter->name }}</span></td>
-                                            <td><span>{{ $letter->type }}</span></td>
+                                            <td>
+                                                <span>{{ $letter->type == 'letter_in' ? 'Surat Masuk' : 'Surat Keluar' }}</span>
+                                            </td>
                                             <td>
                                                 <span class="d-none">{{ $letter->date }}</span>
                                                 <span>
@@ -556,6 +567,49 @@
             </div>
         </div>
     </div>
+
+    @if (Auth::user()->roles === 'superadmin')
+        <div class="modal fade" id="editStatusModal" tabindex="-1" aria-labelledby="editStatusModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="editStatusModalLabel">Edit Status</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="editStatusForm" action="" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1" style="width: 45px;">
+                                        <i class='bx bx-loader-circle'></i>
+                                    </span>
+                                    <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                        name="status">
+                                        <option value="pending" id="selectPending">Pending</option>
+                                        <option value="approve" id="selectApprove">Approve</option>
+                                    </select>
+                                    @error('status')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
 
 @push('scripts')
@@ -591,6 +645,18 @@
                         <img src="${imageUrl}" alt="image">`;
                 });
             }
+        }
+
+        function editStatus(id, status) {
+            $('#archive_id').val(id);
+            $('#status').val(status);
+            if (status === 'approve') {
+                $('#selectApprove').attr('selected', true);
+            } else {
+                $('#selectPending').attr('selected', true);
+            }
+            $('#editStatusForm').attr('action', "{{ route('archive.update', '') }}" + '/' + id);
+            $('#editStatusModal').modal('show');
         }
 
         function showDetailLetter(
