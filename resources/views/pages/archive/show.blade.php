@@ -209,8 +209,7 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <div class="d-flex justify-content-center align-items-center"
-                                                style="width: 30px;">
+                                            <div class="d-flex justify-content-center align-items-center">
                                                 <input type="checkbox" id="checkAll">
                                             </div>
                                         </th>
@@ -282,7 +281,7 @@
                                             @endif
                                             <td><span>{{ $letter->name }}</span></td>
                                             <td>
-                                                <span>{{ $letter->type == 'letter_in' ? 'Surat Masuk' : 'Surat Keluar' }}</span>
+                                                <span class="text-nowrap">{{ $letter->type == 'letter_in' ? 'Surat Masuk' : 'Surat Keluar' }}</span>
                                             </td>
                                             <td>
                                                 <span class="d-none">{{ $letter->date }}</span>
@@ -314,6 +313,15 @@
 
                                                             <hr class="dropdown-divider py-0 my-0">
 
+                                                            @if ($letter->type == 'letter_in')
+                                                                <li>
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('letter.reply', $letter->no_letter) }}">
+                                                                        <i class='bx bx-share bx-flip-horizontal fs-5'></i>
+                                                                        Balas
+                                                                    </a>
+                                                                </li>
+                                                            @endif
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-1"
                                                                     href="{{ route('print.letter', $letter->no_letter) }}"
@@ -715,7 +723,7 @@
             Swal.fire({
                 icon: 'question',
                 title: 'Anda Yakin?',
-                html: `Menghapus surat <b class="text-danger">${noLetter} - ${letterName}</b> akan menghapus data dari sistem secara permanen!`,
+                html: `Apakah Anda yakin ingin menghapus <b class="text-danger">${noLetter} - ${letterName}</b>?`,
                 showCancelButton: true,
                 confirmButtonText: 'Delete',
                 customClass: {

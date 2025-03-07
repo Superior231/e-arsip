@@ -145,17 +145,17 @@ class LetterController extends Controller
     public function show(string $no_letter)
     {
         $letter = Letter::where('no_letter', $no_letter)->firstOrFail();
+        $letter_reply = Letter::where('letter_id', $letter->id)->get();
         $archive = $letter->archive;
-        // $documents = $letter->documents;
         $histories = History::latest()->get();
 
         return view('pages.letter.show', [
             'title' => 'Detail Surat',
             'navTitle' => 'Detail Surat',
             'active' => 'archive',
+            'letter_reply' => $letter_reply,
             'letter' => $letter,
             'archive' => $archive,
-            // 'documents' => $documents,
             'histories' => $histories
         ]);
     }
@@ -395,6 +395,37 @@ class LetterController extends Controller
         return view('pages.print.letter-content', [
             'letter' => $letter,
             'title' => $letter->name
+        ]);
+    }
+
+    public function letter_reply(String $no_letter)
+    {
+        $letter = Letter::where('no_letter', $no_letter)->with('archive')->firstOrFail();
+        $archive = $letter->archive;
+        $lastLetter = $archive->letters()->orderBy('no_letter', 'DESC')->first();
+        $lastNumber = $lastLetter ? (int) last(explode('.', $lastLetter->no_letter)) : 0;
+        $newNumber = sprintf('%03d', $lastNumber + 1);
+        $newNoLetter = $archive->archive_id . '.' . $newNumber;
+        $letter_code = $newNoLetter . '/' . $archive->division->name . '/' . $archive->division->place;
+
+        $letter_id = $letter->id;
+
+        $documents = $letter->documents;
+        $histories = History::latest()->get();
+        $items = Item::latest()->get();
+
+        return view('pages.letter.create', [
+            'title' => 'Balas Surat - ' . $letter->name,
+            'navTitle' => 'Balas Surat',
+            'active' => 'archive',
+            'letter' => $letter,
+            'no_letter' => $newNoLetter,
+            'letter_code' => $letter_code,
+            'letter_id' => $letter_id,
+            'archive' => $archive,
+            'documents' => $documents,
+            'histories' => $histories,
+            'items' => $items
         ]);
     }
 }

@@ -45,6 +45,7 @@
             <input type="hidden" class="form-control" id="archive_id" name="archive_id" value="{{ $archive->id }}">
             <input type="hidden" class="form-control" id="no_letter" name="no_letter" value="{{ $no_letter }}">
             <input type="hidden" class="form-control" id="letterCodeOut" name="letter_code" value="{{ $letter_code }}">
+            <input type="hidden" class="form-control" name="letter_id" value="{{ $letter_id ?? '' }}">
 
             <div class="card">
                 <div class="card-body">
@@ -176,7 +177,7 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
+            <div class="card mt-3 d-none" id="letterContent">
                 <div class="card-body">
                     <h4 class="card-title">Isi Surat</h4>
                     <hr class="bg-secondary">
@@ -210,6 +211,7 @@
             const letterCodeContainer = document.getElementById("letterCodeContainer");
             const letterCodeIn = document.getElementById("letterCodeIn");
             const letterCodeOut = document.getElementById("letterCodeOut");
+            const letterContent = document.getElementById("letterContent");
 
             typeSelect.addEventListener("change", function() {
                 if (this.value === "letter_in") {
@@ -217,11 +219,13 @@
                     letterCodeContainer.classList.add("d-block");
                     letterCodeIn.setAttribute('name', 'letter_code');
                     letterCodeOut.setAttribute('name', '');
+                    letterContent.classList.add("d-none");
                 } else {
                     letterCodeContainer.classList.remove("d-block");
                     letterCodeContainer.classList.add("d-none");
                     letterCodeIn.setAttribute('name', '');
                     letterCodeOut.setAttribute('name', 'letter_code');
+                    letterContent.classList.remove("d-none");
                 }
             });
         });

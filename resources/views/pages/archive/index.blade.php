@@ -79,7 +79,7 @@
                         <thead>
                             <tr>
                                 <th>
-                                    <div class="d-flex justify-content-center align-items-center" style="max-width: 30px;">
+                                    <div class="d-flex justify-content-center align-items-center">
                                         <input type="checkbox" id="checkAll">
                                     </div>
                                 </th>

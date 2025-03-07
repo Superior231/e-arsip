@@ -219,9 +219,6 @@
                                     name="status">
                                     <option value="active" {{ $letter->status == 'active' ? 'selected' : '' }}>Active
                                     </option>
-                                    <option value="inactive" {{ $letter->status == 'inactive' ? 'selected' : '' }}>
-                                        Inactive
-                                    </option>
                                     <option value="rusak" {{ $letter->status == 'rusak' ? 'selected' : '' }}>Rusak
                                     </option>
                                     <option value="hilang" {{ $letter->status == 'hilang' ? 'selected' : '' }}>Hilang
@@ -243,7 +240,6 @@
                                 </span>
                                 <select class="form-select @error('type') is-invalid @enderror" id="type"
                                     type="type" name="type" required>
-                                    <option value="">Pilih</option>
                                     <option value="letter_in" {{ $letter->type == 'letter_in' ? 'selected' : '' }}>Surat
                                         Masuk</option>
                                     <option value="letter_out" {{ $letter->type == 'letter_out' ? 'selected' : '' }}>Surat
@@ -286,7 +282,7 @@
                 </div>
             </div>
 
-            <div class="card mt-3">
+            <div class="card mt-3" id="letterContent">
                 <div class="card-body">
                     <h4 class="card-title">Isi Surat</h4>
                     <hr class="bg-secondary">
@@ -393,6 +389,15 @@
             tags: false,
             placeholder: "Select item",
             allowClear: true
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const typeSelect = document.getElementById("type");
+            const letterContent = document.getElementById("letterContent");
+
+            typeSelect.addEventListener("change", function() {
+                letterContent.classList.toggle("d-none", this.value !== "letter_out");
+            });
         });
 
         function editDocument(id, file) {
