@@ -260,6 +260,7 @@
                                                     data-bs-toggle="modal" data-bs-target="#detailLetterModal"
                                                     onclick="showDetailLetter(
                                                     '{{ $letter->status }}',
+                                                    '{{ $letter->type }}',
                                                     '{{ $letter->no_letter }}',
                                                     '{{ $letter->letter_code }}',
                                                     '{{ $letter->item ? $letter->item->inventory->name : '' }}',
@@ -477,6 +478,17 @@
                                     <h5 id="detailLetterCode"></h5>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <h5>Type Surat</h5>
+                                </td>
+                                <td>
+                                    <h5>&nbsp;:&nbsp;</h5>
+                                </td>
+                                <td>
+                                    <h5 id="detailLetterType"></h5>
+                                </td>
+                            </tr>
                             @if ($archive->category->name === 'Faktur')
                                 <tr>
                                     <td>
@@ -660,11 +672,12 @@
         }
 
         function showDetailLetter(
-            letterStatus, noLetter, letterCode, inventory, item,
+            letterStatus, letterType, noLetter, letterCode, inventory, item,
             letterName, letterDate, letterDetail) {
             $('#detailLetterStatus').text(letterStatus);
             $('#detailNoLetter').text(noLetter);
             $('#detailLetterCode').text(letterCode);
+            $('#detailLetterType').text(letterType === 'letter_in' ? 'Surat Masuk' : 'Surat Keluar');
             $('#detailInventory').text(inventory);
             $('#detailItem').text(item);
             $('#detailLetterName').text(letterName);

@@ -193,8 +193,10 @@ class LetterController extends Controller
         $letter = Letter::findOrFail($no_letter);
 
         $oldLetterCode = $letter->letter_code;
-        $oldItemId = $letter->item_id;
-        $oldItemName = '[' . $letter->item->inventory->name . ' => ' . $letter->item->name . ']';
+        if ($letter->item_id !== null) {
+            $oldItemId = $letter->item_id;
+            $oldItemName = '[' . $letter->item->inventory->name . ' => ' . $letter->item->name . ']';
+        }
         $oldLetterName = $letter->name;
         $oldLampiran = $letter->lampiran;
         $oldPerihal = $letter->perihal;
@@ -206,7 +208,9 @@ class LetterController extends Controller
         $oldFile = $letter->file;
 
         $letter->letter_code = $request->letter_code;
-        $letter->item_id = $request->item_id;
+        if ($letter->item_id !== null) {
+            $letter->item_id = $request->item_id;
+        }
         $letter->name = $request->name;
         $letter->lampiran = $request->lampiran;
         $letter->perihal = $request->perihal;
@@ -216,8 +220,10 @@ class LetterController extends Controller
         $letter->detail = $request->detail;
         $letter->date = $request->date;
 
-        $newItem = Item::find($request->item_id);
-        $newItemName = $newItem ? '[' . $newItem->inventory->name . ' => ' . $newItem->name . ']' : $oldItemId;
+        if ($letter->item_id !== null) {
+            $newItem = Item::find($request->item_id);
+            $newItemName = $newItem ? '[' . $newItem->inventory->name . ' => ' . $newItem->name . ']' : $oldItemId;
+        }
 
         $letter->save();
 
@@ -233,9 +239,11 @@ class LetterController extends Controller
             $updates[] = "Type surat dari '$oldType' menjadi '$request->type'";
             $isUpdate = true;
         }
-        if ($oldItemId != $request->item_id) {
-            $updates[] = "Inventory dari '$oldItemName' menjadi '$newItemName'";
-            $isUpdate = true;
+        if ($letter->item_id !== null) {
+            if ($oldItemId != $request->item_id) {
+                $updates[] = "Inventory dari '$oldItemName' menjadi '$newItemName'";
+                $isUpdate = true;
+            }
         }
         if ($oldLetterName !== $request->name) {
             $updates[] = "Nama surat dari '$oldLetterName' menjadi '$request->name'";

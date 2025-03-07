@@ -3,6 +3,7 @@
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.css">
 
     <style>
         .select2-selection.select2-selection--single.select2-selection--clearable {
@@ -292,6 +293,14 @@
                 </div>
             </div>
 
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4 class="card-title">Isi Surat</h4>
+                    <hr class="bg-secondary">
+                    <textarea name="content" id="content">{{ $letter->content }}</textarea>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-end gap-2 mt-3">
                 <a href="{{ route('archive.index') }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Save</button>
@@ -367,6 +376,16 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.js",
+                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.2/"
+            }
+        }
+    </script>
+    <script type="module" src="{{ url('assets/js/ckeditor.js') }}"></script>
 
     <script>
         $(document).ready(function() {

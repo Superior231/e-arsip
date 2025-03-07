@@ -140,4 +140,45 @@
             </div>
         </div>
     </div>
+
+    @if (!empty($letter->content))
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="letter">
+                    <div class="letter-header d-flex justify-content-between align-items-center gap-2">
+                        <div class="logo">
+                            <img src="{{ asset('assets/img/logo_ppj.png') }}" alt="Logo" style="width: 120px">
+                        </div>
+                        <div class="letter-header-title d-flex flex-column align-items-center">
+                            <h4 class="fw-bold">CV PUTRA PANGGIL JAYA</h4>
+                            <span class="fw-bold text-center">Jalan Kolonel Sugiono No.15 Slawi Kulon, Slawi</span>
+                            <span class="fw-bold">Email : ppj.slawi.pos@gmail.com</span>
+                        </div>
+                        <div class="logo opacity-0">
+                            <img src="{{ asset('assets/img/logo_ppj.png') }}" alt="Logo" style="width: 120px">
+                        </div>
+                    </div>
+                    <hr class="bg-secondary border-2">
+                    <div class="letter-body">
+                        <div class="d-flex flex-column align-items-center justify-content-center mb-4">
+                            <span class="fw-bold"><u>SURAT {{ strtoupper($letter->archive->category->name) }}</u></span>
+                            <span>No: {{ $letter->letter_code }}</span>
+                        </div>
+                        {!! $letter->content !!}
+                    </div>
+                    <div class="letter-footer d-flex justify-content-end mt-4">
+                        <div class="d-flex flex-column aliign-items-start">
+                            <span>Slawi, {{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('d F Y') }}</span>
+                            <span>Mengetahui,</span>
+                            <span>Pimpinan CV Putra Panggil Jaya</span>
+                            <div class="ttd" style="height: 70px;">
+
+                            </div>
+                            <span>Yugie Hermawan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
