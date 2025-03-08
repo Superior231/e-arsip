@@ -176,7 +176,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($letter->documents as $document)
+                            @foreach ($letter->documents->where('status', 'active') as $document)
                                 <tr class="align-middle">
                                     <td>{{ $document->file }}</td>
                                     <td>
