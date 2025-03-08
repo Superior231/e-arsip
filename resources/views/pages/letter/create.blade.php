@@ -34,6 +34,9 @@
     <ol class="breadcrumb py-0 my-0 mb-3">
         <a href="{{ route('archive.index') }}" class="breadcrumb-items">Arsip</a>
         <a href="{{ route('archive.show', $archive->archive_id) }}" class="breadcrumb-items">{{ $archive->archive_id }}</a>
+        @if (!empty($letter_id))
+            <a href="{{ route('letter.show', $letter->no_letter) }}" class="breadcrumb-items">{{ $letter->no_letter }}</a>
+        @endif
         <a href="" class="breadcrumb-items active">{{ $navTitle }}</a>
     </ol>
     <!-- Breadcrumb End -->
