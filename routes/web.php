@@ -40,6 +40,9 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/letter/reply/{no_letter}', [LetterController::class, 'letter_reply'])->name('letter.reply');
     Route::get('/letter/inventory/{no_letter}', [ArchiveController::class, 'inventory_detail'])->name('inventory.detail');
 
+    Route::get('/surat-masuk', [LetterController::class, 'letterIn_index'])->name('letterIn.index');
+    Route::get('/surat-keluar', [LetterController::class, 'letterOut_index'])->name('letterOut.index');
+
     Route::get('/faktur', [ArchiveController::class, 'faktur_index'])->name('faktur.index');
     Route::get('/administrasi', [ArchiveController::class, 'administrasi_index'])->name('administrasi.index');
     Route::get('/laporan', [ArchiveController::class, 'laporan_index'])->name('laporan.index');

@@ -150,11 +150,11 @@
                 </li>
                 <ul class="archive-menu-mobile d-none d-flex flex-column gap-2 my-2 ms-2" style="height: 100%;">
                     <a href="{{ route('archive.index') }}" class="text-decoration-none text-secondary">💠 Semua</a>
-                    <a href="#" class="text-decoration-none text-secondary">💠 Surat Masuk</a>
-                    <a href="#" class="text-decoration-none text-secondary">💠 Surat Keluar</a>
-                    <a href="#" class="text-decoration-none text-secondary">💠 Administrasi</a>
-                    <a href="#" class="text-decoration-none text-secondary">💠 Faktur</a>
-                    <a href="#" class="text-decoration-none text-secondary">💠 Laporan</a>
+                    <a href="{{ route('letterIn.index') }}" class="text-decoration-none text-secondary">💠 Surat Masuk</a>
+                    <a href="{{ route('letterOut.index') }}" class="text-decoration-none text-secondary">💠 Surat Keluar</a>
+                    <a href="{{ route('administrasi.index') }}" class="text-decoration-none text-secondary">💠 Administrasi</a>
+                    <a href="{{ route('faktur.index') }}" class="text-decoration-none text-secondary">💠 Faktur</a>
+                    <a href="{{ route('laporan.index') }}" class="text-decoration-none text-secondary">💠 Laporan</a>
                 </ul>
                 <li class="{{ $active == 'history' ? 'active' : '' }}">
                     <a href="{{ route('history.index') }}" class="d-flex align-items-center gap-2">

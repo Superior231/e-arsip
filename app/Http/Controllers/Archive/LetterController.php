@@ -16,6 +16,42 @@ use Intervention\Image\Facades\Image;
 
 class LetterController extends Controller
 {
+    public function letterIn_index()
+    {
+        $letters = Letter::where('type', 'letter_in')->latest()->get();
+        $histories = History::latest()->get();
+        $history_letter = $histories->where('type', 'letter_in');
+        
+        return view('pages.letter.index', [
+            'title' => 'Surat Masuk - Putra Panggil Jaya',
+            'navTitle' => 'Surat Masuk',
+            'tableTitle' => 'Daftar Surat Masuk',
+            'active' => 'archive',
+            'letters' => $letters,
+            'histories' => $histories,
+            'historyLetter' => $history_letter,
+            'historyLetterName' => 'Riwayat Surat Masuk'
+        ]);
+    }
+
+    public function letterOut_index()
+    {
+        $letters = Letter::where('type', 'letter_out')->latest()->get();
+        $histories = History::latest()->get();
+        $history_letter = $histories->where('type', 'letter_out');
+        
+        return view('pages.letter.index', [
+            'title' => 'Surat Keluar - Putra Panggil Jaya',
+            'navTitle' => 'Surat Keluar',
+            'tableTitle' => 'Daftar Surat Keluar',
+            'active' => 'archive',
+            'letters' => $letters,
+            'histories' => $histories,
+            'historyLetter' => $history_letter,
+            'historyLetterName' => 'Riwayat Surat Keluar'
+        ]);
+    }
+
     public function create(string $archive_id)
     {
         $archive = Archive::where('archive_id', $archive_id)->firstOrFail();
