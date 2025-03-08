@@ -127,12 +127,19 @@ class LetterController extends Controller
         }
 
         if ($letter) {
+            $type = [];
+            if ($letter->type == 'letter_in') {
+                $type = 'Surat Masuk';
+            } else {
+                $type = 'Surat Keluar';
+            }
+            
             History::create([
                 'type_id' => $letter->archive->id,
-                'title' => "Buat Surat Baru",
+                'title' => "Buat " . $type . " Baru",
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' =>  "Surat baru telah dibuat oleh " . Auth::user()->name . "\n" . "[{$letter->no_letter} => {$letter->name}].",
-                'type' => 'letter',
+                'type' => $letter->type,
                 'method' => 'create',
                 'user_id' => Auth::user()->id,
             ]);
@@ -285,7 +292,14 @@ class LetterController extends Controller
             $methods[] = 'update';
         }
 
-        $title = count($methods) > 1 ? "Update Surat dan Status" : (in_array('update status', $methods) ? "Update Status Surat" : "Update Surat");
+        $type = [];
+        if ($letter->type == 'letter_in') {
+            $type = 'Surat Masuk';
+        } else {
+            $type = 'Surat Keluar';
+        }
+
+        $title = count($methods) > 1 ? "Update " . $type . " dan Status" : (in_array('update status', $methods) ? "Update Status " . $type : "Update " . $type);
         $method = implode(', ', $methods);
 
         if (empty($updates)) {
@@ -324,7 +338,7 @@ class LetterController extends Controller
                 'title' => $title,
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' => $description . '.',
-                'type' => 'letter',
+                'type' => $letter->type,
                 'method' => $method,
                 'user_id' => Auth::user()->id,
             ]);
@@ -369,12 +383,19 @@ class LetterController extends Controller
         $description = "Surat [" . $oldCode . ' => ' . $oldName . "] di Arsip [" . $letter->archive->archive_id . ' => ' . $letter->archive->name . "] dihapus oleh " . Auth::user()->name . ".";
         
         if ($letter) {
+            $type = [];
+            if ($letter->type == 'letter_in') {
+                $type = 'Surat Masuk';
+            } else {
+                $type = 'Surat Keluar';
+            }
+
             History::create([
                 'type_id' => $oldArchiveId,
-                'title' => "Hapus Surat",
+                'title' => "Hapus " . $type,
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' => $description,
-                'type' => 'letter',
+                'type' => $letter->type,
                 'method' => 'delete',
                 'user_id' => Auth::user()->id,
             ]);

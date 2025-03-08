@@ -73,12 +73,19 @@ class DocumentController extends Controller
                     'type' => $fileType,
                 ]);
 
+                $type = [];
+                if ($letter->type == 'letter_in') {
+                    $type = 'Surat Masuk';
+                } else {
+                    $type = 'Surat Keluar';
+                }
+
                 History::create([
                     'type_id' => $letter->archive->id,
-                    'title' => "Update Surat",
+                    'title' => "Update " . $type,
                     'name' => $letter->no_letter . ' - ' . $letter->name,
                     'description' =>  "Surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen baru => " . $file->getClientOriginalName() . ".",
-                    'type' => 'letter',
+                    'type' => $letter->type,
                     'method' => 'update',
                     'user_id' => Auth::user()->id,
                 ]);
@@ -158,12 +165,19 @@ class DocumentController extends Controller
                 'type' => $fileType,
             ]);
 
+            $type = [];
+            if ($document->letter->type == 'letter_in') {
+                $type = 'Surat Masuk';
+            } else {
+                $type = 'Surat Keluar';
+            }
+
             History::create([
                 'type_id' => $document->letter->archive->id,
-                'title' => "Update Surat",
+                'title' => "Update " . $type,
                 'name' => $document->letter->no_letter . ' - ' . $document->letter->name,
                 'description' =>  "Dokumen surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen lama => " . $oldDocument . " ke dokumen baru => " . $fileName,
-                'type' => 'letter',
+                'type' => $document->letter->type,
                 'method' => 'update',
                 'user_id' => Auth::user()->id,
             ]);
@@ -206,12 +220,19 @@ class DocumentController extends Controller
             ]);
         }
 
+        $type = [];
+        if ($letter->type == 'letter_in') {
+            $type = 'Surat Masuk';
+        } else {
+            $type = 'Surat Keluar';
+        }
+
         History::create([
             'type_id' => $document->letter->archive->id,
-            'title' => "Update Surat",
+            'title' => "Update " . $type,
             'name' => $document->letter->no_letter . ' - ' . $document->letter->name,
             'description' => "Dokumen surat '$oldName' telah dihapus oleh " . Auth::user()->name . ".",
-            'type' => 'letter',
+            'type' => $document->letter->type,
             'method' => 'delete',
             'user_id' => Auth::user()->id,
         ]);
