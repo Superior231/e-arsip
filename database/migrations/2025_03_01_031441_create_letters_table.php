@@ -19,9 +19,7 @@ return new class extends Migration
             $table->string('letter_id')->nullable()->constrained('letters');
             $table->string('no_letter');
             $table->string('letter_code');
-            $table->enum('type', ['letter_in', 'letter_out'])->default('letter_out');
-            $table->integer('lampiran')->nullable();
-            $table->string('perihal')->nullable();
+            $table->enum('type', ['letter_in', 'letter_out', 'faktur'])->default('letter_out');
             $table->string('name');
             $table->enum('status', ['active', 'rusak', 'hilang', 'delete'])->default('active');
             $table->longText('content')->nullable();;

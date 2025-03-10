@@ -20,8 +20,6 @@ class Letter extends Model
         'no_letter',
         'letter_code',
         'type',
-        'lampiran',
-        'perihal',
         'name',
         'content',
         'detail',

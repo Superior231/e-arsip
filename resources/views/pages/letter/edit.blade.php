@@ -244,6 +244,7 @@
                                         Masuk</option>
                                     <option value="letter_out" {{ $letter->type == 'letter_out' ? 'selected' : '' }}>Surat
                                         Keluar</option>
+                                    <option value="faktur" {{ $letter->type == 'faktur' ? 'selected' : '' }}>Faktur</option>
                                 </select>
                                 @error('type')
                                     <span class="invalid-feedback" role="alert">
@@ -282,7 +283,7 @@
                 </div>
             </div>
 
-            <div class="card mt-3" id="letterContent">
+            <div class="card d-none mt-3" id="letterContent">
                 <div class="card-body">
                     <h4 class="card-title">Isi Surat</h4>
                     <hr class="bg-secondary">

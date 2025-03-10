@@ -141,6 +141,7 @@
                                         <option value="">Pilih</option>
                                         <option value="letter_in">Surat Masuk</option>
                                         <option value="letter_out">Surat Keluar</option>
+                                        <option value="faktur">Faktur</option>
                                     </select>
                                     @error('type')
                                         <span class="invalid-feedback" role="alert">
@@ -217,7 +218,13 @@
             const letterContent = document.getElementById("letterContent");
 
             typeSelect.addEventListener("change", function() {
-                if (this.value === "letter_in") {
+                if (this.value === "letter_out") {
+                    letterCodeContainer.classList.remove("d-block");
+                    letterCodeContainer.classList.add("d-none");
+                    letterCodeIn.setAttribute('name', '');
+                    letterCodeOut.setAttribute('name', 'letter_code');
+                    letterContent.classList.remove("d-none");
+                } else if (this.value === "letter_in") {
                     letterCodeContainer.classList.remove("d-none");
                     letterCodeContainer.classList.add("d-block");
                     letterCodeIn.setAttribute('name', 'letter_code');
@@ -226,9 +233,9 @@
                 } else {
                     letterCodeContainer.classList.remove("d-block");
                     letterCodeContainer.classList.add("d-none");
-                    letterCodeIn.setAttribute('name', '');
                     letterCodeOut.setAttribute('name', 'letter_code');
-                    letterContent.classList.remove("d-none");
+                    letterCodeIn.setAttribute('name', '');
+                    letterContent.classList.add("d-none");
                 }
             });
         });

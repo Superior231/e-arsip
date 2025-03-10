@@ -281,7 +281,15 @@
                                             @endif
                                             <td><span>{{ $letter->name }}</span></td>
                                             <td>
-                                                <span class="text-nowrap">{{ $letter->type == 'letter_in' ? 'Surat Masuk' : 'Surat Keluar' }}</span>
+                                                <span class="text-nowrap">
+                                                    @if ($letter->type == 'letter_in')
+                                                        Surat Masuk
+                                                    @elseif ($letter->type == 'letter_out')
+                                                        Surat Keluar
+                                                    @else
+                                                        Faktur
+                                                    @endif
+                                                </span>
                                             </td>
                                             <td>
                                                 <span class="d-none">{{ $letter->date }}</span>
@@ -696,7 +704,8 @@
             $('#detailLetterStatus').text(letterStatus);
             $('#detailNoLetter').text(noLetter);
             $('#detailLetterCode').text(letterCode);
-            $('#detailLetterType').text(letterType === 'letter_in' ? 'Surat Masuk' : 'Surat Keluar');
+            $('#detailLetterType').text(letterType === 'letter_in' ? 'Surat Masuk' :
+                letterType === 'letter_out' ? 'Surat Keluar' : 'Faktur');
             $('#detailInventory').text(inventory);
             $('#detailItem').text(item);
             $('#detailLetterName').text(letterName);

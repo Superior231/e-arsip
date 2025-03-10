@@ -391,7 +391,7 @@ class ArchiveController extends Controller
         $archive = Archive::where('archive_id', $archive_id)->with('letters')->firstOrFail();
         $archives = Archive::where('archive_id', $archive_id)->firstOrFail();
         $histories = History::latest()->get();
-        $history_letter = $histories->whereIn('type', ['letter_in', 'letter_out'])->whereIn('type_id', $archives->id);
+        $history_letter = $histories->whereIn('type', ['letter_in', 'letter_out', 'faktur'])->whereIn('type_id', $archives->id);
 
         return view('pages.archive.show', [
             'title' => 'Detail Arsip',

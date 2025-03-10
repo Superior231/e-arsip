@@ -166,8 +166,12 @@ class LetterController extends Controller
             $type = [];
             if ($letter->type == 'letter_in') {
                 $type = 'Surat Masuk';
-            } else {
+            } else if ($letter->type == 'letter_out') {
                 $type = 'Surat Keluar';
+            } else if ($letter->type == 'faktur') {
+                $type = 'Faktur';
+            } else {
+                $type = 'Surat';
             }
             
             History::create([
@@ -243,8 +247,6 @@ class LetterController extends Controller
             $oldItemName = '[' . $letter->item->inventory->name . ' => ' . $letter->item->name . ']';
         }
         $oldLetterName = $letter->name;
-        $oldLampiran = $letter->lampiran;
-        $oldPerihal = $letter->perihal;
         $oldStatus = $letter->status;
         $oldType = $letter->type;
         $oldContent = $letter->content;
@@ -257,8 +259,6 @@ class LetterController extends Controller
             $letter->item_id = $request->item_id;
         }
         $letter->name = $request->name;
-        $letter->lampiran = $request->lampiran;
-        $letter->perihal = $request->perihal;
         $letter->status = $request->status;
         $letter->type = $request->type;
         $letter->content = $request->content;
@@ -298,14 +298,6 @@ class LetterController extends Controller
             $updates[] = "Kode surat dari '$oldLetterCode' menjadi '$request->letter_code'";
             $isUpdate = true;
         }
-        if ($oldLampiran !== $request->lampiran) {
-            $updates[] = "Lampiran surat dari '$oldLampiran' menjadi '$request->lampiran'";
-            $isUpdate = true;
-        }
-        if ($oldPerihal !== $request->perihal) {
-            $updates[] = "Perihal surat dari '$oldPerihal' menjadi '$request->perihal'";
-            $isUpdate = true;
-        }
         if ($oldContent !== $request->content) {
             $updates[] = "Isi surat dari '$oldContent' menjadi '$request->content'";
             $isUpdate = true;
@@ -331,8 +323,12 @@ class LetterController extends Controller
         $type = [];
         if ($letter->type == 'letter_in') {
             $type = 'Surat Masuk';
-        } else {
+        } else if ($letter->type == 'letter_out') {
             $type = 'Surat Keluar';
+        } else if ($letter->type == 'faktur') {
+            $type = 'Faktur';
+        } else {
+            $type = 'Surat';
         }
 
         $title = count($methods) > 1 ? "Update " . $type . " dan Status" : (in_array('update status', $methods) ? "Update Status " . $type : "Update " . $type);
