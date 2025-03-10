@@ -101,7 +101,7 @@
                                         <h5>&nbsp;:&nbsp;</h5>
                                     </td>
                                     <td>
-                                        <h5>{{ $archive->archive_id }}/{{ $archive->archive_code }}</h5>
+                                        <h5>{{ $archive->archive_code }}</h5>
                                     </td>
                                 </tr>
                                 <tr>

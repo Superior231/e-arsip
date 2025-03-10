@@ -179,7 +179,7 @@ class ArchiveController extends Controller
         $division = Division::find($data['division_id']);
         $category = Category::find($data['category_id']);
         $archive_code = $division->name . '/' . $division->place . '/' . $category->slug;
-        $data['archive_code'] = $data['archive_id'] . '.' . $archive_code;
+        $data['archive_code'] = $data['archive_id'] . '/' . $archive_code;
 
         $archive = Archive::create($data);
 
@@ -229,7 +229,7 @@ class ArchiveController extends Controller
         $oldDivision = $archive->division;
         $oldCategory = $archive->category;
         $oldId = $archive->archive_id;
-        $oldCode = $archive->archive_id . '/' . $archive->archive_code;
+        $oldCode = $archive->archive_code;
         $oldName = $archive->name;
         $oldStatus = $archive->status;
         $oldImage = $archive->image;
@@ -260,8 +260,6 @@ class ArchiveController extends Controller
 
                 return redirect()->route('archive.show', [$archive->archive_id])->with('success', 'Status arsip berhasil diperbarui!');
             }
-        } else {
-            return redirect()->route('archive.show', [$archive->archive_id])->with('error', 'Opss... terjadi kesalahan!');
         }
 
         $request->validate([
@@ -332,12 +330,12 @@ class ArchiveController extends Controller
             $archive->image = $fileName;
         }
 
-        // Update archive_code jika division, category, atau name berubah
+        // Update archive_code jika division, category
         if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id) {
-            $archive_code = $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug;
+            $archive_code = $oldId . '/' . $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug;
             $archive->archive_code = $archive_code;
 
-            $updates[] = "Kode arsip dari '$oldCode' menjadi '$oldId/$archive_code'";
+            $updates[] = "Kode arsip dari '$oldCode' menjadi '$archive_code'";
             $isUpdate = true;
         }
 
@@ -351,6 +349,7 @@ class ArchiveController extends Controller
         // Simpan perubahan data
         $archive->division_id = $newDivision->id;
         $archive->category_id = $newCategory->id;
+        $archive->archive_code = $archive_code;
         $archive->name = $request->name;
         $archive->detail = $request->detail;
         $archive->date = $request->date;
