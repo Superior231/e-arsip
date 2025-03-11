@@ -37,13 +37,13 @@
     <div class="actions d-flex flex-column flex-md-row align-items-center justify-content-between gap-2"
         id="actionsContainer">
         <div class="print d-flex align-items-center gap-2 w-100">
-            <a href="{{ route('print.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                target="_blank">
+            <a href="{{ route('print.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}"
+                class="btn btn-primary d-flex align-items-center justify-content-center gap-1" target="_blank">
                 <i class='bx bx-printer'></i>
                 Print all list
             </a>
-            <a href="{{ route('print.barcode.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                target="_blank">
+            <a href="{{ route('print.barcode.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}"
+                class="btn btn-primary d-flex align-items-center justify-content-center gap-1" target="_blank">
                 <i class='bx bx-barcode'></i>
                 Print all barcode
             </a>
@@ -175,8 +175,7 @@
                                                 <ul class="dropdown-menu dropdown-menu-end"
                                                     aria-labelledby="action-{{ $archive->id }}">
                                                     <li>
-                                                        <div
-                                                            class="d-flex justify-content-center text-center mb-1 fw-bold">
+                                                        <div class="d-flex justify-content-center text-center mb-1 fw-bold">
                                                             {{ $archive->archive_id }}
                                                         </div>
                                                     </li>
@@ -185,7 +184,8 @@
 
                                                     <li>
                                                         <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="{{ route('print.archive', $archive->archive_id) }}" target="_blank">
+                                                            href="{{ route('print.archive', $archive->archive_id) }}"
+                                                            target="_blank">
                                                             <i class='bx bx-printer fs-5'></i>
                                                             Print
                                                         </a>
@@ -199,11 +199,19 @@
                                                     </li>
 
                                                     <li>
-                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="{{ route('letter.create', $archive->archive_id) }}">
-                                                            <i class='bx bx-plus fs-5'></i>
-                                                            Tambah surat
-                                                        </a>
+                                                        @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                                            <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                href="{{ route('memo.create', $archive->archive_id) }}">
+                                                                <i class='bx bx-plus fs-5'></i>
+                                                                Tambah {{ $archive->category->name }}
+                                                            </a>
+                                                        @else
+                                                            <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                href="{{ route('letter.create', $archive->archive_id) }}">
+                                                                <i class='bx bx-plus fs-5'></i>
+                                                                Tambah surat
+                                                            </a>
+                                                        @endif
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item d-flex align-items-center gap-1"
@@ -219,7 +227,8 @@
                                                                 method="POST" class="d-inline">
                                                                 @csrf @method('PUT')
 
-                                                                <input type="hidden" class="form-control" id="status" name="status" value="delete">
+                                                                <input type="hidden" class="form-control" id="status"
+                                                                    name="status" value="delete">
 
                                                                 <a style="cursor: pointer;"
                                                                     class="dropdown-item d-flex align-items-center gap-1"

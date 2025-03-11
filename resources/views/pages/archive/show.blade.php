@@ -197,11 +197,19 @@
                                 </a>
                             </div>
 
-                            <a href="{{ route('letter.create', $archive->archive_id) }}"
-                                class="btn btn-primary d-flex align-items-center gap-1">
-                                <i class='bx bx-plus fs-5'></i>
-                                <span class="my-0 py-0">Tambah surat</span>
-                            </a>
+                            @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                <a href="{{ route('memo.create', $archive->archive_id) }}"
+                                    class="btn btn-primary d-flex align-items-center gap-1">
+                                    <i class='bx bx-plus fs-5'></i>
+                                    <span class="my-0 py-0">Tambah {{ $archive->category->name }}</span>
+                                </a>
+                            @else
+                                <a href="{{ route('letter.create', $archive->archive_id) }}"
+                                    class="btn btn-primary d-flex align-items-center gap-1">
+                                    <i class='bx bx-plus fs-5'></i>
+                                    <span class="my-0 py-0">Tambah surat</span>
+                                </a>
+                            @endif
                         </div>
 
                         <div class="table-responsive">
@@ -286,8 +294,12 @@
                                                         Surat Masuk
                                                     @elseif ($letter->type == 'letter_out')
                                                         Surat Keluar
-                                                    @else
+                                                    @elseif ($letter->type == 'faktur')
                                                         Faktur
+                                                    @elseif ($letter->type == 'memo')
+                                                        Memo
+                                                    @elseif ($letter->type == 'notulen')
+                                                        Notulen
                                                     @endif
                                                 </span>
                                             </td>
@@ -348,13 +360,23 @@
                                                                     </a>
                                                                 </li>
                                                             @endif
-                                                            <li>
-                                                                <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="{{ route('letter.show', $letter->no_letter) }}">
-                                                                    <i class='bx bx-show fs-5'></i>
-                                                                    Lihat detail
-                                                                </a>
-                                                            </li>
+                                                            @if ($archive->category->name == 'Memo' || $archive->category->name == 'Notulen')
+                                                                <li>
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('memo.show', $letter->no_letter) }}">
+                                                                        <i class='bx bx-show fs-5'></i>
+                                                                        Lihat detail
+                                                                    </a>
+                                                                </li>
+                                                            @else
+                                                                <li>
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('letter.show', $letter->no_letter) }}">
+                                                                        <i class='bx bx-show fs-5'></i>
+                                                                        Lihat detail
+                                                                    </a>
+                                                                </li>
+                                                            @endif
                                                             @if ($archive->category->name == 'Faktur')
                                                                 <li>
                                                                     <a class="dropdown-item d-flex align-items-center gap-1"
@@ -365,28 +387,54 @@
                                                                 </li>
                                                             @endif
                                                             <li>
-                                                                <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="{{ route('letter.edit', $letter->no_letter) }}">
-                                                                    <i class='bx bx-pencil fs-5'></i>
-                                                                    Edit data
-                                                                </a>
+                                                                @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('memo.edit', $letter->no_letter) }}">
+                                                                        <i class='bx bx-pencil fs-5'></i>
+                                                                        Edit data
+                                                                    </a>
+                                                                @else
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('letter.edit', $letter->no_letter) }}">
+                                                                        <i class='bx bx-pencil fs-5'></i>
+                                                                        Edit data
+                                                                    </a>
+                                                                @endif
                                                             </li>
                                                             <li>
-                                                                <form id="deleteLetterForm-{{ $letter->id }}"
-                                                                    action="{{ route('letter.delete', $letter->id) }}"
-                                                                    method="POST" class="d-inline">
-                                                                    @csrf @method('PUT')
+                                                                @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                                                    <form id="deleteLetterForm-{{ $letter->id }}"
+                                                                        action="{{ route('memo.delete', $letter->id) }}"
+                                                                        method="POST" class="d-inline">
+                                                                        @csrf @method('PUT')
 
-                                                                    <input type="hidden" class="form-control"
-                                                                        id="status" name="status" value="delete">
+                                                                        <input type="hidden" class="form-control"
+                                                                            id="status" name="status" value="delete">
 
-                                                                    <a style="cursor: pointer;"
-                                                                        class="dropdown-item d-flex align-items-center gap-1"
-                                                                        onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
-                                                                        <i class='bx bx-trash fs-5'></i>
-                                                                        Hapus
-                                                                    </a>
-                                                                </form>
+                                                                        <a style="cursor: pointer;"
+                                                                            class="dropdown-item d-flex align-items-center gap-1"
+                                                                            onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
+                                                                            <i class='bx bx-trash fs-5'></i>
+                                                                            Hapus
+                                                                        </a>
+                                                                    </form>
+                                                                @else
+                                                                    <form id="deleteLetterForm-{{ $letter->id }}"
+                                                                        action="{{ route('letter.delete', $letter->id) }}"
+                                                                        method="POST" class="d-inline">
+                                                                        @csrf @method('PUT')
+
+                                                                        <input type="hidden" class="form-control"
+                                                                            id="status" name="status" value="delete">
+
+                                                                        <a style="cursor: pointer;"
+                                                                            class="dropdown-item d-flex align-items-center gap-1"
+                                                                            onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
+                                                                            <i class='bx bx-trash fs-5'></i>
+                                                                            Hapus
+                                                                        </a>
+                                                                    </form>
+                                                                @endif
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -705,7 +753,8 @@
             $('#detailNoLetter').text(noLetter);
             $('#detailLetterCode').text(letterCode);
             $('#detailLetterType').text(letterType === 'letter_in' ? 'Surat Masuk' :
-                letterType === 'letter_out' ? 'Surat Keluar' : 'Faktur');
+                letterType === 'letter_out' ? 'Surat Keluar' : letterType === 'faktur' ? 'Faktur' :
+                letterType === 'memo' ? 'Memo' : 'Notulen');
             $('#detailInventory').text(inventory);
             $('#detailItem').text(item);
             $('#detailLetterName').text(letterName);

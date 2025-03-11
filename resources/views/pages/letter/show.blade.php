@@ -94,7 +94,19 @@
                             <h5>&nbsp;:&nbsp;</h5>
                         </td>
                         <td>
-                            <h5>{{ $letter->type == 'letter_in' ? 'Surat Masuk' : 'Surat Keluar' }}</h5>
+                            <h5>
+                                @if ($letter->type == 'letter_in')
+                                    Surat Masuk
+                                @elseif ($letter->type == 'letter_out')
+                                    Surat Keluar
+                                @elseif ($letter->type == 'faktur')
+                                    Faktur
+                                @elseif ($letter->type == 'memo')
+                                    Memo
+                                @elseif ($letter->type == 'notulen')
+                                    Notulen
+                                @endif
+                            </h5>
                         </td>
                     </tr>
                     @if ($letter->archive->category->name === 'Faktur')

@@ -58,6 +58,7 @@
                     <a href="{{ route('administrasi.index') }}" class="side-link text-secondary">💠 Administrasi</a>
                     <a href="{{ route('faktur.index') }}" class="side-link text-secondary">💠 Faktur</a>
                     <a href="{{ route('laporan.index') }}" class="side-link text-secondary">💠 Laporan</a>
+                    <a href="{{ route('memo.index') }}" class="side-link text-secondary">💠 Memo</a>
                 </li>
                 <li>
                     <a href="{{ route('history.index') }}"

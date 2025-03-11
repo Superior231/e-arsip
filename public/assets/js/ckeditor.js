@@ -190,7 +190,9 @@ const editorConfig = {
             'Poppins, sans-serif',
         ]
     },
-    placeholder: 'Tulis surat!',
+    placeholder: 'Tulis di sini!',
 };
 
 ClassicEditor.create(document.querySelector('#content'), editorConfig);
+ClassicEditor.create(document.querySelector('#participant'), editorConfig);
+ClassicEditor.create(document.querySelector('#decision'), editorConfig);

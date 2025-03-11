@@ -37,6 +37,7 @@ class Category extends Model
             'Inventaris' => 'INV',
             'Pengadaan' => 'PGD',
             'Notulen' => 'NTL',
+            'Memo' => 'MMO',
             'Proposal' => 'PRP',
             'Pengumuman' => 'PGM',
             'Permohonan' => 'PMH',

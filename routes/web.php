@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Archive\ArchiveController;
 use App\Http\Controllers\Archive\LetterController;
+use App\Http\Controllers\Archive\MemoController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\DocumentController;
@@ -46,6 +47,16 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/faktur', [ArchiveController::class, 'faktur_index'])->name('faktur.index');
     Route::get('/administrasi', [ArchiveController::class, 'administrasi_index'])->name('administrasi.index');
     Route::get('/laporan', [ArchiveController::class, 'laporan_index'])->name('laporan.index');
+
+
+    Route::get('/memo', [MemoController::class, 'index'])->name('memo.index');
+    Route::get('/memo/create/{archive_id}', [MemoController::class, 'create'])->name('memo.create');
+    Route::post('/memo', [MemoController::class, 'store'])->name('memo.store');
+    Route::get('/memo/{no_letter}', [MemoController::class, 'show'])->name('memo.show');
+    Route::get('/memo/{archive_id}/edit', [MemoController::class, 'edit'])->name('memo.edit');
+    Route::put('/memo/{archive_id}', [MemoController::class, 'update'])->name('memo.update');
+    Route::put('/memo/delete/{id}', [MemoController::class, 'delete_memo'])->name('memo.delete');
+
     Route::resource('staff', StaffController::class);
 
     Route::post('/document', [DocumentController::class, 'store'])->name('document.store');
@@ -66,4 +77,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/print/barcode/archive/{archive_id}', [PrintBarcodeArchiveController::class, 'show'])->name('print.barcode.archive');
     Route::get('/print/barcode/letter/{no_letter}', [PrintBarcodeLetterController::class, 'show'])->name('print.barcode.letter');
     Route::get('/letter/content/{no_letter}', [LetterController::class, 'letter_content'])->name('letter.content');
+    Route::get('/memo/content/{no_letter}', [MemoController::class, 'memo_content'])->name('memo.content');
 });

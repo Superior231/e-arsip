@@ -24,6 +24,15 @@ class Letter extends Model
         'content',
         'detail',
         'date',
+        'start_time',
+        'end_time',
+        'place',
+        'event',
+        'chairman',
+        'chairman_position',
+        'notulis',
+        'participant',
+        'decision',
     ];
 
 

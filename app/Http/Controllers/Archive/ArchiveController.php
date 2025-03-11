@@ -349,7 +349,7 @@ class ArchiveController extends Controller
         // Simpan perubahan data
         $archive->division_id = $newDivision->id;
         $archive->category_id = $newCategory->id;
-        $archive->archive_code = $archive_code;
+        $archive->archive_code = $request->archive_code;
         $archive->name = $request->name;
         $archive->detail = $request->detail;
         $archive->date = $request->date;
@@ -391,7 +391,12 @@ class ArchiveController extends Controller
         $archive = Archive::where('archive_id', $archive_id)->with('letters')->firstOrFail();
         $archives = Archive::where('archive_id', $archive_id)->firstOrFail();
         $histories = History::latest()->get();
-        $history_letter = $histories->whereIn('type', ['letter_in', 'letter_out', 'faktur'])->whereIn('type_id', $archives->id);
+        if ($archives->category->name === 'Memo' || $archives->category->name === 'Notulen') {
+            $history_letter = $histories->whereIn('type', ['memo', 'notulen'])->whereIn('type_id', $archives->id);
+        } else {
+            $history_letter = $histories->whereIn('type', ['letter_in', 'letter_out', 'faktur'])->whereIn('type_id', $archives->id);
+        }
+        
 
         return view('pages.archive.show', [
             'title' => 'Detail Arsip',
