@@ -375,41 +375,45 @@
                                                                     </a>
                                                                 @endif
                                                             </li>
-                                                            <li>
-                                                                @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
-                                                                    <form id="deleteLetterForm-{{ $letter->id }}"
-                                                                        action="{{ route('memo.delete', $letter->id) }}"
-                                                                        method="POST" class="d-inline">
-                                                                        @csrf @method('PUT')
+                                                            @if ($letter->status !== 'approve')
+                                                                <li>
+                                                                    @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                                                        <form id="deleteLetterForm-{{ $letter->id }}"
+                                                                            action="{{ route('memo.delete', $letter->id) }}"
+                                                                            method="POST" class="d-inline">
+                                                                            @csrf @method('PUT')
 
-                                                                        <input type="hidden" class="form-control"
-                                                                            id="status" name="status" value="delete">
+                                                                            <input type="hidden" class="form-control"
+                                                                                id="status" name="status"
+                                                                                value="delete">
 
-                                                                        <a style="cursor: pointer;"
-                                                                            class="dropdown-item d-flex align-items-center gap-1"
-                                                                            onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
-                                                                            <i class='bx bx-trash fs-5'></i>
-                                                                            Hapus
-                                                                        </a>
-                                                                    </form>
-                                                                @else
-                                                                    <form id="deleteLetterForm-{{ $letter->id }}"
-                                                                        action="{{ route('letter.delete', $letter->id) }}"
-                                                                        method="POST" class="d-inline">
-                                                                        @csrf @method('PUT')
+                                                                            <a style="cursor: pointer;"
+                                                                                class="dropdown-item d-flex align-items-center gap-1"
+                                                                                onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
+                                                                                <i class='bx bx-trash fs-5'></i>
+                                                                                Hapus
+                                                                            </a>
+                                                                        </form>
+                                                                    @else
+                                                                        <form id="deleteLetterForm-{{ $letter->id }}"
+                                                                            action="{{ route('letter.delete', $letter->id) }}"
+                                                                            method="POST" class="d-inline">
+                                                                            @csrf @method('PUT')
 
-                                                                        <input type="hidden" class="form-control"
-                                                                            id="status" name="status" value="delete">
+                                                                            <input type="hidden" class="form-control"
+                                                                                id="status" name="status"
+                                                                                value="delete">
 
-                                                                        <a style="cursor: pointer;"
-                                                                            class="dropdown-item d-flex align-items-center gap-1"
-                                                                            onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
-                                                                            <i class='bx bx-trash fs-5'></i>
-                                                                            Hapus
-                                                                        </a>
-                                                                    </form>
-                                                                @endif
-                                                            </li>
+                                                                            <a style="cursor: pointer;"
+                                                                                class="dropdown-item d-flex align-items-center gap-1"
+                                                                                onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
+                                                                                <i class='bx bx-trash fs-5'></i>
+                                                                                Hapus
+                                                                            </a>
+                                                                        </form>
+                                                                    @endif
+                                                                </li>
+                                                            @endif
                                                         </ul>
                                                     </div>
                                                 </div>
