@@ -149,9 +149,15 @@
                             <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                 <i class='bx bx-code-alt'></i>
                             </span>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                id="letter_code" name="letter_code" value="{{ $letter->letter_code }}"
-                                placeholder="Masukkan kode surat">
+                            @if ($letter->type === 'letter_in')
+                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    id="letter_code" name="letter_code" value="{{ $letter->letter_code }}"
+                                    placeholder="Masukkan kode surat">
+                            @else
+                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    id="letter_code" name="letter_code" value="{{ $letter->letter_code }}"
+                                    placeholder="Masukkan kode surat" disabled readonly>
+                            @endif
                             @error('letter_code')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -402,9 +408,12 @@
             const typeSelect = document.getElementById("type");
             const letterContent = document.getElementById("letterContent");
 
-            typeSelect.addEventListener("change", function() {
-                letterContent.classList.toggle("d-none", this.value !== "letter_out");
-            });
+            function toggleLetterContent() {
+                letterContent.classList.toggle("d-none", typeSelect.value !== "letter_out");
+            }
+            toggleLetterContent();
+
+            typeSelect.addEventListener("change", toggleLetterContent);
         });
 
         function editDocument(id, file) {

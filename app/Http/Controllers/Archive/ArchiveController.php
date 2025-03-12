@@ -170,16 +170,30 @@ class ArchiveController extends Controller
             $data['image'] = $fileName;
         }
 
-        // Generate code
-        $latestArchive = Archive::latest('id')->first();
-        $nextId = $latestArchive ? $latestArchive->id + 1 : 1;
-        $data['archive_id'] = 'PPJ.' . sprintf('%03d', $nextId); 
+        // Ambil kategori dan kode kategori
+        $category = Category::findOrFail($data['category_id']);
+        $categoryCode = $category->slug;
 
-        // Generate code archive
-        $division = Division::find($data['division_id']);
-        $category = Category::find($data['category_id']);
-        $archive_code = $division->name . '/' . $division->place . '/' . $category->slug;
-        $data['archive_code'] = $data['archive_id'] . '/' . $archive_code;
+        // Ambil arsip terakhir dengan kategori yang sama
+        $latestArchive = Archive::where('category_id', $category->id)
+                                ->latest('id')
+                                ->first();
+
+        // Hitung ID berikutnya dalam kategori
+        if ($latestArchive) {
+            preg_match('/\d+$/', $latestArchive->archive_id, $matches);
+            $nextId = isset($matches[0]) ? intval($matches[0]) + 1 : 1;
+        } else {
+            $nextId = 1;
+        }
+
+        // Format archive_id: KODE.NUMBER (contoh: NTL.001)
+        $data['archive_id'] = $categoryCode . '.' . sprintf('%03d', $nextId);
+
+        // Generate archive_code dengan format yang lebih rapi
+        $division = Division::findOrFail($data['division_id']);
+        $archive_code = "{$division->name}/{$division->place}";
+        $data['archive_code'] = "{$data['archive_id']}/{$archive_code}";
 
         $archive = Archive::create($data);
 
@@ -288,18 +302,36 @@ class ArchiveController extends Controller
             $archive->image = $fileName;
         }
 
-        // Update archive_code jika division, category
+
+        // Update archive_id jika kategori berubah
+        if ($oldCategory->id !== $newCategory->id) {
+            $categoryCode = strtoupper($newCategory->code ?? $newCategory->slug);
+            $latestArchive = Archive::where('archive_id', 'like', "$categoryCode.%")
+                                    ->latest('archive_id')
+                                    ->first();
+
+            if ($latestArchive) {
+                preg_match('/\d+$/', $latestArchive->archive_id, $matches);
+                $nextId = isset($matches[0]) ? intval($matches[0]) + 1 : 1;
+            } else {
+                $nextId = 1;
+            }
+
+            $archive->archive_id = $categoryCode . '.' . sprintf('%03d', $nextId);
+            $updates[] = "ID arsip berubah menjadi {$archive->archive_id}";
+        }
         if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id) {
-            $archive_code = $oldId . '/' . $newDivision->name . '/' . $newDivision->place . '/' . $newCategory->slug;
+            $archive_code = $archive->archive_id . '/' . $newDivision->name . '/' . $newDivision->place;
             $archive->archive_code = $archive_code;
 
-            $updates[] = "Kode arsip dari '$oldCode' menjadi '$archive_code'";
+            $updates[] = "Kode arsip berubah menjadi '$archive_code'";
         }
+
 
         // Simpan perubahan data
         $archive->division_id = $newDivision->id;
         $archive->category_id = $newCategory->id;
-        $archive->archive_code = $request->archive_code;
+        $archive->archive_code = $archive_code;
         $archive->name = $request->name;
         $archive->detail = $request->detail;
         $archive->date = $request->date;
