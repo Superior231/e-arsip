@@ -361,18 +361,20 @@
                                                                 </li>
                                                             @endif
                                                             <li>
-                                                                @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
-                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                        href="{{ route('memo.edit', $letter->no_letter) }}">
-                                                                        <i class='bx bx-pencil fs-5'></i>
-                                                                        Edit data
-                                                                    </a>
-                                                                @else
-                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                        href="{{ route('letter.edit', $letter->no_letter) }}">
-                                                                        <i class='bx bx-pencil fs-5'></i>
-                                                                        Edit data
-                                                                    </a>
+                                                                @if ($letter->status !== 'approve')
+                                                                    @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                                                        <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                            href="{{ route('memo.edit', $letter->no_letter) }}">
+                                                                            <i class='bx bx-pencil fs-5'></i>
+                                                                            Edit data
+                                                                        </a>
+                                                                    @else
+                                                                        <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                            href="{{ route('letter.edit', $letter->no_letter) }}">
+                                                                            <i class='bx bx-pencil fs-5'></i>
+                                                                            Edit data
+                                                                        </a>
+                                                                    @endif
                                                                 @endif
                                                             </li>
                                                             @if ($letter->status !== 'approve')

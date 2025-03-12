@@ -125,6 +125,10 @@ class ArchiveController extends Controller
 
     public function create()
     {
+        if (Auth::user()->roles === 'user') {
+            return redirect()->route('archive.index')->with('error', 'Anda tidak memiliki akses untuk menambah arsip!');
+        }
+
         $categories = Category::latest()->get();
         $divisions = Division::latest()->get();
         $histories = History::latest()->get();
@@ -217,6 +221,10 @@ class ArchiveController extends Controller
 
     public function edit(string $archive_id)
     {
+        if (Auth::user()->roles === 'user') {
+            return redirect()->route('archive.index')->with('error', 'Anda tidak memiliki akses untuk mengedit arsip!');
+        }
+
         $archive = Archive::where('archive_id', $archive_id)->with('division', 'category')->firstOrFail();
         $categories = Category::latest()->get();
         $divisions = Division::latest()->get();
@@ -401,6 +409,10 @@ class ArchiveController extends Controller
 
     public function delete_archive(Request $request, $id)
     {
+        if (Auth::user()->roles === 'user') {
+            return redirect()->route('archive.index')->with('error', 'Anda tidak memiliki akses untuk menghapus arsip!');
+        }
+
         $archive = Archive::findOrFail($id);
         $oldCode = $archive->archive_id;
         $oldName = $archive->name;

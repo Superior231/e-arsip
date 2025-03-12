@@ -23,14 +23,24 @@ use Illuminate\Support\Facades\Route;
 Auth::routes(['register' => false]);
 
 
+
+
 Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/', [HomeController::class, 'index'])->name('index');
-    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
     Route::resource('division', DivisionController::class);
     Route::resource('category', CategoryController::class);
-    Route::resource('archive', ArchiveController::class);
+    
     Route::get('/archive-pending', [ArchiveController::class, 'pending_index'])->name('archive.pending');
     Route::put('/archive/delete/{id}', [ArchiveController::class, 'delete_archive'])->name('archive.delete');
+
+    Route::resource('staff', StaffController::class);
+});
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('index');
+    Route::resource('archive', ArchiveController::class);
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+
 
     Route::get('/letter/create/{archive_id}', [LetterController::class, 'create'])->name('letter.create');
     Route::post('/letter', [LetterController::class, 'store'])->name('letter.store');
@@ -49,7 +59,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/administrasi', [ArchiveController::class, 'administrasi_index'])->name('administrasi.index');
     Route::get('/laporan', [ArchiveController::class, 'laporan_index'])->name('laporan.index');
 
-
     Route::get('/memo', [MemoController::class, 'index'])->name('memo.index');
     Route::get('/memo/create/{archive_id}', [MemoController::class, 'create'])->name('memo.create');
     Route::post('/memo', [MemoController::class, 'store'])->name('memo.store');
@@ -58,16 +67,10 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::put('/memo/{archive_id}', [MemoController::class, 'update'])->name('memo.update');
     Route::put('/memo/delete/{id}', [MemoController::class, 'delete_memo'])->name('memo.delete');
 
-    Route::resource('staff', StaffController::class);
-
     Route::post('/document', [DocumentController::class, 'store'])->name('document.store');
     Route::put('/document/{id}', [DocumentController::class, 'update'])->name('document.update');
     Route::put('/document/delete/{id}', [DocumentController::class, 'delete_document'])->name('document.delete');
-});
 
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'dashboardUser'])->name('dashboard.user');
     Route::get('/scan', [ScanController::class, 'index'])->name('scan.index');
     Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('pengaturan.index');
     Route::resource('profile', ProfileController::class);

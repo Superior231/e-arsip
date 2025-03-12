@@ -15,14 +15,14 @@
 
     <div class="menu-bar mt-4">
         <ul class="menu-links">
+            <li>
+                <a href="{{ route('index') }}" class="side-link {{ $active === 'dashboard' ? 'active' : '' }}"
+                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard">
+                    <i class='bx bxs-home icon'></i>
+                    <span class="nav-text px-0 mx-0">Dashboard</span>
+                </a>
+            </li>
             @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'superadmin')
-                <li>
-                    <a href="{{ route('index') }}" class="side-link {{ $active === 'dashboard' ? 'active' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Dashboard">
-                        <i class='bx bxs-home icon'></i>
-                        <span class="nav-text px-0 mx-0">Dashboard</span>
-                    </a>
-                </li>
                 <li>
                     <a href="{{ route('division.index') }}"
                         class="side-link {{ $active === 'division' ? 'active' : '' }}" data-bs-toggle="tooltip"
@@ -39,67 +39,55 @@
                         <span class="nav-text px-0 mx-0">Kategori</span>
                     </a>
                 </li>
+            @endif
+            <li>
+                <a href="#" class="side-link justify-content-between {{ $active === 'archive' ? 'active' : '' }}"
+                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Arsip" onclick="toggleArchive()">
+                    <div class="d-flex align-items-center">
+                        <i class='bx bxs-archive icon'></i>
+                        <span class="nav-text px-0 mx-0">Arsip</span>
+                    </div>
+                    <i class='bx bx-chevron-right nav-text fs-5 me-3' id="archiveIcon"></i>
+                </a>
+            </li>
+            <li class="archive-menu d-none d-flex flex-column gap-2 mb-3 ms-3" style="height: 100%;">
+                <a href="{{ route('archive.index') }}" class="side-link text-secondary">💠 Semua</a>
+                <a href="{{ route('letterIn.index') }}" class="side-link text-secondary">💠 Surat Masuk</a>
+                <a href="{{ route('letterOut.index') }}" class="side-link text-secondary">💠 Surat Keluar</a>
+                <a href="{{ route('administrasi.index') }}" class="side-link text-secondary">💠 Administrasi</a>
+                <a href="{{ route('faktur.index') }}" class="side-link text-secondary">💠 Faktur</a>
+                <a href="{{ route('laporan.index') }}" class="side-link text-secondary">💠 Laporan</a>
+                <a href="{{ route('memo.index') }}" class="side-link text-secondary">💠 Memo</a>
+            </li>
+            <li>
+                <a href="{{ route('history.index') }}" class="side-link {{ $active === 'history' ? 'active' : '' }}"
+                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="History">
+                    <i class='bx bx-history icon fs-4'></i>
+                    <span class="nav-text px-0 mx-0">History</span>
+                </a>
+            </li>
+            @if (Auth::user()->roles === 'superadmin')
                 <li>
-                    <a href="#"
-                        class="side-link justify-content-between {{ $active === 'archive' ? 'active' : '' }}"
-                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Arsip"
-                        onclick="toggleArchive()">
-                        <div class="d-flex align-items-center">
-                            <i class='bx bxs-archive icon'></i>
-                            <span class="nav-text px-0 mx-0">Arsip</span>
+                    <a href="{{ route('archive.pending') }}"
+                        class="side-link d-flex position-relative justify-content-between {{ $active === 'pending' ? 'active' : '' }}"
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Pending">
+                        <div class="d-flex align-items-center gap-0">
+                            <i class='bx bxs-time-five icon fs-5'></i>
+                            <span class="nav-text px-0 mx-0">Pending</span>
                         </div>
-                        <i class='bx bx-chevron-right nav-text fs-5 me-3' id="archiveIcon"></i>
+                        <span class="position-absolute badge rounded-pill bg-danger mt-3"
+                            style="z-index: 99999; right: 0; bottom: 25px;">
+                            {{ $archive_pending }}
+                        </span>
                     </a>
                 </li>
-                <li class="archive-menu d-none d-flex flex-column gap-2 mb-3 ms-3" style="height: 100%;">
-                    <a href="{{ route('archive.index') }}" class="side-link text-secondary">💠 Semua</a>
-                    <a href="{{ route('letterIn.index') }}" class="side-link text-secondary">💠 Surat Masuk</a>
-                    <a href="{{ route('letterOut.index') }}" class="side-link text-secondary">💠 Surat Keluar</a>
-                    <a href="{{ route('administrasi.index') }}" class="side-link text-secondary">💠 Administrasi</a>
-                    <a href="{{ route('faktur.index') }}" class="side-link text-secondary">💠 Faktur</a>
-                    <a href="{{ route('laporan.index') }}" class="side-link text-secondary">💠 Laporan</a>
-                    <a href="{{ route('memo.index') }}" class="side-link text-secondary">💠 Memo</a>
-                </li>
-                <li>
-                    <a href="{{ route('history.index') }}"
-                        class="side-link {{ $active === 'history' ? 'active' : '' }}" data-bs-toggle="tooltip"
-                        data-bs-placement="right" data-bs-title="History">
-                        <i class='bx bx-history icon fs-4'></i>
-                        <span class="nav-text px-0 mx-0">History</span>
-                    </a>
-                </li>
-                @if (Auth::user()->roles === 'superadmin')
-                    <li>
-                        <a href="{{ route('archive.pending') }}"
-                            class="side-link d-flex position-relative justify-content-between {{ $active === 'pending' ? 'active' : '' }}"
-                            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Pending">
-                            <div class="d-flex align-items-center gap-0">
-                                <i class='bx bxs-time-five icon fs-5'></i>
-                                <span class="nav-text px-0 mx-0">Pending</span>
-                            </div>
-                            <span class="position-absolute badge rounded-pill bg-danger mt-3"
-                                style="z-index: 99999; right: 0; bottom: 25px;">
-                                {{ $archive_pending }}
-                            </span>
-                        </a>
-                    </li>
-                @endif
+            @endif
+            @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'superadmin')
                 <li>
                     <a href="{{ route('staff.index') }}" class="side-link {{ $active === 'staff' ? 'active' : '' }}"
                         data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Staff">
                         <i class='bx bxs-group icon'></i>
                         <span class="nav-text px-0 mx-0">Staff</span>
-                    </a>
-                </li>
-            @endif
-
-            @if (Auth::user()->roles === 'user')
-                <li>
-                    <a href="{{ route('dashboard.user') }}"
-                        class="side-link {{ $active === 'dashboard' ? 'active' : '' }}" data-bs-toggle="tooltip"
-                        data-bs-placement="right" data-bs-title="Dashboard">
-                        <i class='bx bxs-home icon'></i>
-                        <span class="nav-text px-0 mx-0">Dashboard</span>
                     </a>
                 </li>
             @endif

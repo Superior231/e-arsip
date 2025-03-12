@@ -119,13 +119,13 @@
 
     <div class="offcanvas-body mx-0 px-0">
         <ul class="list-unstyled">
+            <li class="{{ $active == 'dashboard' ? 'active' : '' }}">
+                <a href="{{ route('index') }}" class="d-flex align-items-center gap-2">
+                    <i class='bx bxs-home fs-4'></i>
+                    <span class="my-0 py-0">Dashboard</span>
+                </a>
+            </li>
             @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'superadmin')
-                <li class="{{ $active == 'dashboard' ? 'active' : '' }}">
-                    <a href="{{ route('index') }}" class="d-flex align-items-center gap-2">
-                        <i class='bx bxs-home fs-4'></i>
-                        <span class="my-0 py-0">Dashboard</span>
-                    </a>
-                </li>
                 <li class="{{ $active == 'division' ? 'active' : '' }}">
                     <a href="{{ route('division.index') }}" class="d-flex align-items-center gap-2">
                         <i class='bx bxs-label fs-4'></i>
@@ -138,57 +138,53 @@
                         <span class="my-0 py-0">Kategori</span>
                     </a>
                 </li>
-                <li class="{{ $active == 'archive' ? 'active' : '' }}">
-                    <a href="#" class="d-flex align-items-center justify-content-between gap-2"
-                        onclick="toggleArchive()">
+            @endif
+            <li class="{{ $active == 'archive' ? 'active' : '' }}">
+                <a href="#" class="d-flex align-items-center justify-content-between gap-2"
+                    onclick="toggleArchive()">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class='bx bxs-archive fs-4'></i>
+                        <span class="my-0 py-0">Arsip</span>
+                    </div>
+                    <i class='bx bx-chevron-right fs-3' id="archiveIconMobile"></i>
+                </a>
+            </li>
+            <ul class="archive-menu-mobile d-none d-flex flex-column gap-2 my-2 ms-2" style="height: 100%;">
+                <a href="{{ route('archive.index') }}" class="text-decoration-none text-secondary">💠 Semua</a>
+                <a href="{{ route('letterIn.index') }}" class="text-decoration-none text-secondary">💠 Surat
+                    Masuk</a>
+                <a href="{{ route('letterOut.index') }}" class="text-decoration-none text-secondary">💠 Surat
+                    Keluar</a>
+                <a href="{{ route('administrasi.index') }}" class="text-decoration-none text-secondary">💠
+                    Administrasi</a>
+                <a href="{{ route('faktur.index') }}" class="text-decoration-none text-secondary">💠 Faktur</a>
+                <a href="{{ route('laporan.index') }}" class="text-decoration-none text-secondary">💠 Laporan</a>
+                <a href="{{ route('memo.index') }}" class="text-decoration-none text-secondary">💠 Memo</a>
+            </ul>
+            <li class="{{ $active == 'history' ? 'active' : '' }}">
+                <a href="{{ route('history.index') }}" class="d-flex align-items-center gap-2">
+                    <i class='bx bx-history fs-3'></i>
+                    <span class="my-0 py-0">History</span>
+                </a>
+            </li>
+            @if (Auth::user()->roles === 'superadmin')
+                <li class="{{ $active == 'pending' ? 'active' : '' }}">
+                    <a href="{{ route('archive.pending') }}" class="d-flex justify-content-between">
                         <div class="d-flex align-items-center gap-2">
-                            <i class='bx bxs-archive fs-4'></i>
-                            <span class="my-0 py-0">Arsip</span>
+                            <i class='bx bxs-time-five fs-4'></i>
+                            <span class="my-0 py-0">Pending</span>
                         </div>
-                        <i class='bx bx-chevron-right fs-3' id="archiveIconMobile"></i>
+                        <div class="badge rounded-pill bg-danger d-flex align-items-center justify-content-center">
+                            <span>{{ $archive_pending }}</span>
+                        </div>
                     </a>
                 </li>
-                <ul class="archive-menu-mobile d-none d-flex flex-column gap-2 my-2 ms-2" style="height: 100%;">
-                    <a href="{{ route('archive.index') }}" class="text-decoration-none text-secondary">💠 Semua</a>
-                    <a href="{{ route('letterIn.index') }}" class="text-decoration-none text-secondary">💠 Surat Masuk</a>
-                    <a href="{{ route('letterOut.index') }}" class="text-decoration-none text-secondary">💠 Surat Keluar</a>
-                    <a href="{{ route('administrasi.index') }}" class="text-decoration-none text-secondary">💠 Administrasi</a>
-                    <a href="{{ route('faktur.index') }}" class="text-decoration-none text-secondary">💠 Faktur</a>
-                    <a href="{{ route('laporan.index') }}" class="text-decoration-none text-secondary">💠 Laporan</a>
-                    <a href="{{ route('memo.index') }}" class="text-decoration-none text-secondary">💠 Memo</a>
-                </ul>
-                <li class="{{ $active == 'history' ? 'active' : '' }}">
-                    <a href="{{ route('history.index') }}" class="d-flex align-items-center gap-2">
-                        <i class='bx bx-history fs-3'></i>
-                        <span class="my-0 py-0">History</span>
-                    </a>
-                </li>
-                @if (Auth::user()->roles === 'superadmin')
-                    <li class="{{ $active == 'pending' ? 'active' : '' }}">
-                        <a href="{{ route('archive.pending') }}" class="d-flex justify-content-between">
-                            <div class="d-flex align-items-center gap-2">
-                                <i class='bx bxs-time-five fs-4'></i>
-                                <span class="my-0 py-0">Pending</span>
-                            </div>
-                            <div class="badge rounded-pill bg-danger d-flex align-items-center justify-content-center">
-                                <span>{{ $archive_pending }}</span>
-                            </div>
-                        </a>
-                    </li>
-                @endif
+            @endif
+            @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'superadmin')
                 <li class="{{ $active == 'staff' ? 'active' : '' }}">
                     <a href="{{ route('staff.index') }}" class="d-flex align-items-center gap-2">
                         <i class='bx bxs-group fs-4'></i>
                         <span class="my-0 py-0">Staff</span>
-                    </a>
-                </li>
-            @endif
-
-            @if (Auth::user()->roles === 'user')
-                <li class="{{ $active == 'dashboard' ? 'active' : '' }}">
-                    <a href="{{ route('dashboard.user') }}" class="d-flex align-items-center gap-2">
-                        <i class='bx bxs-home fs-4'></i>
-                        <span class="my-0 py-0">Dashboard</span>
                     </a>
                 </li>
             @endif

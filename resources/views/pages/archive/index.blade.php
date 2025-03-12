@@ -68,10 +68,12 @@
             <div class="card p-4 pt-3">
                 <div class="actions d-flex align-items-center justify-content-between">
                     <h4 class="fw-semibold py-0 my-0">{{ $tableTitle }}</h4>
-                    <a href="{{ route('archive.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
-                        <i class='bx bx-plus'></i>
-                        Arsip
-                    </a>
+                    @if (Auth::user()->roles !== 'user')
+                        <a href="{{ route('archive.create') }}" class="btn btn-primary d-flex align-items-center gap-1">
+                            <i class='bx bx-plus'></i>
+                            Arsip
+                        </a>
+                    @endif
                 </div>
                 <hr>
                 <div class="table-responsive">
@@ -206,31 +208,35 @@
                                                             </a>
                                                         @endif
                                                     </li>
-                                                    <li>
-                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="{{ route('archive.edit', $archive->archive_id) }}">
-                                                            <i class='bx bx-pencil fs-5'></i>
-                                                            Edit data
-                                                        </a>
-                                                    </li>
-                                                    @if ($archive->status !== 'approve')
+                                                    @if (Auth::user()->roles !== 'user')
                                                         <li>
-                                                            <form id="deleteArchiveForm-{{ $archive->id }}"
-                                                                action="{{ route('archive.delete', $archive->id) }}"
-                                                                method="POST" class="d-inline">
-                                                                @csrf @method('PUT')
-
-                                                                <input type="hidden" class="form-control" id="status"
-                                                                    name="status" value="delete">
-
-                                                                <a style="cursor: pointer;"
-                                                                    class="dropdown-item d-flex align-items-center gap-1"
-                                                                    onclick="confirmDeleteArchive('{{ $archive->id }}', '{{ $archive->archive_id }}', '{{ $archive->name }}')">
-                                                                    <i class='bx bx-trash fs-5'></i>
-                                                                    Hapus
-                                                                </a>
-                                                            </form>
+                                                            <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                href="{{ route('archive.edit', $archive->archive_id) }}">
+                                                                <i class='bx bx-pencil fs-5'></i>
+                                                                Edit data
+                                                            </a>
                                                         </li>
+                                                    @endif
+                                                    @if (Auth::user()->roles !== 'user')
+                                                        @if ($archive->status !== 'approve')
+                                                            <li>
+                                                                <form id="deleteArchiveForm-{{ $archive->id }}"
+                                                                    action="{{ route('archive.delete', $archive->id) }}"
+                                                                    method="POST" class="d-inline">
+                                                                    @csrf @method('PUT')
+
+                                                                    <input type="hidden" class="form-control"
+                                                                        id="status" name="status" value="delete">
+
+                                                                    <a style="cursor: pointer;"
+                                                                        class="dropdown-item d-flex align-items-center gap-1"
+                                                                        onclick="confirmDeleteArchive('{{ $archive->id }}', '{{ $archive->archive_id }}', '{{ $archive->name }}')">
+                                                                        <i class='bx bx-trash fs-5'></i>
+                                                                        Hapus
+                                                                    </a>
+                                                                </form>
+                                                            </li>
+                                                        @endif
                                                     @endif
                                                 </ul>
                                             </div>
