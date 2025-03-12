@@ -101,9 +101,10 @@ class ArchiveController extends Controller
 
     public function laporan_index()
     {
-        $category = Category::where('name', 'Laporan')->first();
-        if (!empty($category) && $category) {
-            $archives = Archive::with('category')->where('category_id', $category->id)->latest()->get();
+        $categories = Category::where('name', 'LIKE', 'Laporan%')->pluck('id');
+
+        if ($categories->isNotEmpty()) {
+            $archives = Archive::with('category')->whereIn('category_id', $categories)->latest()->get();
         } else {
             $archives = collect();
         }
