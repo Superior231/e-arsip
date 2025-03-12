@@ -62,7 +62,7 @@
                             <h5>
                                 <span
                                     class="badge fs-8 
-                            {{ $letter->status == 'active' ? 'bg-success' : 'bg-secondary' }}">
+                            {{ $letter->status == 'approve' ? 'bg-success' : 'bg-warning text-dark' }}">
                                     {{ $letter->status }}
                                 </span>
                             </h5>
@@ -298,7 +298,7 @@
                         </table>
 
                         <div class="mt-2">
-                            {!! $letter->participant !!}
+                            {!! nl2br(e($letter->participant)) !!}
                         </div>
                         
                         <div class="content mt-2">

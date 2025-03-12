@@ -58,7 +58,7 @@
                             <h5>
                                 <span
                                     class="badge fs-8 
-                            {{ $letter->status == 'active' ? 'bg-success' : 'bg-secondary' }}">
+                            {{ $letter->status == 'approve' ? 'bg-success' : 'bg-warning text-dark' }}">
                                     {{ $letter->status }}
                                 </span>
                             </h5>

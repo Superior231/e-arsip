@@ -194,5 +194,4 @@ const editorConfig = {
 };
 
 ClassicEditor.create(document.querySelector('#content'), editorConfig);
-ClassicEditor.create(document.querySelector('#participant'), editorConfig);
 ClassicEditor.create(document.querySelector('#decision'), editorConfig);
