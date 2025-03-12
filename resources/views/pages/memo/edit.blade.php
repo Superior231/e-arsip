@@ -2,7 +2,7 @@
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.2/ckeditor5.css">
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 @endpush
 
 @section('content')
@@ -22,7 +22,8 @@
             <input type="hidden" class="form-control" id="user_id" name="user_id" value="{{ Auth::user()->id }}">
             <input type="hidden" class="form-control" id="archive_id" name="archive_id" value="{{ $archive->id }}">
             <input type="hidden" class="form-control" id="no_letter" name="no_letter" value="{{ $letter->no_letter }}">
-            <input type="hidden" class="form-control" id="letter_code" name="letter_code" value="{{ $letter->letter_code }}">
+            <input type="hidden" class="form-control" id="letter_code" name="letter_code"
+                value="{{ $letter->letter_code }}">
             <input type="hidden" class="form-control" id="type" name="type" value="{{ $letter->type }}">
 
             <div class="card">
@@ -47,7 +48,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($documents->where('status', 'active') as $document)
+                                    @foreach ($documents->where('status', '!=', 'delete') as $document)
                                         <tr class="align-middle">
                                             <td>
                                                 <div class="position-relative d-flex justify-content-center">
@@ -116,12 +117,9 @@
                 </div>
             </div>
 
-            @if ($archive->category->name === 'Memo')
+            @if (Auth::user()->roles === 'superadmin')
                 <div class="card mt-3">
                     <div class="card-body">
-                        <h4 class="card-title">Data</h4>
-                        <hr class="bg-secondary">
-                        <input type="hidden" name="notulis" value="{{ $letter->notulis }}">
                         <div class="w-100">
                             <label for="status" class="form-label">Status<strong class="text-danger">*</strong></label>
                             <div class="input-group">
@@ -130,11 +128,9 @@
                                 </span>
                                 <select class="form-select @error('status') is-invalid @enderror" id="status"
                                     name="status">
-                                    <option value="active" {{ $letter->status == 'active' ? 'selected' : '' }}>Active
+                                    <option value="approve" {{ $letter->status == 'approve' ? 'selected' : '' }}>Approve
                                     </option>
-                                    <option value="rusak" {{ $letter->status == 'rusak' ? 'selected' : '' }}>Rusak
-                                    </option>
-                                    <option value="hilang" {{ $letter->status == 'hilang' ? 'selected' : '' }}>Hilang
+                                    <option value="pending" {{ $letter->status == 'pending' ? 'selected' : '' }}>Pending
                                     </option>
                                 </select>
                                 @error('status')
@@ -144,6 +140,16 @@
                                 @enderror
                             </div>
                         </div>
+                    </div>
+                </div>
+            @endif
+
+            @if ($archive->category->name === 'Memo')
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h4 class="card-title">Data</h4>
+                        <hr class="bg-secondary">
+                        <input type="hidden" name="notulis" value="{{ $letter->notulis }}">
                         <div class="d-flex flex-column flex-md-row gap-3 w-100">
                             <div class="w-100">
                                 <label for="name" class="form-label">Nama Memo<strong
@@ -179,7 +185,8 @@
                             </div>
                         </div>
                         <div class="w-100">
-                            <label for="detail" class="form-label">Keterangan<strong class="text-danger">*</strong></label>
+                            <label for="detail" class="form-label">Keterangan<strong
+                                    class="text-danger">*</strong></label>
                             <textarea class="form-control @error('detail') is-invalid @enderror" name="detail" rows="3">{{ $letter->detail }}</textarea>
                             @error('detail')
                                 <span class="invalid-feedback" role="alert">
@@ -195,28 +202,6 @@
                         <h4 class="card-title">Data</h4>
                         <hr class="bg-secondary">
                         <input type="hidden" name="notulis" value="{{ $letter->notulis }}">
-                        <div class="w-100">
-                            <label for="status" class="form-label">Status<strong class="text-danger">*</strong></label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1" style="width: 45px;">
-                                    <i class='bx bx-loader-circle'></i>
-                                </span>
-                                <select class="form-select @error('status') is-invalid @enderror" id="status"
-                                    name="status">
-                                    <option value="active" {{ $letter->status == 'active' ? 'selected' : '' }}>Active
-                                    </option>
-                                    <option value="rusak" {{ $letter->status == 'rusak' ? 'selected' : '' }}>Rusak
-                                    </option>
-                                    <option value="hilang" {{ $letter->status == 'hilang' ? 'selected' : '' }}>Hilang
-                                    </option>
-                                </select>
-                                @error('status')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                        </div>
                         <div class="d-flex flex-column flex-md-row gap-3 mb-3 w-100">
                             <div class="w-100">
                                 <label for="name" class="form-label">Nama Notulen<strong
@@ -251,12 +236,14 @@
                                 </div>
                             </div>
                             <div class="w-100">
-                                <label for="place" class="form-label">Tempat<strong class="text-danger">*</strong></label>
+                                <label for="place" class="form-label">Tempat<strong
+                                        class="text-danger">*</strong></label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                         <i class='bx bx-map'></i>
                                     </span>
-                                    <input type="text" class="form-control @error('place') is-invalid @enderror" id="place" name="place" value="{{ $letter->place }}" required>
+                                    <input type="text" class="form-control @error('place') is-invalid @enderror"
+                                        id="place" name="place" value="{{ $letter->place }}" required>
                                     @error('place')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -268,12 +255,14 @@
 
                         <div class="d-flex flex-column flex-md-row gap-3 mb-3 w-100">
                             <div class="w-100">
-                                <label for="chairman" class="form-label">Ketua Rapat<strong class="text-danger">*</strong></label>
+                                <label for="chairman" class="form-label">Ketua Rapat<strong
+                                        class="text-danger">*</strong></label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                         <i class='bx bx-user'></i>
                                     </span>
-                                    <input type="text" class="form-control @error('chairman') is-invalid @enderror" id="chairman" name="chairman" value="{{ $letter->chairman }}" required>
+                                    <input type="text" class="form-control @error('chairman') is-invalid @enderror"
+                                        id="chairman" name="chairman" value="{{ $letter->chairman }}" required>
                                     @error('chairman')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -282,12 +271,16 @@
                                 </div>
                             </div>
                             <div class="w-100">
-                                <label for="chairman_position" class="form-label">Jabatan Ketua<strong class="text-danger">*</strong></label>
+                                <label for="chairman_position" class="form-label">Jabatan Ketua<strong
+                                        class="text-danger">*</strong></label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                         <i class='bx bx-briefcase'></i>
                                     </span>
-                                    <input type="text" class="form-control @error('chairman_position') is-invalid @enderror" id="chairman_position" name="chairman_position" value="{{ $letter->chairman_position }}" required>
+                                    <input type="text"
+                                        class="form-control @error('chairman_position') is-invalid @enderror"
+                                        id="chairman_position" name="chairman_position"
+                                        value="{{ $letter->chairman_position }}" required>
                                     @error('chairman_position')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -296,12 +289,15 @@
                                 </div>
                             </div>
                             <div class="w-100">
-                                <label for="notulis" class="form-label">Notulis<strong class="text-danger">*</strong></label>
+                                <label for="notulis" class="form-label">Notulis<strong
+                                        class="text-danger">*</strong></label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                         <i class='bx bx-user'></i>
                                     </span>
-                                    <input type="text" class="form-control @error('notulis') is-invalid @enderror" id="notulis" name="notulis" value="{{ Auth::user()->name }}" readonly required>
+                                    <input type="text" class="form-control @error('notulis') is-invalid @enderror"
+                                        id="notulis" name="notulis" value="{{ Auth::user()->name }}" readonly
+                                        required>
                                     @error('notulis')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -313,12 +309,14 @@
 
                         <div class="d-flex flex-column flex-md-row gap-3 mb-3 w-100">
                             <div class="w-100">
-                                <label for="date" class="form-label">Tanggal<strong class="text-danger">*</strong></label>
+                                <label for="date" class="form-label">Tanggal<strong
+                                        class="text-danger">*</strong></label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                         <i class='bx bx-calendar-alt'></i>
                                     </span>
-                                    <input type="date" class="form-control @error('date') is-invalid @enderror" id="date" name="date" value="{{ $letter->date }}" required>
+                                    <input type="date" class="form-control @error('date') is-invalid @enderror"
+                                        id="date" name="date" value="{{ $letter->date }}" required>
                                     @error('date')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -327,12 +325,14 @@
                                 </div>
                             </div>
                             <div class="w-100">
-                                <label for="start_time" class="form-label">Waktu Mulai<strong class="text-danger">*</strong></label>
+                                <label for="start_time" class="form-label">Waktu Mulai<strong
+                                        class="text-danger">*</strong></label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                         <i class='bx bx-time'></i>
                                     </span>
-                                    <input type="time" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ $letter->start_time }}" required>
+                                    <input type="time" class="form-control @error('start_time') is-invalid @enderror"
+                                        id="start_time" name="start_time" value="{{ $letter->start_time }}" required>
                                     @error('start_time')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -341,12 +341,14 @@
                                 </div>
                             </div>
                             <div class="w-100">
-                                <label for="end_time" class="form-label">Waktu Selesai<strong class="text-danger">*</strong></label>
+                                <label for="end_time" class="form-label">Waktu Selesai<strong
+                                        class="text-danger">*</strong></label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1" style="width: 45px">
                                         <i class='bx bx-time'></i>
                                     </span>
-                                    <input type="time" class="form-control @error('end_time') is-invalid @enderror" id="end_time" name="end_time" value="{{ $letter->end_time }}" required>
+                                    <input type="time" class="form-control @error('end_time') is-invalid @enderror"
+                                        id="end_time" name="end_time" value="{{ $letter->end_time }}" required>
                                     @error('end_time')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -357,7 +359,8 @@
                         </div>
 
                         <div class="w-100">
-                            <label for="participant" class="form-label">Partisipan<strong class="text-danger">*</strong></label>
+                            <label for="participant" class="form-label">Partisipan<strong
+                                    class="text-danger">*</strong></label>
                             <textarea class="form-control @error('participant') is-invalid @enderror" id="participant" name="participant">{{ $letter->participant }}</textarea>
                             @error('participant')
                                 <span class="invalid-feedback" role="alert">
@@ -373,7 +376,8 @@
                         <h4 class="card-title">Content</h4>
                         <hr class="bg-secondary">
                         <div class="w-100">
-                            <label for="content" class="form-label">Isi Rapat<strong class="text-danger">*</strong></label>
+                            <label for="content" class="form-label">Isi Rapat<strong
+                                    class="text-danger">*</strong></label>
                             <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content">{{ $letter->content }}</textarea>
                             @error('content')
                                 <span class="invalid-feedback" role="alert">
@@ -382,7 +386,8 @@
                             @enderror
                         </div>
                         <div class="w-100 mt-3">
-                            <label for="decision" class="form-label">Kesimpulan Rapat<strong class="text-danger">*</strong></label>
+                            <label for="decision" class="form-label">Kesimpulan Rapat<strong
+                                    class="text-danger">*</strong></label>
                             <textarea class="form-control @error('decision') is-invalid @enderror" id="decision" name="decision">{{ $letter->decision }}</textarea>
                             @error('decision')
                                 <span class="invalid-feedback" role="alert">
@@ -519,4 +524,3 @@
     </script>
     <script type="module" src="{{ url('assets/js/ckeditor.js') }}"></script>
 @endpush
-

@@ -88,7 +88,6 @@
                                 <th class="text-nowrap">Nama Arsip</th>
                                 <th>Kategori</th>
                                 <th>Tanggal</th>
-                                <th class="text-center">Status</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -125,7 +124,6 @@
                                             '{{ $archive->archive_id }}',
                                             '{{ $archive->archive_code }}',
                                             '{{ $archive->name }}',
-                                            '{{ $archive->status }}',
                                             '{{ $archive->detail }}',
                                             '{{ $archive->date }}'
                                         )">
@@ -158,11 +156,6 @@
                                         <span class="d-none">{{ $archive->date }}</span>
                                         <span>
                                             {{ \Carbon\Carbon::parse($archive->date)->format('d M Y') }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center pe-4">
-                                        <span
-                                            class="badge {{ $archive->status == 'approve' ? 'bg-success text-light' : ($archive->status == 'pending' ? 'bg-warning text-dark' : 'bg-secondary') }}">{{ $archive->status }}
                                         </span>
                                     </td>
                                     <td>
@@ -321,17 +314,6 @@
                         <table>
                             <tr>
                                 <td>
-                                    <h5>Status</h5>
-                                </td>
-                                <td>
-                                    <h5>&nbsp;:&nbsp;</h5>
-                                </td>
-                                <td>
-                                    <h5><span id="detailArchiveStatus" class="badge fs-8"></span></h5>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
                                     <h5>Arsip ID</h5>
                                 </td>
                                 <td>
@@ -476,7 +458,7 @@
         function showDetailArchive(
             divisionName, divisionPlace, categoryName,
             archiveId, archiveCode, archiveName,
-            archiveStatus, archiveDetail, archiveDate) {
+            archiveDetail, archiveDate) {
 
             $('#detailArchiveId').text(archiveId);
             $('#detailArchiveCode').text(archiveCode);
@@ -489,14 +471,6 @@
                 day: 'numeric'
             }).format(new Date(archiveDate)));
             $('#detailArchiveDetail').text(archiveDetail ? archiveDetail : '-');
-
-            // Atur status dengan warna yang sesuai
-            let statusClass = archiveStatus === 'approve' ? 'bg-success' :
-                archiveStatus === 'pending' ? 'bg-warning text-dark' :
-                'bg-secondary';
-
-            $('#detailArchiveStatus').text(archiveStatus).removeClass('bg-success bg-warning text-dark bg-secondary')
-                .addClass(statusClass);
 
             // Atur QR Code untuk arsip
             let archiveQrCode =

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('archive_id');
             $table->string('archive_code');
             $table->string('name');
-            $table->enum('status', ['pending', 'approve', 'delete'])->default('pending');
+            $table->enum('status', ['active', 'delete'])->default('active');
             $table->string('image')->nullable();
             $table->text('detail')->nullable();
             $table->date('date');

@@ -70,7 +70,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($documents->where('status', 'active') as $document)
+                                    @foreach ($documents->where('status', '!=', 'delete') as $document)
                                         <tr class="align-middle">
                                             <td>
                                                 <div class="position-relative d-flex justify-content-center">
@@ -162,6 +162,33 @@
                 </div>
             </div>
 
+            @if (Auth::user()->roles === 'superadmin')
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="w-100">
+                            <label for="status" class="form-label">Status<strong class="text-danger">*</strong></label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1" style="width: 45px;">
+                                    <i class='bx bx-loader-circle'></i>
+                                </span>
+                                <select class="form-select @error('status') is-invalid @enderror" id="status"
+                                    name="status">
+                                    <option value="approve" {{ $letter->status == 'approve' ? 'selected' : '' }}>Approve
+                                    </option>
+                                    <option value="pending" {{ $letter->status == 'pending' ? 'selected' : '' }}>Pending
+                                    </option>
+                                </select>
+                                @error('status')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="card mt-3">
                 <div class="card-body">
                     <h4 class="card-title">Data</h4>
@@ -210,28 +237,6 @@
 
                     <div class="d-flex flex-column flex-md-row gap-3 w-100">
                         <div class="w-100">
-                            <label for="status" class="form-label">Status<strong class="text-danger">*</strong></label>
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1" style="width: 45px;">
-                                    <i class='bx bx-loader-circle'></i>
-                                </span>
-                                <select class="form-select @error('status') is-invalid @enderror" id="status"
-                                    name="status">
-                                    <option value="active" {{ $letter->status == 'active' ? 'selected' : '' }}>Active
-                                    </option>
-                                    <option value="rusak" {{ $letter->status == 'rusak' ? 'selected' : '' }}>Rusak
-                                    </option>
-                                    <option value="hilang" {{ $letter->status == 'hilang' ? 'selected' : '' }}>Hilang
-                                    </option>
-                                </select>
-                                @error('status')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="w-100">
                             <label for="type" class="form-label">Type Surat<strong
                                     class="text-danger">*</strong></label>
                             <div class="input-group">
@@ -244,7 +249,8 @@
                                         Masuk</option>
                                     <option value="letter_out" {{ $letter->type == 'letter_out' ? 'selected' : '' }}>Surat
                                         Keluar</option>
-                                    <option value="faktur" {{ $letter->type == 'faktur' ? 'selected' : '' }}>Faktur</option>
+                                    <option value="faktur" {{ $letter->type == 'faktur' ? 'selected' : '' }}>Faktur
+                                    </option>
                                 </select>
                                 @error('type')
                                     <span class="invalid-feedback" role="alert">
@@ -298,7 +304,7 @@
         </form>
     </div>
 
-    <form id="deleteDocumentForm" action="" method="POST" style="display: none;">
+    <form id="deleteDocumentForm" action="" method="POST" style="dissplay: none;">
         @csrf
         @method('PUT')
         <input type="hidden" class="form-control" id="status" name="status" value="delete">

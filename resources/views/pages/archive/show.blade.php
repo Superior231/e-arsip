@@ -67,23 +67,6 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <h5>Status</h5>
-                                    </td>
-                                    <td>
-                                        <h5>&nbsp;:&nbsp;</h5>
-                                    </td>
-                                    <td>
-                                        <h5>
-                                            <span
-                                                class="badge fs-8 
-                            {{ $archive->status == 'approve' ? 'bg-success' : ($archive->status == 'pending' ? 'bg-warning text-dark' : 'bg-secondary') }}">
-                                                {{ $archive->status }}
-                                            </span>
-                                        </h5>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
                                         <h5>Arsip ID</h5>
                                     </td>
                                     <td>
@@ -174,15 +157,6 @@
                         <div
                             class="actions d-flex flex-column flex-md-row gap-2 justify-content-between align-items-center mb-3 w-100">
                             <div class="print-select d-flex flex-column flex-md-row align-items-center gap-2">
-                                @if (Auth::user()->roles === 'superadmin')
-                                    <a style="cursor: pointer;"
-                                        class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                                        data-bs-toggle="modal" data-bs-target="#editStatusModal"
-                                        onclick="editStatus('{{ $archive->id }}', '{{ $archive->status }}')">
-                                        <i class='bx bx-loader-circle'></i>
-                                        Status
-                                    </a>
-                                @endif
                                 <a href="#"
                                     class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
                                     id="printSelectLetterList">
@@ -312,7 +286,7 @@
                                             <td>
                                                 <div class="d-flex justify-content-center">
                                                     <span
-                                                        class="badge {{ $letter->status == 'active' ? 'bg-success text-light' : 'bg-warning text-dark' }} me-3">{{ $letter->status }}</span>
+                                                        class="badge {{ $letter->status == 'approve' ? 'bg-success text-light' : 'bg-warning text-dark' }} me-3 status-badge">{{ $letter->status }}</span>
                                                 </div>
                                             </td>
                                             <td>
@@ -494,6 +468,20 @@
     </div>
 
 
+    @if (Auth::user()->roles === 'superadmin')
+        <div class="d-none" style="position: fixed; bottom: 20px; right: 20px;" id="approveLetter">
+            <form action="{{ route('letter.approve') }}" method="POST" id="approveLetterForm">
+                @csrf
+                <input type="hidden" name="no_letters" id="selectedCodes">
+                <button type="button" id="approveLetterBtn"
+                    class="btn btn-success py-2 px-4 rounded-pill d-flex align-items-center justify-content-center gap-1">
+                    <i class='bx bx-check-circle'></i>
+                    <span>Approve</span>
+                </button>
+            </form>
+        </div>
+    @endif
+
 
     <!-- Modal -->
     <div class="modal fade" id="detailLetterModal" tabindex="-1" aria-labelledby="detailItemModalLabel"
@@ -654,49 +642,6 @@
             </div>
         </div>
     </div>
-
-    @if (Auth::user()->roles === 'superadmin')
-        <div class="modal fade" id="editStatusModal" tabindex="-1" aria-labelledby="editStatusModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="editStatusModalLabel">Edit Status</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="editStatusForm" action="" method="POST">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="status" class="form-label">Status</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1" style="width: 45px;">
-                                        <i class='bx bx-loader-circle'></i>
-                                    </span>
-                                    <select class="form-select @error('status') is-invalid @enderror" id="status"
-                                        name="status">
-                                        <option value="pending" id="selectPending">Pending</option>
-                                        <option value="approve" id="selectApprove">Approve</option>
-                                    </select>
-                                    @error('status')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endif
 @endsection
 
 @push('scripts')
@@ -732,18 +677,6 @@
                         <img src="${imageUrl}" alt="image">`;
                 });
             }
-        }
-
-        function editStatus(id, status) {
-            $('#archive_id').val(id);
-            $('#status').val(status);
-            if (status === 'approve') {
-                $('#selectApprove').attr('selected', true);
-            } else {
-                $('#selectPending').attr('selected', true);
-            }
-            $('#editStatusForm').attr('action', "{{ route('archive.update', '') }}" + '/' + id);
-            $('#editStatusModal').modal('show');
         }
 
         function showDetailLetter(
@@ -847,6 +780,10 @@
             const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
             const printSelectLetterList = document.getElementById("printSelectLetterList");
             const printSelectBarcodeLetterList = document.getElementById("printSelectBarcodeLetterList");
+            const approveLetter = document.getElementById("approveLetter");
+            const approveLetterForm = document.getElementById("approveLetterForm");
+            const approveLetterBtn = document.getElementById("approveLetterBtn");
+            const selectedCodesInput = document.getElementById("selectedCodes");
 
             function getSelectedCodes() {
                 let selectedCodes = [];
@@ -858,11 +795,68 @@
                 return selectedCodes.join("-");
             }
 
+            function getSelectedApproveCodes() {
+                let selectedCodes = [];
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        const row = checkbox.closest("tr");
+                        const statusBadge = row.querySelector(".status-badge"); // Ambil status
+                        if (statusBadge && statusBadge.textContent.trim().toLowerCase() !== "approve") {
+                            selectedCodes.push(checkbox.value);
+                        }
+                    }
+                });
+                return selectedCodes;
+            }
+
+            function toggleApproveButton() {
+                const selectedCodes = getSelectedApproveCodes();
+                approveLetter.classList.toggle("d-flex", selectedCodes.length > 0);
+                approveLetter.classList.toggle("d-none", selectedCodes.length === 0);
+            }
+
+            // Event listener untuk checkAll
             checkAll.addEventListener("change", function() {
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = checkAll.checked;
                 });
+                toggleApproveButton();
             });
+
+            // Event listener untuk setiap checkbox
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", toggleApproveButton);
+            });
+
+
+            @if (Auth::user()->roles === 'superadmin')
+                approveLetterBtn.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    let selectedCodes = getSelectedApproveCodes();
+                    if (selectedCodes.length === 0) return;
+
+                    selectedCodesInput.value = selectedCodes.join(",");
+                    Swal.fire({
+                        icon: 'question',
+                        title: 'Anda Yakin?',
+                        html: `Apakah Anda yakin ingin menyetujui <b class="text-primary">${selectedCodes.join(", ")}</b>?`,
+                        showCancelButton: true,
+                        confirmButtonText: 'Approve',
+                        customClass: {
+                            popup: 'sw-popup',
+                            title: 'sw-title',
+                            closeButton: 'sw-close',
+                            confirmButton: 'btn-success bg-success border-0 shadow-none',
+                            cancelButton: 'btn-secondary'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            approveLetterForm.submit();
+                        }
+                    });
+                });
+            @endif
 
             printSelectLetterList.addEventListener("click", function(e) {
                 e.preventDefault();

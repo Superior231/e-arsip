@@ -136,32 +136,6 @@ class LetterController extends Controller
             }
         }
 
-        $archive = Archive::findOrFail($request->archive_id);
-        $oldStatus = $archive->status;
-        $updates = [];
-
-        // Jika status archive bukan pending, ubah ke pending
-        if ($oldStatus !== 'pending') {
-            $archive->status = 'pending';
-            $archive->save();
-            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penambahan surat baru";
-
-            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
-            if (!empty($updates)) {
-                $description .= "\n" . implode(", \n", $updates);
-            }
-
-            History::create([
-                'type_id' => $archive->id,
-                'title' => 'Update Status Arsip',
-                'name' => $archive->archive_id . ' - ' . $archive->name,
-                'description' => $description . '.',
-                'type' => 'archive',
-                'method' => 'update status',
-                'user_id' => Auth::user()->id,
-            ]);
-        }
-
         if ($letter) {
             $type = [];
             if ($letter->type == 'letter_in') {
@@ -229,17 +203,10 @@ class LetterController extends Controller
     
     public function update(Request $request, $no_letter)
     {
-        $request->validate([
-            'no_letter' => 'required',
-            'letter_code' => 'required',
-            'name' => 'required',
-        ], [
-            'no_letter.required' => 'Nomor surat harus diisi!',
-            'letter_code.required' => 'Kode surat harus diisi!',
-            'name.required' => 'Judul surat harus diisi!',
-        ]);
-
         $letter = Letter::findOrFail($no_letter);
+        $isUpdateStatus = false;
+        $isUpdate = false;
+        $updates = [];
 
         $oldLetterCode = $letter->letter_code;
         if ($letter->item_id !== null) {
@@ -254,30 +221,27 @@ class LetterController extends Controller
         $oldDate = $letter->date;
         $oldFile = $letter->file;
 
-        $letter->letter_code = $request->letter_code;
+        $request->validate([
+            'no_letter' => 'required',
+            'letter_code' => 'required',
+            'name' => 'required',
+        ], [
+            'no_letter.required' => 'Nomor surat harus diisi!',
+            'letter_code.required' => 'Kode surat harus diisi!',
+            'name.required' => 'Judul surat harus diisi!',
+        ]);
+
+
         if ($letter->item_id !== null) {
             $letter->item_id = $request->item_id;
         }
-        $letter->name = $request->name;
-        $letter->status = $request->status;
-        $letter->type = $request->type;
-        $letter->content = $request->content;
-        $letter->detail = $request->detail;
-        $letter->date = $request->date;
-
         if ($letter->item_id !== null) {
             $newItem = Item::find($request->item_id);
             $newItemName = $newItem ? '[' . $newItem->inventory->name . ' => ' . $newItem->name . ']' : $oldItemId;
         }
-
-        $letter->save();
-
-        $isUpdateStatus = false;
-        $isUpdate = false;
-        $updates = [];
-
-        if ($oldStatus !== $request->status) {
-            $updates[] = "Status surat dari '$oldStatus' menjadi '$request->status'";
+        if (Auth::user()->roles == 'superadmin' && $oldStatus !== $request->status) {
+            $letter->status = $request->status;
+            $updates[] = "Status dari '$oldStatus' menjadi '$request->status'";
             $isUpdateStatus = true;
         }
         if ($oldType !== $request->type) {
@@ -311,6 +275,20 @@ class LetterController extends Controller
             $isUpdate = true;
         }
 
+        // Cek apakah status bukan 'pending'
+        if ($isUpdate && $oldStatus !== 'pending') {
+            $letter->status = 'pending';
+            $updates[] = "Status otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
+            $isUpdateStatus = true;
+        }
+
+        $letter->letter_code = $request->letter_code;
+        $letter->name = $request->name;
+        $letter->type = $request->type;
+        $letter->content = $request->content;
+        $letter->detail = $request->detail;
+        $letter->date = $request->date;
+        $letter->save();
 
         $methods = [];
         if ($isUpdateStatus) {
@@ -336,29 +314,6 @@ class LetterController extends Controller
 
         if (empty($updates)) {
             return redirect()->route('archive.show', $letter->archive->archive_id)->with('error', 'Tidak ada perubahan yang dilakukan!');
-        }
-        
-        // Cek apakah status archive bukan 'pending'
-        $archive = $letter->archive;
-        if ($archive->status !== 'pending') {
-            $archive->status = 'pending';
-            $archive->save();
-            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
-
-            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
-            if (!empty($updates)) {
-                $description .= "\n" . implode(", \n", $updates);
-            }
-
-            History::create([
-                'type_id' => $archive->id,
-                'title' => 'Update Status Arsip',
-                'name' => $archive->archive_id . ' - ' . $archive->name,
-                'description' => $description . '.',
-                'type' => 'archive',
-                'method' => 'update status',
-                'user_id' => Auth::user()->id,
-            ]);
         }
 
         $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";
@@ -480,5 +435,36 @@ class LetterController extends Controller
             'histories' => $histories,
             'items' => $items
         ]);
+    }
+
+    public function approve_letter(Request $request)
+    {
+        if (Auth::user()->roles === 'superadmin') {
+           $no_lettes = explode(',', $request->no_letters);
+
+            if (empty($no_lettes)) {
+                return redirect()->back()->with('error', 'Tidak ada yang dipilih!');
+            }
+
+            Letter::whereIn('no_letter', $no_lettes)->update(['status' => 'approve']);
+
+            foreach ($no_lettes as $no_letter) {
+                $letter = Letter::where('no_letter', $no_letter)->first();
+                $description = "[" . $no_letter . ' - ' . $letter->name . "] diapprove oleh " . Auth::user()->name . ".";
+                History::create([
+                    'type_id' => $letter->archive->id,
+                    'title' => "Update Status",
+                    'name' => $letter->no_letter . ' - ' . $letter->name,
+                    'description' => $description,
+                    'type' => $letter->type,
+                    'method' => 'update status',
+                    'user_id' => Auth::user()->id,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Surat berhasil diapprove!');
+        } else {
+            return redirect()->back()->with('error', 'Oppss... terjadi kesalahan!');
+        }
     }
 }

@@ -39,6 +39,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::put('/letter/{archive_id}', [LetterController::class, 'update'])->name('letter.update');
     Route::put('/letter/delete/{id}', [LetterController::class, 'delete_letter'])->name('letter.delete');
     Route::get('/letter/reply/{no_letter}', [LetterController::class, 'letter_reply'])->name('letter.reply');
+    Route::post('/letter/approve', [LetterController::class, 'approve_letter'])->name('letter.approve');
     Route::get('/letter/inventory/{no_letter}', [ArchiveController::class, 'inventory_detail'])->name('inventory.detail');
 
     Route::get('/surat-masuk', [LetterController::class, 'letterIn_index'])->name('letterIn.index');

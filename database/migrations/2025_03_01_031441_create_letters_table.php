@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('letter_code');
             $table->enum('type', ['letter_in', 'letter_out', 'faktur', 'memo', 'notulen'])->default('letter_out');
             $table->text('name');
-            $table->enum('status', ['active', 'rusak', 'hilang', 'delete'])->default('active');
+            $table->enum('status', ['approve', 'pending', 'delete'])->default('pending');
             $table->longText('content')->nullable();;
             $table->text('detail')->nullable();
             $table->date('date');

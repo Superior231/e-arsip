@@ -121,32 +121,6 @@ class MemoController extends Controller
             }
         }
 
-        $archive = Archive::findOrFail($request->archive_id);
-        $oldStatus = $archive->status;
-        $updates = [];
-
-        // Jika status archive bukan pending, ubah ke pending
-        if ($oldStatus !== 'pending') {
-            $archive->status = 'pending';
-            $archive->save();
-            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penambahan surat baru";
-
-            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
-            if (!empty($updates)) {
-                $description .= "\n" . implode(", \n", $updates);
-            }
-
-            History::create([
-                'type_id' => $archive->id,
-                'title' => 'Update Status Arsip',
-                'name' => $archive->archive_id . ' - ' . $archive->name,
-                'description' => $description . '.',
-                'type' => 'archive',
-                'method' => 'update status',
-                'user_id' => Auth::user()->id,
-            ]);
-        }
-
         if ($letter) {
             $type = [];
             if ($letter->type == 'memo') {
@@ -208,17 +182,10 @@ class MemoController extends Controller
 
     public function update(Request $request, $no_letter)
     {
-        $request->validate([
-            'no_letter' => 'required',
-            'letter_code' => 'required',
-            'name' => 'required',
-        ], [
-            'no_letter.required' => 'Nomor surat harus diisi!',
-            'letter_code.required' => 'Kode surat harus diisi!',
-            'name.required' => 'Judul surat harus diisi!',
-        ]);
-
         $letter = Letter::findOrFail($no_letter);
+        $isUpdateStatus = false;
+        $isUpdate = false;
+        $updates = [];
 
         $oldLetterCode = $letter->letter_code;
         $oldLetterName = $letter->name;
@@ -236,32 +203,20 @@ class MemoController extends Controller
         $oldNotulis = $letter->notulis;
         $oldParticipant = $letter->participant;
         $oldDecision = $letter->decision;
+
+        $request->validate([
+            'no_letter' => 'required',
+            'letter_code' => 'required',
+            'name' => 'required',
+        ], [
+            'no_letter.required' => 'Nomor surat harus diisi!',
+            'letter_code.required' => 'Kode surat harus diisi!',
+            'name.required' => 'Judul surat harus diisi!',
+        ]);
+
         
-
-        $letter->letter_code = $request->letter_code;
-        $letter->name = $request->name;
-        $letter->status = $request->status;
-        $letter->type = $request->type;
-        $letter->content = $request->content;
-        $letter->detail = $request->detail;
-        $letter->date = $request->date;
-        $letter->start_time = $request->start_time;
-        $letter->end_time = $request->end_time;
-        $letter->place = $request->place;
-        $letter->event = $request->event;
-        $letter->chairman = $request->chairman;
-        $letter->chairman_position = $request->chairman_position;
-        $letter->notulis = $request->notulis;
-        $letter->participant = $request->participant;
-        $letter->decision = $request->decision;
-
-        $letter->save();
-
-        $isUpdateStatus = false;
-        $isUpdate = false;
-        $updates = [];
-
-        if ($oldStatus !== $request->status) {
+        if (Auth::user()->roles == 'superadmin' && $oldStatus !== $request->status) {
+            $letter->status = $request->status;
             $updates[] = "Status dari '$oldStatus' menjadi '$request->status'";
             $isUpdateStatus = true;
         }
@@ -322,6 +277,29 @@ class MemoController extends Controller
             $isUpdate = true;
         }
 
+        // Cek apakah status bukan 'pending'
+        if ($isUpdate && $oldStatus !== 'pending') {
+            $letter->status = 'pending';
+            $updates[] = "Status otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
+            $isUpdateStatus = true;
+        }
+
+        $letter->letter_code = $request->letter_code;
+        $letter->name = $request->name;
+        $letter->type = $request->type;
+        $letter->content = $request->content;
+        $letter->detail = $request->detail;
+        $letter->date = $request->date;
+        $letter->start_time = $request->start_time;
+        $letter->end_time = $request->end_time;
+        $letter->place = $request->place;
+        $letter->event = $request->event;
+        $letter->chairman = $request->chairman;
+        $letter->chairman_position = $request->chairman_position;
+        $letter->notulis = $request->notulis;
+        $letter->participant = $request->participant;
+        $letter->decision = $request->decision;
+        $letter->save();
 
         $methods = [];
         if ($isUpdateStatus) {
@@ -343,29 +321,6 @@ class MemoController extends Controller
 
         if (empty($updates)) {
             return redirect()->route('archive.show', $letter->archive->archive_id)->with('error', 'Tidak ada perubahan yang dilakukan!');
-        }
-        
-        // Cek apakah status archive bukan 'pending'
-        $archive = $letter->archive;
-        if ($archive->status !== 'pending') {
-            $archive->status = 'pending';
-            $archive->save();
-            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
-
-            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
-            if (!empty($updates)) {
-                $description .= "\n" . implode(", \n", $updates);
-            }
-
-            History::create([
-                'type_id' => $archive->id,
-                'title' => 'Update Status Arsip',
-                'name' => $archive->archive_id . ' - ' . $archive->name,
-                'description' => $description . '.',
-                'type' => 'archive',
-                'method' => 'update status',
-                'user_id' => Auth::user()->id,
-            ]);
         }
 
         $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";

@@ -221,8 +221,6 @@ class ArchiveController extends Controller
     public function update(Request $request, string $id)
     {
         $archive = Archive::findOrFail($id);
-        $isUpdateStatus = false;
-        $isUpdate = false;
         $updates = [];
 
         // Simpan nilai lama sebelum update
@@ -231,36 +229,9 @@ class ArchiveController extends Controller
         $oldId = $archive->archive_id;
         $oldCode = $archive->archive_code;
         $oldName = $archive->name;
-        $oldStatus = $archive->status;
         $oldImage = $archive->image;
         $oldDetail = $archive->detail;
         $oldDate = $archive->date;
-
-        // Jika hanya status yang diupdate
-        if ($request->has('status')) {
-            if (Auth::user()->roles == 'superadmin' && $archive->status !== $request->status) {
-                $updates[] = "Status arsip dari '$oldStatus' menjadi '$request->status'";
-                $archive->status = $request->status;
-                $archive->save();
-
-                $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
-                if (!empty($updates)) {
-                    $description .= "\n" . implode(", \n", $updates);
-                }
-
-                History::create([
-                    'type_id' => $archive->id,
-                    'title' => "Update Status Arsip",
-                    'name' => $archive->archive_id . ' - ' . $archive->name,
-                    'description' => $description . '.',
-                    'type' => 'archive',
-                    'method' => 'update status',
-                    'user_id' => Auth::user()->id,
-                ]);
-
-                return redirect()->route('archive.show', [$archive->archive_id])->with('success', 'Status arsip berhasil diperbarui!');
-            }
-        }
 
         $request->validate([
             'name' => 'required|max:255',
@@ -286,30 +257,18 @@ class ArchiveController extends Controller
 
         if ($oldDivision->id !== $newDivision->id) {
             $updates[] = "Divisi dari '{$oldDivision->name} ({$oldDivision->place})' menjadi '{$newDivision->name} ({$newDivision->place})'";
-            $isUpdate = true;
         }
         if ($oldCategory->id !== $newCategory->id) {
             $updates[] = "Kategori dari '{$oldCategory->name}' menjadi '{$newCategory->name}'";
-            $isUpdate = true;
         }
         if ($oldName !== $request->name) {
             $updates[] = "Nama arsip dari '$oldName' menjadi '$request->name'";
-            $isUpdate = true;
         }
         if ($oldDate !== $request->date) {
             $updates[] = "Tanggal pengadaan arsip dari '$oldDate' menjadi '$request->date'";
-            $isUpdate = true;
         }
         if ($oldDetail !== $request->detail) {
             $updates[] = "Detail arsip dari '$oldDetail' menjadi '$request->detail'";
-            $isUpdate = true;
-        }
-
-        // Cek perubahan status (hanya superadmin yang bisa mengubahnya)
-        if (Auth::user()->roles == 'superadmin' && $oldStatus !== $request->status) {
-            $updates[] = "Status arsip dari '$oldStatus' menjadi '$request->status'";
-            $isUpdateStatus = true;
-            $archive->status = $request->status;
         }
 
         // Cek perubahan gambar
@@ -323,7 +282,6 @@ class ArchiveController extends Controller
 
             if ($oldImage !== $fileName) {
                 $updates[] = "Gambar arsip dari '$oldImage' menjadi '$fileName'";
-                $isUpdate = true;
             }
 
             Storage::disk('public')->put('archive/' . $fileName, (string) $image);
@@ -336,14 +294,6 @@ class ArchiveController extends Controller
             $archive->archive_code = $archive_code;
 
             $updates[] = "Kode arsip dari '$oldCode' menjadi '$archive_code'";
-            $isUpdate = true;
-        }
-
-        // Jika ada perubahan selain status dan status saat ini bukan pending, ubah status menjadi pending
-        if ($isUpdate && $oldStatus !== 'pending') {
-            $archive->status = 'pending';
-            $isUpdateStatus = true;
-            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada perubahan data";
         }
 
         // Simpan perubahan data
@@ -355,16 +305,6 @@ class ArchiveController extends Controller
         $archive->date = $request->date;
         $archive->save();
 
-        $methods = [];
-        if ($isUpdateStatus) {
-            $methods[] = 'update status';
-        }
-        if ($isUpdate) {
-            $methods[] = 'update';
-        }
-
-        $title = count($methods) > 1 ? "Update Arsip dan Status" : (in_array('update status', $methods) ? "Update Status Arsip" : "Update Arsip");
-        $method = implode(', ', $methods);
         $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
 
         // Cek apakah ada perubahan atau tidak
@@ -373,11 +313,11 @@ class ArchiveController extends Controller
 
             History::create([
                 'type_id' => $archive->id,
-                'title' => $title,
+                'title' => 'Update Arsip',
                 'name' => $archive->archive_id . ' - ' . $archive->name,
                 'description' => $description . '.',
                 'type' => 'archive',
-                'method' => $method,
+                'method' => 'update',
                 'user_id' => Auth::user()->id,
             ]);
             return redirect()->route('archive.index')->with('success', 'Arsip berhasil diupdate!');
@@ -431,29 +371,24 @@ class ArchiveController extends Controller
         $archive = Archive::findOrFail($id);
         $oldCode = $archive->archive_id;
         $oldName = $archive->name;
+        $archive->status = $request->status;
+        $archive->save();
+    
+        $description = "Arsip [" . $oldCode . ' - ' . $oldName . "] dihapus oleh " . Auth::user()->name . ".";
 
-        if ($archive->status !== 'approve' && $request->status !== 'approve') {
-            $archive->status = $request->status;
-            $archive->save();
-        
-            $description = "Arsip [" . $oldCode . ' - ' . $oldName . "] dihapus oleh " . Auth::user()->name . ".";
-
-            if ($archive) {
-                History::create([
-                    'type_id' => $archive->id,
-                    'title' => "Hapus Arsip",
-                    'name' => $oldCode . ' - ' . $oldName,
-                    'description' => $description,
-                    'type' => 'archive',
-                    'method' => 'delete',
-                    'user_id' => Auth::user()->id,
-                ]);
-                return redirect()->route('archive.index')->with('success', 'Arsip berhasil dihapus!');
-            } else {
-                return redirect()->route('archive.index')->with('error', 'Arsip gagal dihapus!');
-            }
+        if ($archive) {
+            History::create([
+                'type_id' => $archive->id,
+                'title' => "Hapus Arsip",
+                'name' => $oldCode . ' - ' . $oldName,
+                'description' => $description,
+                'type' => 'archive',
+                'method' => 'delete',
+                'user_id' => Auth::user()->id,
+            ]);
+            return redirect()->route('archive.index')->with('success', 'Arsip berhasil dihapus!');
         } else {
-                return redirect()->route('archive.index')->with('error', 'Opss... terjadi kesalahan!');
+            return redirect()->route('archive.index')->with('error', 'Arsip gagal dihapus!');
         }
     }
 }
