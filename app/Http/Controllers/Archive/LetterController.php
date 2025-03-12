@@ -282,7 +282,20 @@ class LetterController extends Controller
             $isUpdateStatus = true;
         }
 
-        $letter->letter_code = $request->letter_code;
+
+        if ($request->type == 'letter_out' || $request->type == 'faktur') {
+            $date = Carbon::parse($request->date);
+            $month = str_pad($date->month, 2, '0', STR_PAD_LEFT);
+            $year = $date->year;
+
+            $oldLetterCode = $letter->letter_code;
+            $oldLetterCodeExploded = explode('/', $oldLetterCode);
+            $oldLetterCode = $oldLetterCodeExploded[0];
+            $formattedLetterCode = $oldLetterCode . "/{$letter->archive->division->name}/{$letter->archive->division->place}/{$month}/{$year}";
+        } else {
+            $formattedLetterCode = $request->letter_code;
+        }
+        $letter->letter_code = $formattedLetterCode;
         $letter->name = $request->name;
         $letter->type = $request->type;
         $letter->content = $request->content;
