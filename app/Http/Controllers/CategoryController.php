@@ -102,6 +102,11 @@ class CategoryController extends Controller
             $isUpdateStatus = true;
         }
 
+        // Jika nama berubah, update slug juga
+        if ($isUpdate) {
+            $category->slug = $category->generateSlug($request->name);
+        }
+
         // Update data dengan nilai baru
         $category->name = $request->name;
         $category->status = $request->status;

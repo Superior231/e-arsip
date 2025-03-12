@@ -25,10 +25,11 @@ class Category extends Model
         }
     }
 
-    private function generateSlug($name)
+    public function generateSlug($name)
     {
         $nameToSlug = [
             'Administrasi' => 'ADM',
+            'Berita Acara' => 'BAC',
             'Faktur' => 'FKT',
             'Surat' => 'SRT',
             'Surat Masuk' => 'SMK',
