@@ -22,8 +22,6 @@
             .letter-body p,
             .letter-body span {
                 margin-bottom: 0px !important;
-                margin: 0px !important;
-                padding: 0px !important;
                 line-height: 1.5 !important;
                 white-space: wrap !important;
             }

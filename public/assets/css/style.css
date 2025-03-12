@@ -848,15 +848,37 @@ input[type="checkbox"] {
 
 
 /* CKeditor */
-.ck-editor__editable {
-    height: 400px;
-    overflow-y: auto !important;
-    border-radius: 0px 0px 10px 10px !important;
-    font-family: 'Times New Roman', Times, serif !important;
-}
-
 .ck-content * {
     font-family: 'Times New Roman', Times, serif !important;
+}
+.ck.ck-editor__main {
+    display: flex;
+    justify-content: center;
+}
+.ck.ck-editor__editable {
+    overflow-y: auto !important;
+    font-family: 'Times New Roman', Times, serif !important;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: calc(210mm + 2px);
+    min-height: 400px !important;
+    max-height: calc(297mm + 2px);
+    padding: 0px 63px 25px 63px !important;
+    border: 1px hsl(0, 0%, 82.7%) solid;
+    background: hsl(0, 0%, 100%);
+    box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
+    flex: 1 1 auto;
+    margin-left: 72px;
+    margin-right: 72px;
+}
+@media (max-width: 767px) {
+    .ck.ck-editor__editable {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+        padding: 10px !important;
+    }
 }
 
 .letter p,
@@ -867,7 +889,6 @@ input[type="checkbox"] {
     line-height: 1.5 !important;
     white-space: wrap !important;
 }
-
 /* CKeditor End */
 
 

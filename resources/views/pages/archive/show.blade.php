@@ -325,14 +325,25 @@
                                                                 </a>
                                                             </li>
                                                             @if (!empty($letter->content))
-                                                                <li>
-                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                        href="{{ route('letter.content', $letter->no_letter) }}"
-                                                                        target="_blank">
-                                                                        <i class='bx bx-printer fs-5'></i>
-                                                                        Print surat keluar
-                                                                    </a>
-                                                                </li>
+                                                                @if ($archive->category->name == 'Notulen' || $archive->category->name == 'Memo')
+                                                                    <li>
+                                                                        <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                            href="{{ route('memo.content', $letter->no_letter) }}"
+                                                                            target="_blank">
+                                                                            <i class='bx bx-printer fs-5'></i>
+                                                                            Print {{ $letter->type }}
+                                                                        </a>
+                                                                    </li>
+                                                                @else
+                                                                    <li>
+                                                                        <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                            href="{{ route('letter.content', $letter->no_letter) }}"
+                                                                            target="_blank">
+                                                                            <i class='bx bx-printer fs-5'></i>
+                                                                            Print surat keluar
+                                                                        </a>
+                                                                    </li>
+                                                                @endif
                                                             @endif
                                                             @if ($archive->category->name == 'Memo' || $archive->category->name == 'Notulen')
                                                                 <li>

@@ -78,14 +78,10 @@ class MemoController extends Controller
             'file.*.max' => 'Ukuran file maksimal 10MB!',
         ]);
 
-        if ($request->type == 'letter_out') {
-            $date = Carbon::parse($request->date);
-            $month = str_pad($date->month, 2, '0', STR_PAD_LEFT);
-            $year = $date->year;
-            $formattedLetterCode = "{$request->letter_code}/{$month}/{$year}";
-        } else {
-            $formattedLetterCode = $request->letter_code;
-        }
+        $date = Carbon::parse($request->date);
+        $month = str_pad($date->month, 2, '0', STR_PAD_LEFT);
+        $year = $date->year;
+        $formattedLetterCode = "{$request->letter_code}/{$month}/{$year}";
 
         $data = $request->all();
         $data['letter_code'] = $formattedLetterCode;

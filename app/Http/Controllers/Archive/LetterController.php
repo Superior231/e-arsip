@@ -93,7 +93,7 @@ class LetterController extends Controller
             'file.*.max' => 'Ukuran file maksimal 10MB!',
         ]);
 
-        if ($request->type == 'letter_out') {
+        if ($request->type == 'letter_out' || $request->type == 'faktur') {
             $date = Carbon::parse($request->date);
             $month = str_pad($date->month, 2, '0', STR_PAD_LEFT);
             $year = $date->year;

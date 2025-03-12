@@ -150,13 +150,13 @@
                                 <i class='bx bx-code-alt'></i>
                             </span>
                             @if ($letter->type === 'letter_in')
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                <input type="text" class="form-control @error('letter_code') is-invalid @enderror"
                                     id="letter_code" name="letter_code" value="{{ $letter->letter_code }}"
                                     placeholder="Masukkan kode surat">
                             @else
-                                <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                <input type="text" class="form-control @error('letter_code') is-invalid @enderror"
                                     id="letter_code" name="letter_code" value="{{ $letter->letter_code }}"
-                                    placeholder="Masukkan kode surat" disabled readonly>
+                                    placeholder="Masukkan kode surat" readonly>
                             @endif
                             @error('letter_code')
                                 <span class="invalid-feedback" role="alert">

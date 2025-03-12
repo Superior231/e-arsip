@@ -154,7 +154,7 @@
             </table>
 
             <div class="mt-2">
-                {!! $letter->participant !!}
+                {!! nl2br(e($letter->participant)) !!}
             </div>
 
             <div class="content mt-2">
