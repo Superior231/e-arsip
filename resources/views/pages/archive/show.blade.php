@@ -372,27 +372,21 @@
                                                                 </li>
                                                             @endif
                                                             <li>
-                                                                @if ($letter->status !== 'approve')
-                                                                    @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                                                @if (Auth::user()->roles === 'superadmin' || $letter->status !== 'approve')
+                                                                    @if (Auth::user()->roles !== 'user' || (Auth::user()->id === $letter->user_id && $letter->status !== 'approve'))
                                                                         <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                            href="{{ route('memo.edit', $letter->no_letter) }}">
-                                                                            <i class='bx bx-pencil fs-5'></i>
-                                                                            Edit data
-                                                                        </a>
-                                                                    @else
-                                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                            href="{{ route('letter.edit', $letter->no_letter) }}">
+                                                                            href="{{ route($archive->category->name === 'Memo' || $archive->category->name === 'Notulen' ? 'memo.edit' : 'letter.edit', $letter->no_letter) }}">
                                                                             <i class='bx bx-pencil fs-5'></i>
                                                                             Edit data
                                                                         </a>
                                                                     @endif
                                                                 @endif
                                                             </li>
-                                                            @if ($letter->status !== 'approve')
-                                                                <li>
-                                                                    @if ($archive->category->name === 'Memo' || $archive->category->name === 'Notulen')
+                                                            @if (Auth::user()->roles === 'superadmin' || $letter->status !== 'approve')
+                                                                @if (Auth::user()->roles !== 'user' || (Auth::user()->id === $letter->user_id && $letter->status !== 'approve'))
+                                                                    <li>
                                                                         <form id="deleteLetterForm-{{ $letter->id }}"
-                                                                            action="{{ route('memo.delete', $letter->id) }}"
+                                                                            action="{{ route($archive->category->name === 'Memo' || $archive->category->name === 'Notulen' ? 'memo.delete' : 'letter.delete', $letter->id) }}"
                                                                             method="POST" class="d-inline">
                                                                             @csrf @method('PUT')
 
@@ -407,25 +401,8 @@
                                                                                 Hapus
                                                                             </a>
                                                                         </form>
-                                                                    @else
-                                                                        <form id="deleteLetterForm-{{ $letter->id }}"
-                                                                            action="{{ route('letter.delete', $letter->id) }}"
-                                                                            method="POST" class="d-inline">
-                                                                            @csrf @method('PUT')
-
-                                                                            <input type="hidden" class="form-control"
-                                                                                id="status" name="status"
-                                                                                value="delete">
-
-                                                                            <a style="cursor: pointer;"
-                                                                                class="dropdown-item d-flex align-items-center gap-1"
-                                                                                onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
-                                                                                <i class='bx bx-trash fs-5'></i>
-                                                                                Hapus
-                                                                            </a>
-                                                                        </form>
-                                                                    @endif
-                                                                </li>
+                                                                    </li>
+                                                                @endif
                                                             @endif
                                                         </ul>
                                                     </div>

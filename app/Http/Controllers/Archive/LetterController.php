@@ -184,6 +184,13 @@ class LetterController extends Controller
     public function edit(string $no_letter)
     {
         $letter = Letter::where('no_letter', $no_letter)->with('archive')->firstOrFail();
+        if (Auth::user()->roles !== 'superadmin' && $letter->status === 'approve') {
+            return redirect()->back()->with('error', 'Surat ini telah disetujui!');
+        }
+        if (Auth::user()->roles === 'user' && Auth::user()->id !== $letter->user_id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki hak akses untuk mengubah surat ini!');
+        }
+
         $archive = $letter->archive;
         $documents = $letter->documents;
         $histories = History::latest()->get();
@@ -204,6 +211,13 @@ class LetterController extends Controller
     public function update(Request $request, $no_letter)
     {
         $letter = Letter::findOrFail($no_letter);
+        if (Auth::user()->roles !== 'superadmin' && $letter->status === 'approve') {
+            return redirect()->back()->with('error', 'Surat ini telah disetujui!');
+        }
+        if (Auth::user()->roles === 'user' && Auth::user()->id !== $letter->user_id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki hak akses untuk mengubah surat ini!');
+        }
+
         $isUpdateStatus = false;
         $isUpdate = false;
         $updates = [];
@@ -351,34 +365,13 @@ class LetterController extends Controller
     public function delete_letter(Request $request, $id)
     {
         $letter = Letter::findOrFail($id);
+        if (Auth::user()->roles === 'user' && Auth::user()->id !== $letter->user_id) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki hak akses untuk menghapus surat ini!');
+        }
+
         $oldArchiveId = $letter->archive->id;
         $oldCode = $letter->no_letter;
         $oldName = $letter->name;
-
-        // Cek apakah status archive bukan 'pending'
-        $archive = $letter->archive;
-        if ($archive->status !== 'pending') {
-            $archive->status = 'pending';
-            $archive->save();
-            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penghapusan surat";
-
-            // Buat deskripsi perubahan
-            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
-            if (!empty($updates)) {
-                $description .= "\n" . implode(", \n", $updates);
-            }
-
-            // Simpan history perubahan
-            History::create([
-                'type_id' => $archive->id,
-                'title' => 'Update Status Arsip',
-                'name' => $archive->archive_id . ' - ' . $archive->name,
-                'description' => $description . '.',
-                'type' => 'archive',
-                'method' => 'update status',
-                'user_id' => Auth::user()->id,
-            ]);
-        }
 
         $description = "Surat [" . $oldCode . ' => ' . $oldName . "] di Arsip [" . $letter->archive->archive_id . ' => ' . $letter->archive->name . "] dihapus oleh " . Auth::user()->name . ".";
         
