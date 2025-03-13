@@ -204,6 +204,7 @@
                                         <th class="text-nowrap" style="min-width: 200px;">Nama Surat</th>
                                         <th class="text-center">Type</th>
                                         <th>Tanggal</th>
+                                        <th>Author</th>
                                         <th class="text-center w-100">Status</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
@@ -282,6 +283,20 @@
                                                 <span>
                                                     {{ \Carbon\Carbon::parse($letter->date)->format('d M Y') }}
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <div class="author">
+                                                    <div class="avatar">
+                                                        @if (!empty($letter->user->avatar))
+                                                            <img class="img"
+                                                                src="{{ asset('storage/avatars/' . $letter->user->avatar) }}">
+                                                        @else
+                                                            <img class="img"
+                                                                src="https://ui-avatars.com/api/?background=random&name={{ urlencode($letter->user->name) }}">
+                                                        @endif
+                                                    </div>
+                                                    <span>{{ $letter->user->name }}</span>
+                                                </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-center">
