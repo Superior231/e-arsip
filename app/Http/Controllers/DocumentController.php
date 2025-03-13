@@ -75,7 +75,7 @@ class DocumentController extends Controller
 
                 History::create([
                     'type_id' => $letter->archive->id,
-                    'title' => "Update " . $letter->type,
+                    'title' => "Tambah Dokumen",
                     'name' => $letter->no_letter . ' - ' . $letter->name,
                     'description' =>  "Surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen baru => " . $file->getClientOriginalName() . ".",
                     'detail' =>  "Surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen baru => " . $file->getClientOriginalName() . ".",
@@ -161,7 +161,7 @@ class DocumentController extends Controller
 
             History::create([
                 'type_id' => $document->letter->archive->id,
-                'title' => "Update " . $document->letter->type,
+                'title' => "Update Dokumen",
                 'name' => $document->letter->no_letter . ' - ' . $document->letter->name,
                 'description' =>  "Dokumen surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen lama => " . $oldDocument . " ke dokumen baru => " . $fileName,
                 'detail' =>  "Dokumen surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen lama => " . $oldDocument . " ke dokumen baru => " . $fileName,
@@ -210,7 +210,7 @@ class DocumentController extends Controller
         
         History::create([
             'type_id' => $document->letter->archive->id,
-            'title' => "Update " . $document->letter->type,
+            'title' => "Hapus Dokumen",
             'name' => $document->letter->no_letter . ' - ' . $document->letter->name,
             'description' => "Dokumen surat '$oldName' telah dihapus oleh " . Auth::user()->name . ".",
             'detail' => "Dokumen surat '$oldName' telah dihapus oleh " . Auth::user()->name . ".",
