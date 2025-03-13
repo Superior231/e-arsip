@@ -1,6 +1,6 @@
 @php
-    use App\Models\Archive;
-    $archive_pending = Archive::where('status', 'pending')->count();
+    use App\Models\Letter;
+    $letter_pending = Letter::where('status', 'pending')->count();
 @endphp
 
 <nav class="navbar shadow-sm">
@@ -19,7 +19,8 @@
                 <div class="notification-container text-dark py-2" id="notificationContainer">
                     <div class="notification text-dark w-100">
                         @forelse ($histories->take(5) as $item)
-                            <a href="{{ route('history.detail', $item->id) }}" class="text-decoration-none text-dark" style="cursor: pointer;">
+                            <a href="{{ route('history.detail', $item->id) }}" class="text-decoration-none text-dark"
+                                style="cursor: pointer;">
                                 @php
                                     $bgClass = match ($item->method) {
                                         'create' => 'bg-success text-light',
@@ -168,14 +169,16 @@
             </li>
             @if (Auth::user()->roles === 'superadmin')
                 <li class="{{ $active == 'pending' ? 'active' : '' }}">
-                    <a href="{{ route('archive.pending') }}" class="d-flex justify-content-between">
+                    <a href="{{ route('letter.pending') }}" class="d-flex justify-content-between">
                         <div class="d-flex align-items-center gap-2">
                             <i class='bx bxs-time-five fs-4'></i>
                             <span class="my-0 py-0">Pending</span>
                         </div>
-                        <div class="badge rounded-pill bg-danger d-flex align-items-center justify-content-center">
-                            <span>{{ $archive_pending }}</span>
-                        </div>
+                        @if ($letter_pending > 0)
+                            <div class="badge rounded-pill bg-danger d-flex align-items-center justify-content-center">
+                                <span>{{ $letter_pending }}</span>
+                            </div>
+                        @endif
                     </a>
                 </li>
             @endif

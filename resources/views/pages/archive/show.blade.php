@@ -199,9 +199,9 @@
                                         <th class="text-nowrap">No Surat</th>
                                         <th class="text-nowrap" style="min-width: 150px;">Kode Surat</th>
                                         @if ($archive->category->name == 'Faktur')
-                                            <th class="text-nowrap" style="min-width: 150px;">Inventory</th>
+                                            <th class="text-nowrap" style="min-width: 120px;">Inventory</th>
                                         @endif
-                                        <th class="text-nowrap" style="min-width: 200px;">Nama Surat</th>
+                                        <th class="text-nowrap" style="min-width: 120px;">Nama Surat</th>
                                         <th class="text-center">Type</th>
                                         <th>Tanggal</th>
                                         <th>Author</th>

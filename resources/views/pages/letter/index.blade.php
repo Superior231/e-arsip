@@ -143,7 +143,7 @@
                                     <td>
                                         <div class="d-flex justify-content-center">
                                             <span
-                                                class="badge {{ $letter->status == 'active' ? 'bg-success text-light' : 'bg-warning text-dark' }} me-3">{{ $letter->status }}</span>
+                                                class="badge {{ $letter->status == 'active' ? 'bg-success text-light' : 'bg-warning text-dark' }} status-badge me-3">{{ $letter->status }}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -244,7 +244,8 @@
                     <hr class="pb-0 mb-0">
                     <div class="d-flex flex-column" style="max-height: 500px; overflow-y: scroll">
                         @forelse ($historyLetter as $history)
-                            <a href="{{ route('history.detail', $history->id) }}" class="text-decoration-none text-dark" style="cursor: pointer;">
+                            <a href="{{ route('history.detail', $history->id) }}" class="text-decoration-none text-dark"
+                                style="cursor: pointer;">
                                 @php
                                     $bgClass = match ($history->method) {
                                         'create' => 'bg-success text-light',
@@ -276,6 +277,21 @@
             </div>
         </div>
     </div>
+
+
+    @if (Auth::user()->roles === 'superadmin')
+        <div class="d-none" style="position: fixed; bottom: 20px; right: 20px;" id="approveLetter">
+            <form action="{{ route('letter.approve') }}" method="POST" id="approveLetterForm">
+                @csrf
+                <input type="hidden" name="no_letters" id="selectedCodes">
+                <button type="button" id="approveLetterBtn"
+                    class="btn btn-success py-2 px-4 rounded-pill d-flex align-items-center justify-content-center gap-1">
+                    <i class='bx bx-check-circle'></i>
+                    <span>Approve</span>
+                </button>
+            </form>
+        </div>
+    @endif
 
 
     <!-- Modal -->
@@ -563,6 +579,10 @@
             const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
             const printSelectLetterList = document.getElementById("printSelectLetterList");
             const printSelectBarcodeLetterList = document.getElementById("printSelectBarcodeLetterList");
+            const approveLetter = document.getElementById("approveLetter");
+            const approveLetterForm = document.getElementById("approveLetterForm");
+            const approveLetterBtn = document.getElementById("approveLetterBtn");
+            const selectedCodesInput = document.getElementById("selectedCodes");
 
             function getSelectedCodes() {
                 let selectedCodes = [];
@@ -574,11 +594,68 @@
                 return selectedCodes.join("-");
             }
 
+            function getSelectedApproveCodes() {
+                let selectedCodes = [];
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        const row = checkbox.closest("tr");
+                        const statusBadge = row.querySelector(".status-badge"); // Ambil status
+                        if (statusBadge && statusBadge.textContent.trim().toLowerCase() !== "approve") {
+                            selectedCodes.push(checkbox.value);
+                        }
+                    }
+                });
+                return selectedCodes;
+            }
+
+            function toggleApproveButton() {
+                const selectedCodes = getSelectedApproveCodes();
+                approveLetter.classList.toggle("d-flex", selectedCodes.length > 0);
+                approveLetter.classList.toggle("d-none", selectedCodes.length === 0);
+            }
+
+            // Event listener untuk checkAll
             checkAll.addEventListener("change", function() {
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = checkAll.checked;
                 });
+                toggleApproveButton();
             });
+
+            // Event listener untuk setiap checkbox
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", toggleApproveButton);
+            });
+
+
+            @if (Auth::user()->roles === 'superadmin')
+                approveLetterBtn.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    let selectedCodes = getSelectedApproveCodes();
+                    if (selectedCodes.length === 0) return;
+
+                    selectedCodesInput.value = selectedCodes.join(",");
+                    Swal.fire({
+                        icon: 'question',
+                        title: 'Anda Yakin?',
+                        html: `Apakah Anda yakin ingin menyetujui <b class="text-primary">${selectedCodes.join(", ")}</b>?`,
+                        showCancelButton: true,
+                        confirmButtonText: 'Approve',
+                        customClass: {
+                            popup: 'sw-popup',
+                            title: 'sw-title',
+                            closeButton: 'sw-close',
+                            confirmButton: 'btn-success bg-success border-0 shadow-none',
+                            cancelButton: 'btn-secondary'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            approveLetterForm.submit();
+                        }
+                    });
+                });
+            @endif
 
             printSelectLetterList.addEventListener("click", function(e) {
                 e.preventDefault();

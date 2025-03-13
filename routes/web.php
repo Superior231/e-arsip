@@ -28,10 +28,7 @@ Auth::routes(['register' => false]);
 Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::resource('division', DivisionController::class);
     Route::resource('category', CategoryController::class);
-    
-    Route::get('/archive-pending', [ArchiveController::class, 'pending_index'])->name('archive.pending');
     Route::put('/archive/delete/{id}', [ArchiveController::class, 'delete_archive'])->name('archive.delete');
-
     Route::resource('staff', StaffController::class);
 });
 
@@ -55,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/surat-masuk', [LetterController::class, 'letterIn_index'])->name('letterIn.index');
     Route::get('/surat-keluar', [LetterController::class, 'letterOut_index'])->name('letterOut.index');
+    Route::get('/surat-pending', [LetterController::class, 'letter_pending_index'])->name('letter.pending');
 
     Route::get('/faktur', [ArchiveController::class, 'faktur_index'])->name('faktur.index');
     Route::get('/administrasi', [ArchiveController::class, 'administrasi_index'])->name('administrasi.index');

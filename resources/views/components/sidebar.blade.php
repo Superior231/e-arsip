@@ -1,6 +1,6 @@
 @php
-    use App\Models\Archive;
-    $archive_pending = Archive::where('status', 'pending')->count();
+    use App\Models\Letter;
+    $letter_pending = Letter::where('status', 'pending')->count();
 @endphp
 
 <nav class="sidebar d-none d-md-flex flex-column p-3" style="width: 250px; min-height: 100vh;">
@@ -68,17 +68,19 @@
             </li>
             @if (Auth::user()->roles === 'superadmin')
                 <li>
-                    <a href="{{ route('archive.pending') }}"
+                    <a href="{{ route('letter.pending') }}"
                         class="side-link d-flex position-relative justify-content-between {{ $active === 'pending' ? 'active' : '' }}"
                         data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Pending">
                         <div class="d-flex align-items-center gap-0">
                             <i class='bx bxs-time-five icon fs-5'></i>
                             <span class="nav-text px-0 mx-0">Pending</span>
                         </div>
-                        <span class="position-absolute badge rounded-pill bg-danger mt-3"
-                            style="z-index: 99999; right: 0; bottom: 25px;">
-                            {{ $archive_pending }}
-                        </span>
+                        @if ($letter_pending > 0)
+                            <span class="position-absolute badge rounded-pill bg-danger mt-3"
+                                style="z-index: 99999; right: 0; bottom: 25px;">
+                                {{ $letter_pending }}
+                            </span>
+                        @endif
                     </a>
                 </li>
             @endif

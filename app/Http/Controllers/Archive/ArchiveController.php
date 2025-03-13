@@ -32,27 +32,6 @@ class ArchiveController extends Controller
         ]);
     }
 
-    public function pending_index()
-    {
-        $archives = Archive::where('status', 'pending')->with('letters')->latest()->get();
-        $histories = History::latest()->get();
-        $history_archive = $histories->where('type', 'archive');
-
-        if (Auth::user()->roles === 'superadmin') {
-            return view('pages.archive.index', [
-                'title' => 'Arsip Pending - Putra Panggil Jaya',
-                'navTitle' => 'Arsip Pending',
-                'tableTitle' => 'Daftar Arsip Pending',
-                'active' => 'pending',
-                'archives' => $archives,
-                'histories' => $histories,
-                'history_archive' => $history_archive,
-            ]);
-        } else {
-            return redirect()->route('archive.index');
-        }
-    }
-
     public function faktur_index()
     {
         $category = Category::where('name', 'Faktur')->first();

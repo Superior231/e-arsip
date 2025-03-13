@@ -52,6 +52,30 @@ class LetterController extends Controller
         ]);
     }
 
+    public function letter_pending_index()
+    {
+        $letters = Letter::where('status', 'pending')->latest()->get();
+        $histories = History::latest()->get();
+        $historyLetter = $histories->reject(function ($history) {
+            return in_array($history->type, ['staff', 'division', 'category', 'archive']);
+        });
+
+        if (Auth::user()->roles === 'superadmin') {
+            return view('pages.letter.index', [
+                'title' => 'Surat Pending - Putra Panggil Jaya',
+                'navTitle' => 'Surat Pending',
+                'tableTitle' => 'Daftar Surat Pending',
+                'active' => 'pending',
+                'letters' => $letters,
+                'histories' => $histories,
+                'historyLetter' => $historyLetter,
+                'historyLetterName' => 'Riwayat Surat'
+            ]);
+        } else {
+            return redirect()->route('archive.index');
+        }
+    }
+
     public function create(string $archive_id)
     {
         $archive = Archive::where('archive_id', $archive_id)->firstOrFail();
