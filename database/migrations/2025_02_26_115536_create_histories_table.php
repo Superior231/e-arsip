@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('type_id');
             $table->string('title');
             $table->string('name');
-            $table->text('description');
+            $table->longText('description');
             $table->longText('detail');
             $table->string('type');
             $table->string('method');
