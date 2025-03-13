@@ -41,6 +41,7 @@ class Category extends Model
             'Laporan Tahunan' => 'LTA',
             'Laporan Keuangan' => 'LKU',
             'Laporan Pajak' => 'LPJ',
+            'Lamaran' => 'LMR',
             'Inventaris' => 'INV',
             'Pengadaan' => 'PGD',
             'Notulen' => 'NTL',

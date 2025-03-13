@@ -108,8 +108,8 @@ class ArchiveController extends Controller
             return redirect()->route('archive.index')->with('error', 'Anda tidak memiliki akses untuk menambah arsip!');
         }
 
-        $categories = Category::latest()->get();
-        $divisions = Division::latest()->get();
+        $categories = Category::orderBy('name', 'asc')->get();
+        $divisions = Division::orderBy('name', 'asc')->get();
         $histories = History::latest()->get();
 
         return view('pages.archive.create', [
@@ -206,8 +206,8 @@ class ArchiveController extends Controller
         }
 
         $archive = Archive::where('archive_id', $archive_id)->with('division', 'category')->firstOrFail();
-        $categories = Category::latest()->get();
-        $divisions = Division::latest()->get();
+        $categories = Category::orderBy('name', 'asc')->get();
+        $divisions = Division::orderBy('name', 'asc')->get();
         $histories = History::latest()->get();
 
         return view('pages.archive.edit', [
