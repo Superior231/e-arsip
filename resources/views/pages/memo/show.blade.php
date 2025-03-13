@@ -7,6 +7,7 @@
             margin: 0px !important;
             padding: 0px !important;
         }
+
         .letter-body table tr td>* {
             margin: 0px !important;
             padding: 2px !important;
@@ -153,13 +154,28 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <th>Nama Dokumen</th>
-                                <th class="text-center">Action</th>
+                                <th class="text-center">File</th>
+                                <th>Name</th>
+                                <th class="text-center">Download</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($letter->documents->where('status', 'active') as $document)
                                 <tr class="align-middle">
+                                    <td>
+                                        <div class="position-relative d-flex justify-content-center">
+                                            <div class="image d-flex justify-content-center align-items-center">
+                                                @if ($document->type === 'image')
+                                                    <img src="{{ asset('storage/documents/' . $document->file) }}"
+                                                        alt="gambar" class="img-fluid">
+                                                @elseif (Str::endsWith($document->file, ['.doc', '.docx']))
+                                                    <i class='bx bxs-file-doc text-primary fs-2 text-center'></i>
+                                                @else
+                                                    <i class='bx bxs-file-pdf text-danger fs-2 text-center'></i>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>{{ $document->file }}</td>
                                     <td>
                                         <div class="actions d-flex justify-content-center align-items-center">
@@ -229,7 +245,8 @@
                                     <h5>&nbsp;:&nbsp;</h5>
                                 </td>
                                 <td>
-                                    <h5>{{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('l, d F Y') }}</h5>
+                                    <h5>{{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('l, d F Y') }}
+                                    </h5>
                                 </td>
                             </tr>
                             <tr>
@@ -300,7 +317,7 @@
                         <div class="mt-2">
                             {!! nl2br(e($letter->participant)) !!}
                         </div>
-                        
+
                         <div class="content mt-2">
                             <table class="mb-2">
                                 <tr>

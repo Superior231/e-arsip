@@ -38,7 +38,7 @@ class DocumentController extends Controller
                 History::create([
                     'type_id' => $letter->archive->id,
                     'title' => 'Update Status',
-                    'name' => $letter->archive->archive_id . ' - ' . $letter->archive->name,
+                    'name' => $letter->no_letter . ' - ' . $letter->name,
                     'description' => $description . '.',
                     'detail' => $description . '.',
                     'type' => $letter->type,
@@ -113,7 +113,7 @@ class DocumentController extends Controller
             if ($letter->status !== 'pending') {
                 $letter->status = 'pending';
                 $letter->save();
-                $updates[] = "Status otomatis berubah menjadi 'pending' karena ada penambahan dokumen pada surat";
+                $updates[] = "Status otomatis berubah menjadi 'pending' karena ada update dokumen pada surat";
 
                 $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";
                 if (!empty($updates)) {
@@ -123,7 +123,7 @@ class DocumentController extends Controller
                 History::create([
                     'type_id' => $letter->archive->id,
                     'title' => 'Update Status',
-                    'name' => $letter->archive->archive_id . ' - ' . $letter->archive->name,
+                    'name' => $letter->no_letter . ' - ' . $letter->name,
                     'description' => $description . '.',
                     'detail' => $description . '.',
                     'type' => $letter->type,
@@ -181,10 +181,33 @@ class DocumentController extends Controller
     public function delete_document(Request $request, $id)
     {
         $document = Document::findOrFail($id);
+        $letter = $document->letter;
         $oldName = $document->file;
         $document->status = $request->status;
         $document->save();
+        
+        if ($letter->status !== 'pending') {
+            $letter->status = 'pending';
+            $letter->save();
+            $updates[] = "Status otomatis berubah menjadi 'pending' karena ada penghapusan dokumen pada surat";
 
+            $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";
+            if (!empty($updates)) {
+                $description .= "\n" . implode(", \n", $updates);
+            }
+
+            History::create([
+                'type_id' => $letter->archive->id,
+                'title' => 'Update Status',
+                'name' => $letter->no_letter . ' - ' . $letter->name,
+                'description' => $description . '.',
+                'detail' => $description . '.',
+                'type' => $letter->type,
+                'method' => 'update status',
+                'user_id' => Auth::user()->id,
+            ]);
+        }
+        
         History::create([
             'type_id' => $document->letter->archive->id,
             'title' => "Update " . $document->letter->type,

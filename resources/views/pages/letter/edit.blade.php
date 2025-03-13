@@ -74,8 +74,7 @@
                                         <tr class="align-middle">
                                             <td>
                                                 <div class="position-relative d-flex justify-content-center">
-                                                    <div class="image d-flex justify-content-center align-items-center"
-                                                        style="cursor: pointer;">
+                                                    <div class="image d-flex justify-content-center align-items-center">
                                                         @if ($document->type === 'image')
                                                             <img src="{{ asset('storage/documents/' . $document->file) }}"
                                                                 alt="gambar" class="img-fluid">
