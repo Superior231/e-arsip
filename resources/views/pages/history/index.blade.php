@@ -115,6 +115,7 @@
                         <th>Nama</th>
                         <th style="min-width: 250px;">Deskripsi</th>
                         <th>Tanggal</th>
+                        <th class="text-center">Detail</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -140,6 +141,11 @@
                             <td class="text-nowrap">
                                 <span class="d-none">{{ $history->created_at->format('Y m d H:i') }}</span>
                                 {{ $history->created_at->format('d M Y H:i') }} WIB
+                            </td>
+                            <td class="align-middle">
+                                <a href="{{ route('history.detail', $history->id) }}" class="d-flex align-items-center justify-content-center text-decoration-none me-3" title="More detail">
+                                    <i class='bx bx-link-external fs-3'></i>
+                                </a>
                             </td>
                         </tr>
                     @endforeach

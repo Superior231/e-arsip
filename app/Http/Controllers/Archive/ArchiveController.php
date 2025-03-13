@@ -208,6 +208,7 @@ class ArchiveController extends Controller
                 'title' => "Buat Arsip Baru",
                 'name' => $archive->archive_id . ' - ' . $archive->name,
                 'description' =>  "Arsip baru telah dibuat oleh " . Auth::user()->name . "\n" . "[{$archive->archive_id}/{$archive_code} => {$archive->name}].",
+                'detail' =>  "Arsip baru telah dibuat oleh " . Auth::user()->name . "\n" . "[{$archive->archive_id}/{$archive_code} => {$archive->name}].",
                 'type' => 'archive',
                 'method' => 'create',
                 'user_id' => Auth::user()->id,
@@ -245,6 +246,7 @@ class ArchiveController extends Controller
     {
         $archive = Archive::findOrFail($id);
         $updates = [];
+        $detailUpdates = [];
 
         // Simpan nilai lama sebelum update
         $oldDivision = $archive->division;
@@ -280,18 +282,23 @@ class ArchiveController extends Controller
 
         if ($oldDivision->id !== $newDivision->id) {
             $updates[] = "Divisi dari '{$oldDivision->name} ({$oldDivision->place})' menjadi '{$newDivision->name} ({$newDivision->place})'";
+            $detailUpdates[] = "Divisi dari '{$oldDivision->name} ({$oldDivision->place})' menjadi '{$newDivision->name} ({$newDivision->place})'";
         }
         if ($oldCategory->id !== $newCategory->id) {
             $updates[] = "Kategori dari '{$oldCategory->name}' menjadi '{$newCategory->name}'";
+            $detailUpdates[] = "Kategori dari '{$oldCategory->name}' menjadi '{$newCategory->name}'";
         }
         if ($oldName !== $request->name) {
             $updates[] = "Nama arsip dari '$oldName' menjadi '$request->name'";
+            $detailUpdates[] = "Nama arsip dari '$oldName' menjadi '$request->name'";
         }
         if ($oldDate !== $request->date) {
             $updates[] = "Tanggal pengadaan arsip dari '$oldDate' menjadi '$request->date'";
+            $detailUpdates[] = "Tanggal pengadaan arsip dari '$oldDate' menjadi '$request->date'";
         }
         if ($oldDetail !== $request->detail) {
-            $updates[] = "Detail arsip dari '$oldDetail' menjadi '$request->detail'";
+            $updates[] = "Detail arsip diupdate";
+            $detailUpdates[] = "Detail arsip dari '$oldDetail' menjadi '$request->detail'";
         }
 
         // Cek perubahan gambar
@@ -305,6 +312,7 @@ class ArchiveController extends Controller
 
             if ($oldImage !== $fileName) {
                 $updates[] = "Gambar arsip dari '$oldImage' menjadi '$fileName'";
+                $detailUpdates[] = "Gambar arsip dari '$oldImage' menjadi '$fileName'";
             }
 
             Storage::disk('public')->put('archive/' . $fileName, (string) $image);
@@ -328,12 +336,14 @@ class ArchiveController extends Controller
 
             $archive->archive_id = $categoryCode . '.' . sprintf('%03d', $nextId);
             $updates[] = "ID arsip berubah menjadi {$archive->archive_id}";
+            $detailUpdates[] = "ID arsip berubah menjadi {$archive->archive_id}";
         }
         if ($oldDivision->id !== $newDivision->id || $oldCategory->id !== $newCategory->id) {
             $archive_code = $archive->archive_id . '/' . $newDivision->name . '/' . $newDivision->place;
             $archive->archive_code = $archive_code;
 
             $updates[] = "Kode arsip berubah menjadi '$archive_code'";
+            $detailUpdates[] = "Kode arsip berubah menjadi '$archive_code'";
         }
 
 
@@ -347,16 +357,19 @@ class ArchiveController extends Controller
         $archive->save();
 
         $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
+        $descriptionDetail = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
 
         // Cek apakah ada perubahan atau tidak
-        if (!empty($updates)) {
+        if (!empty($updates && $detailUpdates)) {
             $description .= "\n" . implode(", \n", $updates);
+            $descriptionDetail .= "\n" . implode(", \n", $detailUpdates);
 
             History::create([
                 'type_id' => $archive->id,
                 'title' => 'Update Arsip',
                 'name' => $archive->archive_id . ' - ' . $archive->name,
                 'description' => $description . '.',
+                'detail' => $descriptionDetail . '.',
                 'type' => 'archive',
                 'method' => 'update',
                 'user_id' => Auth::user()->id,
@@ -427,6 +440,7 @@ class ArchiveController extends Controller
                 'title' => "Hapus Arsip",
                 'name' => $oldCode . ' - ' . $oldName,
                 'description' => $description,
+                'detail' => $description,
                 'type' => 'archive',
                 'method' => 'delete',
                 'user_id' => Auth::user()->id,

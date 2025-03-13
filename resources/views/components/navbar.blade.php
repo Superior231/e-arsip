@@ -11,15 +11,15 @@
             <span class="fw-semibold my-0 py-0">{{ $navTitle }}</span>
         </div>
         <ul class="navbar-nav me-2 me-md-3 d-flex flex-row align-items-center gap-4" id="dropdown">
-            @if (Auth::user()->roles === 'admin' || Auth::user()->roles === 'superadmin')
-                <li class="nav-item dropdown mt-0 mt-md-1">
-                    <a class="nav-link d-flex align-items-center" href="#" onclick="toggleNotification(event)">
-                        <i class='bx bxs-bell fs-4'></i>
-                    </a>
+            <li class="nav-item dropdown mt-0 mt-md-1">
+                <a class="nav-link d-flex align-items-center" href="#" onclick="toggleNotification(event)">
+                    <i class='bx bxs-bell fs-4'></i>
+                </a>
 
-                    <div class="notification-container text-dark py-2" id="notificationContainer">
-                        <div class="notification text-dark w-100">
-                            @forelse ($histories->take(5) as $item)
+                <div class="notification-container text-dark py-2" id="notificationContainer">
+                    <div class="notification text-dark w-100">
+                        @forelse ($histories->take(5) as $item)
+                            <a href="{{ route('history.detail', $item->id) }}" class="text-decoration-none text-dark" style="cursor: pointer;">
                                 @php
                                     $bgClass = match ($item->method) {
                                         'create' => 'bg-success text-light',
@@ -39,23 +39,22 @@
                                     <p class="my-0 py-0 fs-6 fw-bold">{{ $item->name }}</p>
                                     <p class="my-0 py-0 fs-7 text-break">{{ $item->description }}</p>
                                 </div>
-                            @empty
-                                <div class="d-flex justify-content-center align-items-center w-100">
-                                    <p class="text-center my-0 py-0">Belum ada notifikasi</p>
-                                </div>
-                            @endforelse
+                            </a>
+                        @empty
+                            <div class="d-flex justify-content-center align-items-center w-100">
+                                <p class="text-center my-0 py-0">Belum ada notifikasi</p>
+                            </div>
+                        @endforelse
 
-                            @if ($histories->isNotEmpty())
-                                <div class="notification-footer d-flex justify-content-center align-items-center w-100">
-                                    <a href="{{ route('history.index') }}"
-                                        class="fs-7 text-center text-primary w-100">See
-                                        all notifications</a>
-                                </div>
-                            @endif
-                        </div>
+                        @if ($histories->isNotEmpty())
+                            <div class="notification-footer d-flex justify-content-center align-items-center w-100">
+                                <a href="{{ route('history.index') }}" class="fs-7 text-center text-primary w-100">See
+                                    all notifications</a>
+                            </div>
+                        @endif
                     </div>
-                </li>
-            @endif
+                </div>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink"
                     role="button" data-bs-toggle="dropdown" aria-expanded="false">

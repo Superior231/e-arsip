@@ -12,7 +12,7 @@ class History extends Model
     protected $connection = 'mysql_earsip';
     protected $table = 'histories';
 
-    protected $fillable = ['user_id', 'type_id', 'title', 'name', 'description', 'method','type'];
+    protected $fillable = ['user_id', 'type_id', 'title', 'name', 'description', 'detail', 'method','type'];
 
     public function user()
     {

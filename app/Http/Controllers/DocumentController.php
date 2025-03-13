@@ -24,24 +24,24 @@ class DocumentController extends Controller
         $letter = Letter::findOrFail($request->letter_id);
 
         if ($request->hasFile('file')) {
-            // Cek apakah status archive bukan 'pending'
-            $archive = $letter->archive;
-            if ($archive->status !== 'pending') {
-                $archive->status = 'pending';
-                $archive->save();
-                $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penambahan dokumen pada surat";
+            // Cek apakah status letter bukan 'pending'
+            if ($letter->status !== 'pending') {
+                $letter->status = 'pending';
+                $letter->save();
+                $updates[] = "Status otomatis berubah menjadi 'pending' karena ada penambahan dokumen pada surat";
 
-                $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
+                $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";
                 if (!empty($updates)) {
                     $description .= "\n" . implode(", \n", $updates);
                 }
 
                 History::create([
-                    'type_id' => $archive->id,
-                    'title' => 'Update Status Arsip',
-                    'name' => $archive->archive_id . ' - ' . $archive->name,
+                    'type_id' => $letter->archive->id,
+                    'title' => 'Update Status',
+                    'name' => $letter->archive->archive_id . ' - ' . $letter->archive->name,
                     'description' => $description . '.',
-                    'type' => 'archive',
+                    'detail' => $description . '.',
+                    'type' => $letter->type,
                     'method' => 'update status',
                     'user_id' => Auth::user()->id,
                 ]);
@@ -73,18 +73,12 @@ class DocumentController extends Controller
                     'type' => $fileType,
                 ]);
 
-                $type = [];
-                if ($letter->type == 'letter_in') {
-                    $type = 'Surat Masuk';
-                } else {
-                    $type = 'Surat Keluar';
-                }
-
                 History::create([
                     'type_id' => $letter->archive->id,
-                    'title' => "Update " . $type,
+                    'title' => "Update " . $letter->type,
                     'name' => $letter->no_letter . ' - ' . $letter->name,
                     'description' =>  "Surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen baru => " . $file->getClientOriginalName() . ".",
+                    'detail' =>  "Surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen baru => " . $file->getClientOriginalName() . ".",
                     'type' => $letter->type,
                     'method' => 'update',
                     'user_id' => Auth::user()->id,
@@ -115,24 +109,24 @@ class DocumentController extends Controller
             $document->status = 'delete';
             $document->save();
 
-            // Cek apakah status archive bukan 'pending'
-            $archive = $letter->archive;
-            if ($archive->status !== 'pending') {
-                $archive->status = 'pending';
-                $archive->save();
-                $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penambahan dokumen pada surat";
+            // Cek apakah status letter bukan 'pending'
+            if ($letter->status !== 'pending') {
+                $letter->status = 'pending';
+                $letter->save();
+                $updates[] = "Status otomatis berubah menjadi 'pending' karena ada penambahan dokumen pada surat";
 
-                $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
+                $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";
                 if (!empty($updates)) {
                     $description .= "\n" . implode(", \n", $updates);
                 }
 
                 History::create([
-                    'type_id' => $archive->id,
-                    'title' => 'Update Status Arsip',
-                    'name' => $archive->archive_id . ' - ' . $archive->name,
+                    'type_id' => $letter->archive->id,
+                    'title' => 'Update Status',
+                    'name' => $letter->archive->archive_id . ' - ' . $letter->archive->name,
                     'description' => $description . '.',
-                    'type' => 'archive',
+                    'detail' => $description . '.',
+                    'type' => $letter->type,
                     'method' => 'update status',
                     'user_id' => Auth::user()->id,
                 ]);
@@ -165,18 +159,12 @@ class DocumentController extends Controller
                 'type' => $fileType,
             ]);
 
-            $type = [];
-            if ($document->letter->type == 'letter_in') {
-                $type = 'Surat Masuk';
-            } else {
-                $type = 'Surat Keluar';
-            }
-
             History::create([
                 'type_id' => $document->letter->archive->id,
-                'title' => "Update " . $type,
+                'title' => "Update " . $document->letter->type,
                 'name' => $document->letter->no_letter . ' - ' . $document->letter->name,
                 'description' =>  "Dokumen surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen lama => " . $oldDocument . " ke dokumen baru => " . $fileName,
+                'detail' =>  "Dokumen surat telah diupdate oleh " . Auth::user()->name . "." . "\n" . "Dokumen lama => " . $oldDocument . " ke dokumen baru => " . $fileName,
                 'type' => $document->letter->type,
                 'method' => 'update',
                 'user_id' => Auth::user()->id,
@@ -192,46 +180,17 @@ class DocumentController extends Controller
     
     public function delete_document(Request $request, $id)
     {
-        $letter = Document::findOrFail($id)->letter;
         $document = Document::findOrFail($id);
         $oldName = $document->file;
         $document->status = $request->status;
         $document->save();
 
-        $archive = $letter->archive;
-        if ($archive->status !== 'pending') {
-            $archive->status = 'pending';
-            $archive->save();
-            $updates[] = "Status arsip otomatis berubah menjadi 'pending' karena ada penghapusan dokumen pada surat";
-
-            $description = "Arsip telah diupdate oleh " . Auth::user()->name . ".";
-            if (!empty($updates)) {
-                $description .= "\n" . implode(", \n", $updates);
-            }
-
-            History::create([
-                'type_id' => $archive->id,
-                'title' => 'Update Status Arsip',
-                'name' => $archive->archive_id . ' - ' . $archive->name,
-                'description' => $description . '.',
-                'type' => 'archive',
-                'method' => 'update status',
-                'user_id' => Auth::user()->id,
-            ]);
-        }
-
-        $type = [];
-        if ($letter->type == 'letter_in') {
-            $type = 'Surat Masuk';
-        } else {
-            $type = 'Surat Keluar';
-        }
-
         History::create([
             'type_id' => $document->letter->archive->id,
-            'title' => "Update " . $type,
+            'title' => "Update " . $document->letter->type,
             'name' => $document->letter->no_letter . ' - ' . $document->letter->name,
             'description' => "Dokumen surat '$oldName' telah dihapus oleh " . Auth::user()->name . ".",
+            'detail' => "Dokumen surat '$oldName' telah dihapus oleh " . Auth::user()->name . ".",
             'type' => $document->letter->type,
             'method' => 'delete',
             'user_id' => Auth::user()->id,

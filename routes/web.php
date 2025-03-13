@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('index');
     Route::resource('archive', ArchiveController::class);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    Route::get('/history-detail/{id}', [HistoryController::class, 'detail'])->name('history.detail');
 
 
     Route::get('/letter/create/{archive_id}', [LetterController::class, 'create'])->name('letter.create');

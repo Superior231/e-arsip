@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('name');
             $table->text('description');
+            $table->longText('detail');
             $table->string('type');
             $table->string('method');
             $table->timestamps();

@@ -244,26 +244,28 @@
                     <hr class="pb-0 mb-0">
                     <div class="d-flex flex-column" style="max-height: 500px; overflow-y: scroll">
                         @forelse ($historyLetter as $history)
-                            @php
-                                $bgClass = match ($history->method) {
-                                    'create' => 'bg-success text-light',
-                                    'update' => 'bg-warning',
-                                    'update status' => 'bg-primary text-light',
-                                    'update status, update' => 'bg-dark text-light',
-                                    'delete' => 'bg-danger text-light',
-                                    default => 'bg-secondary text-dark',
-                                };
-                            @endphp
+                            <a href="{{ route('history.detail', $history->id) }}" class="text-decoration-none text-dark" style="cursor: pointer;">
+                                @php
+                                    $bgClass = match ($history->method) {
+                                        'create' => 'bg-success text-light',
+                                        'update' => 'bg-warning',
+                                        'update status' => 'bg-primary text-light',
+                                        'update status, update' => 'bg-dark text-light',
+                                        'delete' => 'bg-danger text-light',
+                                        default => 'bg-secondary text-dark',
+                                    };
+                                @endphp
 
-                            <div class="notification-header d-flex justify-content-between {{ $bgClass }} px-3">
-                                <span class="fs-7">{{ $history->title }}</span>
-                                <span class="fs-7">{{ $history->created_at->format('d M Y H:i') }}
-                                    WIB</span>
-                            </div>
-                            <div class="notification-body d-flex flex-column px-3 gap-0 mb-2">
-                                <p class="my-0 py-0 fs-6 fw-bold">{{ $history->name }}</p>
-                                <p class="my-0 py-0 fs-7">{{ $history->description }}</p>
-                            </div>
+                                <div class="notification-header d-flex justify-content-between {{ $bgClass }} px-3">
+                                    <span class="fs-7">{{ $history->title }}</span>
+                                    <span class="fs-7">{{ $history->created_at->format('d M Y H:i') }}
+                                        WIB</span>
+                                </div>
+                                <div class="notification-body d-flex flex-column px-3 gap-0 mb-2">
+                                    <p class="my-0 py-0 fs-6 fw-bold">{{ $history->name }}</p>
+                                    <p class="my-0 py-0 fs-7">{{ $history->description }}</p>
+                                </div>
+                            </a>
                         @empty
                             <div class="px-3 pt-2 d-flex justify-content-center align-items-center">
                                 <span>Belum ada riwayat.</span>

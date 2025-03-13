@@ -153,6 +153,7 @@ class LetterController extends Controller
                 'title' => "Buat " . $type . " Baru",
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' =>  "Surat baru telah dibuat oleh " . Auth::user()->name . "\n" . "[{$letter->no_letter} => {$letter->name}].",
+                'detail' => "Surat baru telah dibuat oleh " . Auth::user()->name . "\n" . "[{$letter->no_letter} => {$letter->name}].",
                 'type' => $letter->type,
                 'method' => 'create',
                 'user_id' => Auth::user()->id,
@@ -221,6 +222,7 @@ class LetterController extends Controller
         $isUpdateStatus = false;
         $isUpdate = false;
         $updates = [];
+        $detailUpdates = [];
 
         $oldLetterCode = $letter->letter_code;
         if ($letter->item_id !== null) {
@@ -256,36 +258,44 @@ class LetterController extends Controller
         if (Auth::user()->roles == 'superadmin' && $oldStatus !== $request->status) {
             $letter->status = $request->status;
             $updates[] = "Status dari '$oldStatus' menjadi '$request->status'";
+            $detailUpdates[] = "Status dari '$oldStatus' menjadi '$request->status'";
             $isUpdateStatus = true;
         }
         if ($oldType !== $request->type) {
             $updates[] = "Type surat dari '$oldType' menjadi '$request->type'";
+            $detailUpdates[] = "Type surat dari '$oldType' menjadi '$request->type'";
             $isUpdate = true;
         }
         if ($letter->item_id !== null) {
             if ($oldItemId != $request->item_id) {
                 $updates[] = "Inventory dari '$oldItemName' menjadi '$newItemName'";
+                $detailUpdates[] = "Inventory dari '$oldItemName' menjadi '$newItemName'";
                 $isUpdate = true;
             }
         }
         if ($oldLetterName !== $request->name) {
             $updates[] = "Nama surat dari '$oldLetterName' menjadi '$request->name'";
+            $detailUpdates[] = "Nama surat dari '$oldLetterName' menjadi '$request->name'";
             $isUpdate = true;
         }
         if ($oldLetterCode !== $request->letter_code) {
             $updates[] = "Kode surat dari '$oldLetterCode' menjadi '$request->letter_code'";
+            $detailUpdates[] = "Kode surat dari '$oldLetterCode' menjadi '$request->letter_code'";
             $isUpdate = true;
         }
         if ($oldContent !== $request->content) {
-            $updates[] = "Isi surat dari '$oldContent' menjadi '$request->content'";
+            $updates[] = "Isi surat diupdate";
+            $detailUpdates[] = "Isi surat dari '$oldContent' menjadi '$request->content'";
             $isUpdate = true;
         }
         if ($oldDetail !== $request->detail) {
-            $updates[] = "Detail surat dari '$oldDetail' menjadi '$request->detail'";
+            $updates[] = "Detail surat diupdate";
+            $detailUpdates[] = "Detail surat dari '$oldDetail' menjadi '$request->detail'";
             $isUpdate = true;
         }
         if ($oldDate !== $request->date) {
             $updates[] = "Tanggal surat dari '$oldDate' menjadi '$request->date'";
+            $detailUpdates[] = "Tanggal surat dari '$oldDate' menjadi '$request->date'";
             $isUpdate = true;
         }
 
@@ -293,6 +303,7 @@ class LetterController extends Controller
         if ($isUpdate && $oldStatus !== 'pending') {
             $letter->status = 'pending';
             $updates[] = "Status otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
+            $detailUpdates[] = "Status otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
             $isUpdateStatus = true;
         }
 
@@ -344,14 +355,17 @@ class LetterController extends Controller
         }
 
         $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";
-        if (!empty($updates)) {
+        $descriptionDetail = "Surat telah diupdate oleh " . Auth::user()->name . ".";
+        if (!empty($updates && $detailUpdates)) {
             $description .= "\n" . implode(", \n", $updates);
+            $descriptionDetail .= "\n" . implode(", \n", $detailUpdates);
 
             History::create([
                 'type_id' => $letter->archive->id,
                 'title' => $title,
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' => $description . '.',
+                'detail' => $descriptionDetail. '.',
                 'type' => $letter->type,
                 'method' => $method,
                 'user_id' => Auth::user()->id,
@@ -388,6 +402,7 @@ class LetterController extends Controller
                 'title' => "Hapus " . $type,
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' => $description,
+                'detail' => $description,
                 'type' => $letter->type,
                 'method' => 'delete',
                 'user_id' => Auth::user()->id,
@@ -462,6 +477,7 @@ class LetterController extends Controller
                     'title' => "Update Status",
                     'name' => $letter->no_letter . ' - ' . $letter->name,
                     'description' => $description,
+                    'detail' => $description,
                     'type' => $letter->type,
                     'method' => 'update status',
                     'user_id' => Auth::user()->id,

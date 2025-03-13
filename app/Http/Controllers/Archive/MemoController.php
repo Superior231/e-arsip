@@ -130,6 +130,7 @@ class MemoController extends Controller
                 'title' => "Buat " . $type . " Baru",
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' => $type . " baru telah dibuat oleh " . Auth::user()->name . "\n" . "[{$letter->no_letter} => {$letter->name}].",
+                'detail' => $type . " baru telah dibuat oleh " . Auth::user()->name . "\n" . "[{$letter->no_letter} => {$letter->name}].",
                 'type' => $letter->type,
                 'method' => 'create',
                 'user_id' => Auth::user()->id,
@@ -196,6 +197,7 @@ class MemoController extends Controller
         $isUpdateStatus = false;
         $isUpdate = false;
         $updates = [];
+        $detailUpdates = [];
 
         $oldLetterCode = $letter->letter_code;
         $oldLetterName = $letter->name;
@@ -228,62 +230,77 @@ class MemoController extends Controller
         if (Auth::user()->roles == 'superadmin' && $oldStatus !== $request->status) {
             $letter->status = $request->status;
             $updates[] = "Status dari '$oldStatus' menjadi '$request->status'";
+            $detailUpdates[] = "Status dari '$oldStatus' menjadi '$request->status'";
             $isUpdateStatus = true;
         }
         if ($oldLetterName !== $request->name) {
             $updates[] = "Nama dari '$oldLetterName' menjadi '$request->name'";
+            $detailUpdates[] = "Nama dari '$oldLetterName' menjadi '$request->name'";
             $isUpdate = true;
         }
         if ($oldLetterCode !== $request->letter_code) {
             $updates[] = "Kode dari '$oldLetterCode' menjadi '$request->letter_code'";
+            $detailUpdates[] = "Kode dari '$oldLetterCode' menjadi '$request->letter_code'";
             $isUpdate = true;
         }
         if ($oldContent !== $request->content) {
             $updates[] = "Isi repat diupdate";
+            $detailUpdates[] = "Isi repat dari '$oldContent' menjadi '$request->content'";
             $isUpdate = true;
         }
         if ($oldDetail !== $request->detail) {
-            $updates[] = "Detail surat dari '$oldDetail' menjadi '$request->detail'";
+            $updates[] = "Detail surat diupdate";
+            $detailUpdates[] = "Detail surat dari '$oldDetail' menjadi '$request->detail'";
             $isUpdate = true;
         }
         if ($oldDate !== $request->date) {
             $updates[] = "Tanggal dari '$oldDate' menjadi '$request->date'";
+            $detailUpdates[] = "Tanggal dari '$oldDate' menjadi '$request->date'";
             $isUpdate = true;
         }
         if ($oldStartTime !== $request->start_time) {
             $updates[] = "Waktu mulai dari '$oldStartTime' menjadi '$request->start_time'";
+            $detailUpdates[] = "Waktu mulai dari '$oldStartTime' menjadi '$request->start_time'";
             $isUpdate = true;
         }
         if ($oldEndTime !== $request->end_time) {
             $updates[] = "Waktu selesai dari '$oldEndTime' menjadi '$request->end_time'";
+            $detailUpdates[] = "Waktu selesai dari '$oldEndTime' menjadi '$request->end_time'";
             $isUpdate = true;
         }
         if ($oldPlace !== $request->place) {
             $updates[] = "Tempat dari '$oldPlace' menjadi '$request->place'";
+            $detailUpdates[] = "Tempat dari '$oldPlace' menjadi '$request->place'";
             $isUpdate = true;
         }
         if ($oldEvent !== $request->event) {
             $updates[] = "Acara dari '$oldEvent' menjadi '$request->event'";
+            $detailUpdates[] = "Acara dari '$oldEvent' menjadi '$request->event'";
             $isUpdate = true;
         }
         if ($oldChairman !== $request->chairman) {
             $updates[] = "Ketua dari '$oldChairman' menjadi '$request->chairman'";
+            $detailUpdates[] = "Ketua dari '$oldChairman' menjadi '$request->chairman'";
             $isUpdate = true;
         }
         if ($oldChairmanPosition !== $request->chairman_position) {
             $updates[] = "Jabatan ketua dari '$oldChairmanPosition' menjadi '$request->chairman_position'";
+            $detailUpdates[] = "Jabatan ketua dari '$oldChairmanPosition' menjadi '$request->chairman_position'";
             $isUpdate = true;
         }
         if ($oldNotulis !== $request->notulis) {
             $updates[] = "Notulis dari '$oldNotulis' menjadi '$request->notulis'";
+            $detailUpdates[] = "Notulis dari '$oldNotulis' menjadi '$request->notulis'";
             $isUpdate = true;
         }
         if ($oldParticipant !== $request->participant) {
             $updates[] = "Peserta rapat diupdate";
+            $detailUpdates[] = "Peserta rapat dari '$oldParticipant' menjadi '$request->participant'";
             $isUpdate = true;
         }
         if ($oldDecision !== $request->decision) {
             $updates[] = "Kesimpulan rapat diupdate";
+            $detailUpdates[] = "Kesimpulan rapat dari '$oldDecision' menjadi '$request->decision'";
             $isUpdate = true;
         }
 
@@ -291,6 +308,7 @@ class MemoController extends Controller
         if ($isUpdate && $oldStatus !== 'pending') {
             $letter->status = 'pending';
             $updates[] = "Status otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
+            $detailUpdates[] = "Status otomatis berubah menjadi 'pending' karena ada perubahan data pada surat";
             $isUpdateStatus = true;
         }
 
@@ -345,14 +363,17 @@ class MemoController extends Controller
         }
 
         $description = "Surat telah diupdate oleh " . Auth::user()->name . ".";
-        if (!empty($updates)) {
+        $descriptionDetail = "Surat telah diupdate oleh " . Auth::user()->name . ".";
+        if (!empty($updates && $descriptionDetail)) {
             $description .= "\n" . implode(", \n", $updates);
+            $descriptionDetail .= "\n" . implode(", \n", $detailUpdates);
 
             History::create([
                 'type_id' => $letter->archive->id,
                 'title' => $title,
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' => $description . '.',
+                'detail' => $descriptionDetail . '.',
                 'type' => $letter->type,
                 'method' => $method,
                 'user_id' => Auth::user()->id,
@@ -399,6 +420,7 @@ class MemoController extends Controller
                 'title' => "Hapus " . $type,
                 'name' => $letter->no_letter . ' - ' . $letter->name,
                 'description' => $description,
+                'detail' => $description,
                 'type' => $letter->type,
                 'method' => 'delete',
                 'user_id' => Auth::user()->id,

@@ -24,4 +24,18 @@ class HistoryController extends Controller
             'history_category' => $history_category,
         ]);
     }
+
+    public function detail($id)
+    {
+        $histories = History::latest()->get();
+        $history = $histories->find($id);
+        
+        return view('pages.history.detail', [
+            'title' => 'Detail - Putra Panggil Jaya',
+            'navTitle' => 'Detail History',
+            'active' => 'history',
+            'histories' => $histories,
+            'history' => $history,
+        ]);
+    }
 }
