@@ -441,16 +441,6 @@ class LetterController extends Controller
         }
     }
 
-    public function letter_content(string $no_letter)
-    {
-        $letter = Letter::where('no_letter', $no_letter)->firstOrFail();
-        
-        return view('pages.print.letter-content', [
-            'letter' => $letter,
-            'title' => $letter->name
-        ]);
-    }
-
     public function letter_reply(String $no_letter)
     {
         $letter = Letter::where('no_letter', $no_letter)->with('archive')->firstOrFail();

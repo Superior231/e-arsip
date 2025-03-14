@@ -22,4 +22,18 @@ class PrintLetterController extends Controller
             'letters' => $letters
         ]);
     }
+
+    public function print_letter($no_letter) {
+        $codeArray = explode('-', $no_letter);
+        $letters = Letter::whereIn('no_letter', $codeArray)->get();
+
+        if ($letters->isEmpty()) {
+            abort(404);
+        }
+
+        return view('pages.print.letter-content', [
+            'title' => 'Putra Panggil Jaya',
+            'letters' => $letters
+        ]);
+    }
 }

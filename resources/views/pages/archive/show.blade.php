@@ -159,6 +159,12 @@
                             <div class="print-select d-flex flex-column flex-md-row align-items-center gap-2">
                                 <a href="#"
                                     class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
+                                    id="printSelectLetter">
+                                    <i class='bx bx-receipt'></i>
+                                    Print select surat
+                                </a>
+                                <a href="#"
+                                    class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
                                     id="printSelectLetterList">
                                     <i class='bx bx-printer'></i>
                                     Print select list
@@ -343,7 +349,7 @@
                                                                 @if ($archive->category->name == 'Notulen' || $archive->category->name == 'Memo')
                                                                     <li>
                                                                         <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                            href="{{ route('memo.content', $letter->no_letter) }}"
+                                                                            href="{{ route('letter.content', $letter->no_letter) }}"
                                                                             target="_blank">
                                                                             <i class='bx bx-printer fs-5'></i>
                                                                             Print {{ $letter->type }}
@@ -790,6 +796,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const checkAll = document.getElementById("checkAll");
             const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
+            const printSelectLetter = document.getElementById("printSelectLetter");
             const printSelectLetterList = document.getElementById("printSelectLetterList");
             const printSelectBarcodeLetterList = document.getElementById("printSelectBarcodeLetterList");
             const approveLetter = document.getElementById("approveLetter");
@@ -869,6 +876,25 @@
                     });
                 });
             @endif
+
+
+            printSelectLetter.addEventListener("click", function(e) {
+                e.preventDefault();
+                let selectedCodes = getSelectedCodes();
+                if (selectedCodes) {
+                    window.location.href = `/print/letter-content/${selectedCodes}`;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Setidaknya pilih satu untuk dicetak!',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
+                        },
+                    });
+                }
+            });
 
             printSelectLetterList.addEventListener("click", function(e) {
                 e.preventDefault();

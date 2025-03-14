@@ -384,16 +384,6 @@ class MemoController extends Controller
         }
     }
 
-    public function memo_content(string $no_letter)
-    {
-        $letter = Letter::where('no_letter', $no_letter)->firstOrFail();
-        
-        return view('pages.print.memo-content', [
-            'letter' => $letter,
-            'title' => $letter->name
-        ]);
-    }
-
     public function delete_memo(Request $request, $id)
     {
         $letter = Letter::findOrFail($id);

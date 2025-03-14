@@ -84,7 +84,7 @@
                         </div>
                         <div class="w-100">
                             <label for="detail" class="form-label">Keterangan<strong class="text-danger">*</strong></label>
-                            <textarea class="form-control @error('detail') is-invalid @enderror" name="detail" rows="3"></textarea>
+                            <textarea class="form-control @error('detail') is-invalid @enderror" name="detail" rows="5"></textarea>
                             @error('detail')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -239,7 +239,7 @@
 
                         <div class="w-100">
                             <label for="participant" class="form-label">Partisipan<strong class="text-danger">*</strong></label>
-                            <textarea class="form-control @error('participant') is-invalid @enderror" id="participant" name="participant">{{ old('participant') }}</textarea>
+                            <textarea class="form-control @error('participant') is-invalid @enderror" id="participant" placeholder="Masukkan partisipan" rows="5" name="participant">{{ old('participant') }}</textarea>
                             @error('participant')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
