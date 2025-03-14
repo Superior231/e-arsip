@@ -30,6 +30,7 @@ class Category extends Model
         $nameToSlug = [
             'Administrasi' => 'ADM',
             'Berita Acara' => 'BAC',
+            'Delivery Order' => 'DO',
             'Faktur' => 'FKT',
             'Surat' => 'SRT',
             'Surat Masuk' => 'SMK',

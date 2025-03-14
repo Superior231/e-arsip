@@ -185,10 +185,10 @@
                             </div>
                         </div>
                         <div class="w-100">
-                            <label for="detail" class="form-label">Keterangan<strong
+                            <label for="content" class="form-label">Keterangan<strong
                                     class="text-danger">*</strong></label>
-                            <textarea class="form-control @error('detail') is-invalid @enderror" name="detail" rows="5">{{ $letter->detail }}</textarea>
-                            @error('detail')
+                            <textarea class="form-control @error('content') is-invalid @enderror" name="content" rows="5">{{ $letter->content }}</textarea>
+                            @error('content')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

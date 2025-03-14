@@ -161,7 +161,7 @@
                                     class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
                                     id="printSelectLetter">
                                     <i class='bx bx-receipt'></i>
-                                    Print select surat
+                                    Print surat
                                 </a>
                                 <a href="#"
                                     class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
