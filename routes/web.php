@@ -59,7 +59,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/memo', [MemoController::class, 'index'])->name('memo.index');
     Route::get('/memo/create/{archive_id}', [MemoController::class, 'create'])->name('memo.create');
     Route::post('/memo', [MemoController::class, 'store'])->name('memo.store');
-    Route::get('/memo/{no_letter}', [MemoController::class, 'show'])->name('memo.show');
     Route::get('/memo/{archive_id}/edit', [MemoController::class, 'edit'])->name('memo.edit');
     Route::put('/memo/{archive_id}', [MemoController::class, 'update'])->name('memo.update');
     Route::put('/memo/delete/{id}', [MemoController::class, 'delete_memo'])->name('memo.delete');

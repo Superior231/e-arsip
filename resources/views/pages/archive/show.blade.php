@@ -229,7 +229,6 @@
                                                 <span class="link-primary" style="cursor: pointer;" title="Detail Surat"
                                                     data-bs-toggle="modal" data-bs-target="#detailLetterModal"
                                                     onclick="showDetailLetter(
-                                                    '{{ $letter->user->avatar }}',
                                                     '{{ $letter->user->name }}',
                                                     '{{ $letter->status }}',
                                                     '{{ $letter->type }}',
@@ -331,23 +330,13 @@
                                                                     </a>
                                                                 </li>
                                                             @endif
-                                                            @if ($archive->category->name == 'Memo' || $archive->category->name == 'Notulen')
-                                                                <li>
-                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                        href="{{ route('memo.show', $letter->no_letter) }}">
-                                                                        <i class='bx bx-show fs-5'></i>
-                                                                        Lihat detail
-                                                                    </a>
-                                                                </li>
-                                                            @else
-                                                                <li>
-                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                        href="{{ route('letter.show', $letter->no_letter) }}">
-                                                                        <i class='bx bx-show fs-5'></i>
-                                                                        Lihat detail
-                                                                    </a>
-                                                                </li>
-                                                            @endif
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                    href="{{ route('letter.show', $letter->no_letter) }}">
+                                                                    <i class='bx bx-show fs-5'></i>
+                                                                    Lihat detail
+                                                                </a>
+                                                            </li>
                                                             @if ($archive->category->name == 'Faktur')
                                                                 <li>
                                                                     <a class="dropdown-item d-flex align-items-center gap-1"
@@ -490,22 +479,6 @@
                         <table>
                             <tr>
                                 <td>
-                                    <h5>Oleh</h5>
-                                </td>
-                                <td>
-                                    <h5>&nbsp;:&nbsp;</h5>
-                                </td>
-                                <td>
-                                    <div class="author py-2">
-                                        <div class="avatar">
-                                            <img id="detailLetterUserAvatar" class="img" src="">
-                                        </div>
-                                        <h5 class="ms-4 ps-1 mb-0 pb-0" id="detailLetterUserName"></h5>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
                                     <h5>Status</h5>
                                 </td>
                                 <td>
@@ -596,6 +569,17 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <h5>Oleh</h5>
+                                </td>
+                                <td>
+                                    <h5>&nbsp;:&nbsp;</h5>
+                                </td>
+                                <td>
+                                    <h5 id="detailLetterUserName"></h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <h5>Detail</h5>
                                 </td>
                                 <td>
@@ -676,15 +660,11 @@
         }
 
         function showDetailLetter(
-            letterUserAvatar, letterUserName,
-            letterStatus, letterType, noLetter, letterCode, inventory, item,
+            letterUserName, letterStatus, letterType,
+            noLetter, letterCode, inventory, item,
             letterName, letterDate, letterDetail) {
-            var avatarUrl = letterUserAvatar ? '{{ asset('storage/avatars') }}/' + letterUserAvatar :
-                `https://ui-avatars.com/api/?background=random&name=${encodeURIComponent(letterUserName)}`;
-
-            $('#detailLetterUserAvatar').attr('src', avatarUrl);
+                
             $('#detailLetterUserName').text(letterUserName);
-
             $('#detailLetterStatus').text(letterStatus);
             $('#detailNoLetter').text(noLetter);
             $('#detailLetterCode').text(letterCode);

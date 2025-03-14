@@ -141,24 +141,6 @@ class MemoController extends Controller
         }
     }
 
-    public function show(string $no_letter)
-    {
-        $letter = Letter::where('no_letter', $no_letter)->firstOrFail();
-        $letter_reply = Letter::where('letter_id', $letter->id)->get();
-        $archive = $letter->archive;
-        $histories = History::latest()->get();
-
-        return view('pages.memo.show', [
-            'title' => 'Detail ' . $archive->category->name,
-            'navTitle' => 'Detail ' . $archive->category->name,
-            'active' => 'archive',
-            'letter_reply' => $letter_reply,
-            'letter' => $letter,
-            'archive' => $archive,
-            'histories' => $histories
-        ]);
-    }
-
     public function edit(string $no_letter)
     {
         $letter = Letter::where('no_letter', $no_letter)->with('archive')->firstOrFail();

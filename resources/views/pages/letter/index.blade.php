@@ -39,21 +39,17 @@
         </div>
     </div>
 
-    <div class="actions d-flex flex-column flex-md-row align-items-center justify-content-between gap-2"
-        id="actionsContainer">
-        <div class="print d-flex align-items-center gap-2 w-100">
-            <a href="#" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                id="printSelectLetter">
-                <i class='bx bx-receipt'></i>
-                Print surat
-            </a>
-        </div>
-    </div>
-
-    <div class="row row-cols-1 row-cols-lg-2 g-3 mt-0" id="letterContainer">
+    <div class="row row-cols-1 row-cols-lg-2 g-3 mt-4" id="letterContainer">
         <div class="col col-12 col-lg-8" id="letterList">
             <div class="card p-4 pt-3">
-                <h4 class="fw-semibold py-0 my-0">{{ $tableTitle }}</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="fw-semibold py-0 my-0">{{ $tableTitle }}</h4>
+                    <a href="#" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
+                        id="printSelectLetter">
+                        <i class='bx bx-receipt'></i>
+                        Print surat
+                    </a>
+                </div>
                 <hr>
                 <div class="table-responsive">
                     <table id="myDataTable" class="table table-striped table-hover" style="width:100%">
@@ -106,7 +102,6 @@
                                         <span class="link-primary" style="cursor: pointer;" title="Detail Surat"
                                             data-bs-toggle="modal" data-bs-target="#detailLetterModal"
                                             onclick="showDetailLetter(
-                                                    '{{ $letter->user->avatar }}',
                                                     '{{ $letter->user->name }}',
                                                     '{{ $letter->status }}',
                                                     '{{ $letter->type }}',
@@ -207,10 +202,10 @@
                                                                     action="{{ route('letter.delete', $letter->id) }}"
                                                                     method="POST" class="d-inline">
                                                                     @csrf @method('PUT')
-        
-                                                                    <input type="hidden" class="form-control" id="status"
-                                                                        name="status" value="delete">
-        
+
+                                                                    <input type="hidden" class="form-control"
+                                                                        id="status" name="status" value="delete">
+
                                                                     <a style="cursor: pointer;"
                                                                         class="dropdown-item d-flex align-items-center gap-1"
                                                                         onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
@@ -321,22 +316,6 @@
                         <table>
                             <tr>
                                 <td>
-                                    <h5>Oleh</h5>
-                                </td>
-                                <td>
-                                    <h5>&nbsp;:&nbsp;</h5>
-                                </td>
-                                <td>
-                                    <div class="author py-2">
-                                        <div class="avatar">
-                                            <img id="detailLetterUserAvatar" class="img" src="">
-                                        </div>
-                                        <h5 class="ms-4 ps-1 mb-0 pb-0" id="detailLetterUserName"></h5>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
                                     <h5>Status</h5>
                                 </td>
                                 <td>
@@ -410,6 +389,17 @@
                                 </td>
                                 <td>
                                     <h5 id="detailLetterDate"></h5>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h5>Oleh</h5>
+                                </td>
+                                <td>
+                                    <h5>&nbsp;:&nbsp;</h5>
+                                </td>
+                                <td>
+                                    <h5 id="detailLetterUserName"></h5>
                                 </td>
                             </tr>
                             <tr>
@@ -495,15 +485,11 @@
         }
 
         function showDetailLetter(
-            letterUserAvatar, letterUserName,
-            letterStatus, letterType, noLetter, letterCode, letterArchive,
+            letterUserName, letterStatus, letterType,
+            noLetter, letterCode, letterArchive,
             item, letterName, letterDate, letterDetail) {
-            var avatarUrl = letterUserAvatar ? '{{ asset('storage/avatars') }}/' + letterUserAvatar :
-                `https://ui-avatars.com/api/?background=random&name=${encodeURIComponent(letterUserName)}`;
 
-            $('#detailLetterUserAvatar').attr('src', avatarUrl);
             $('#detailLetterUserName').text(letterUserName);
-
             $('#detailLetterStatus').text(letterStatus);
             $('#detailNoLetter').text(noLetter);
             $('#detailLetterCode').text(letterCode);
@@ -575,7 +561,6 @@
                 letterContainer.classList.add('row-cols-lg-2');
                 historyIcon.classList.remove('d-flex');
                 historyIcon.classList.add('d-none');
-                actionsContainer.classList.remove('mt-5');
             } else {
                 historyDiv.style.display = 'none';
                 letterList.classList.remove('col-lg-8');
@@ -584,7 +569,6 @@
                 letterContainer.classList.add('row-cols-lg-1');
                 historyIcon.classList.remove('d-none');
                 historyIcon.classList.add('d-flex');
-                actionsContainer.classList.add('mt-5');
             }
         }
 
