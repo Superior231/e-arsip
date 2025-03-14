@@ -73,9 +73,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('profile', ProfileController::class);
     Route::delete('/profile/{id}/delete-avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
 
-    Route::get('/print/archive/{archive_id}', [PrintArchiveController::class, 'show'])->name('print.archive');
     Route::get('/print/letter/{no_letter}', [PrintLetterController::class, 'show'])->name('print.letter');
-    Route::get('/print/barcode/archive/{archive_id}', [PrintBarcodeArchiveController::class, 'show'])->name('print.barcode.archive');
-    Route::get('/print/barcode/letter/{no_letter}', [PrintBarcodeLetterController::class, 'show'])->name('print.barcode.letter');
-    Route::get('/print/letter-content/{no_letter}', [PrintLetterController::class, 'print_letter'])->name('letter.content');
 });

@@ -228,7 +228,7 @@
         <div class="card mt-3">
             <div class="card-body">
                 <div class="d-flex justify-content-end w-100">
-                    <a href="{{ route('letter.content', $letter->no_letter) }}"
+                    <a href="{{ route('print.letter', $letter->no_letter) }}"
                         class="btn btn-primary d-flex align-items-center gap-1" target="_blank">
                         <i class="bx bx-printer"></i>
                         Print
@@ -346,21 +346,13 @@
                                                     </li>
 
                                                     <hr class="dropdown-divider py-0 my-0">
-                                                    <li>
-                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="{{ route('print.letter', $item->no_letter) }}"
-                                                            target="_blank">
-                                                            <i class='bx bx-printer fs-5'></i>
-                                                            Print
-                                                        </a>
-                                                    </li>
                                                     @if (!empty($item->content))
                                                         <li>
                                                             <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                href="{{ route('letter.content', $item->no_letter) }}"
+                                                                href="{{ route('print.letter', $item->no_letter) }}"
                                                                 target="_blank">
                                                                 <i class='bx bx-printer fs-5'></i>
-                                                                Print surat keluar
+                                                                Print
                                                             </a>
                                                         </li>
                                                     @endif
@@ -408,7 +400,7 @@
                     @if (!empty($letter->content) && $letter->status !== 'delete')
                         <hr class="bg-secondary">
                         <div class="d-flex justify-content-end w-100">
-                            <a href="{{ route('letter.content', $letter->no_letter) }}"
+                            <a href="{{ route('print.letter', $letter->no_letter) }}"
                                 class="btn btn-primary d-flex align-items-center gap-1" target="_blank">
                                 <i class="bx bx-printer"></i>
                                 Print
@@ -499,8 +491,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const checkAll = document.getElementById("checkAll");
             const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
-            const printSelectLetterList = document.getElementById("printSelectLetterList");
-            const printSelectBarcodeLetterList = document.getElementById("printSelectBarcodeLetterList");
+            const printSelectLetter = document.getElementById("printSelectLetter");
 
             function getSelectedCodes() {
                 let selectedCodes = [];
@@ -518,29 +509,11 @@
                 });
             });
 
-            printSelectLetterList.addEventListener("click", function(e) {
+            printSelectLetter.addEventListener("click", function(e) {
                 e.preventDefault();
                 let selectedCodes = getSelectedCodes();
                 if (selectedCodes) {
                     window.location.href = `/print/letter/${selectedCodes}`;
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Setidaknya pilih satu untuk dicetak!',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
-                        },
-                    });
-                }
-            });
-
-            printSelectBarcodeLetterList.addEventListener("click", function(e) {
-                e.preventDefault();
-                let selectedCodes = getSelectedCodes();
-                if (selectedCodes) {
-                    window.location.href = `/print/barcode/letter/${selectedCodes}`;
                 } else {
                     Swal.fire({
                         icon: 'error',

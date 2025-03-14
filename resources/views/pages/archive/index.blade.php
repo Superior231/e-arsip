@@ -34,35 +34,6 @@
         </div>
     </div>
 
-    <div class="actions d-flex flex-column flex-md-row align-items-center justify-content-between gap-2"
-        id="actionsContainer">
-        <div class="print d-flex align-items-center gap-2 w-100">
-            <a href="{{ route('print.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}"
-                class="btn btn-primary d-flex align-items-center justify-content-center gap-1" target="_blank">
-                <i class='bx bx-printer'></i>
-                Print all list
-            </a>
-            <a href="{{ route('print.barcode.archive', implode('-', $archives->pluck('archive_id')->toArray())) }}"
-                class="btn btn-primary d-flex align-items-center justify-content-center gap-1" target="_blank">
-                <i class='bx bx-barcode'></i>
-                Print all barcode
-            </a>
-        </div>
-
-        <div class="print-select d-flex align-items-center justify-content-lg-end gap-2 w-100">
-            <a href="#" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                id="printSelectArchiveList">
-                <i class='bx bx-printer'></i>
-                Print select list
-            </a>
-            <a href="#" class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                id="printSelectBarcodeArchiveList">
-                <i class='bx bx-barcode'></i>
-                Print select barcode
-            </a>
-        </div>
-    </div>
-
     <div class="row row-cols-1 row-cols-lg-2 g-3 mt-0" id="archiveContainer">
         <div class="col col-12 col-lg-8" id="archiveList">
             <div class="card p-4 pt-3">
@@ -80,11 +51,6 @@
                     <table id="myDataTable" class="table table-striped table-hover" style="width:100%">
                         <thead>
                             <tr>
-                                <th>
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <input type="checkbox" id="checkAll">
-                                    </div>
-                                </th>
                                 <th class="text-center">Foto</th>
                                 <th class="text-nowrap">ID Arsip</th>
                                 <th class="text-nowrap">Nama Arsip</th>
@@ -96,11 +62,6 @@
                         <tbody>
                             @foreach ($archives->where('status', '!=', 'delete') as $archive)
                                 <tr class="align-middle">
-                                    <td>
-                                        <div class="d-flex justify-content-center align-items-center me-3">
-                                            <input type="checkbox" value="{{ $archive->archive_id }}">
-                                        </div>
-                                    </td>
                                     <td>
                                         <div class="position-relative d-flex justify-content-center me-3">
                                             <div class="image d-flex justify-content-center" style="cursor: pointer;"
@@ -176,15 +137,7 @@
                                                     </li>
 
                                                     <hr class="dropdown-divider py-0 my-0">
-
-                                                    <li>
-                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="{{ route('print.archive', $archive->archive_id) }}"
-                                                            target="_blank">
-                                                            <i class='bx bx-printer fs-5'></i>
-                                                            Print
-                                                        </a>
-                                                    </li>
+                                                    
                                                     <li>
                                                         <a class="dropdown-item d-flex align-items-center gap-1"
                                                             href="{{ route('archive.show', $archive->archive_id) }}">
@@ -398,10 +351,6 @@
                                 </td>
                             </tr>
                         </table>
-
-                        <div class="qr-code py-3 py-md-0">
-                            <img src="" alt="QR Code" id="detailArchiveQrCode">
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -479,12 +428,6 @@
                 day: 'numeric'
             }).format(new Date(archiveDate)));
             $('#detailArchiveDetail').text(archiveDetail ? archiveDetail : '-');
-
-            // Atur QR Code untuk arsip
-            let archiveQrCode =
-                `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent('{{ request()->getHost() }}/print/archive/' + archiveId)}&size=100x100`;
-            $('#detailArchiveQrCode').attr('src', archiveQrCode);
-
             $('#detailArchiveLink').attr('href', `/archive/${archiveId}`);
         }
 
@@ -553,67 +496,6 @@
             if (state === "closed") {
                 historyArchive();
             }
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const checkAll = document.getElementById("checkAll");
-            const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
-            const printSelectArchiveList = document.getElementById("printSelectArchiveList");
-            const printSelectBarcodeArchiveList = document.getElementById("printSelectBarcodeArchiveList");
-
-            function getSelectedCodes() {
-                let selectedCodes = [];
-                checkboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        selectedCodes.push(checkbox.value);
-                    }
-                });
-                return selectedCodes.join("-");
-            }
-
-            checkAll.addEventListener("change", function() {
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = checkAll.checked;
-                });
-            });
-
-            printSelectArchiveList.addEventListener("click", function(e) {
-                e.preventDefault();
-                let selectedCodes = getSelectedCodes();
-                if (selectedCodes) {
-                    window.location.href = `/print/archive/${selectedCodes}`;
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Setidaknya pilih satu untuk dicetak!',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
-                        },
-                    });
-                }
-            });
-
-            printSelectBarcodeArchiveList.addEventListener("click", function(e) {
-                e.preventDefault();
-                let selectedCodes = getSelectedCodes();
-                if (selectedCodes) {
-                    window.location.href = `/print/barcode/archive/${selectedCodes}`;
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Setidaknya pilih satu untuk dicetak!',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
-                        },
-                    });
-                }
-            });
         });
     </script>
 @endpush

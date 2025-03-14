@@ -62,8 +62,7 @@
                             </div>
                         </header>
 
-                        <div
-                            class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-center gap-2">
+                        <div class="pt-4">
                             <table>
                                 <tr>
                                     <td>
@@ -145,11 +144,6 @@
                                     </td>
                                 </tr>
                             </table>
-
-                            <div class="qr-code py-3 py-md-0">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/archive/{{ $archive->archive_id }}&size=100x100"
-                                    alt="QR Code">
-                            </div>
                         </div>
 
                         <hr class="mb-4">
@@ -162,18 +156,6 @@
                                     id="printSelectLetter">
                                     <i class='bx bx-receipt'></i>
                                     Print surat
-                                </a>
-                                <a href="#"
-                                    class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                                    id="printSelectLetterList">
-                                    <i class='bx bx-printer'></i>
-                                    Print select list
-                                </a>
-                                <a href="#"
-                                    class="btn btn-primary d-flex align-items-center justify-content-center gap-1"
-                                    id="printSelectBarcodeLetterList">
-                                    <i class='bx bx-barcode'></i>
-                                    Print select barcode
                                 </a>
                             </div>
 
@@ -337,34 +319,15 @@
                                                                     </a>
                                                                 </li>
                                                             @endif
-                                                            <li>
-                                                                <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                    href="{{ route('print.letter', $letter->no_letter) }}"
-                                                                    target="_blank">
-                                                                    <i class='bx bx-printer fs-5'></i>
-                                                                    Print
-                                                                </a>
-                                                            </li>
                                                             @if (!empty($letter->content))
-                                                                @if ($archive->category->name == 'Notulen' || $archive->category->name == 'Memo')
-                                                                    <li>
-                                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                            href="{{ route('letter.content', $letter->no_letter) }}"
-                                                                            target="_blank">
-                                                                            <i class='bx bx-printer fs-5'></i>
-                                                                            Print {{ $letter->type }}
-                                                                        </a>
-                                                                    </li>
-                                                                @else
-                                                                    <li>
-                                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                                            href="{{ route('letter.content', $letter->no_letter) }}"
-                                                                            target="_blank">
-                                                                            <i class='bx bx-printer fs-5'></i>
-                                                                            Print surat keluar
-                                                                        </a>
-                                                                    </li>
-                                                                @endif
+                                                                <li>
+                                                                    <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                        href="{{ route('print.letter', $letter->no_letter) }}"
+                                                                        target="_blank">
+                                                                        <i class='bx bx-printer fs-5'></i>
+                                                                        Print
+                                                                    </a>
+                                                                </li>
                                                             @endif
                                                             @if ($archive->category->name == 'Memo' || $archive->category->name == 'Notulen')
                                                                 <li>
@@ -449,7 +412,8 @@
                         <hr class="pb-0 mb-0">
                         <div class="d-flex flex-column" style="max-height: 500px; overflow-y: scroll">
                             @forelse ($history_letter as $history)
-                                <a href="{{ route('history.detail', $history->id) }}" class="text-decoration-none text-dark" style="cursor: pointer;">
+                                <a href="{{ route('history.detail', $history->id) }}"
+                                    class="text-decoration-none text-dark" style="cursor: pointer;">
                                     @php
                                         $bgClass = match ($history->method) {
                                             'create' => 'bg-success text-light',
@@ -797,8 +761,6 @@
             const checkAll = document.getElementById("checkAll");
             const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
             const printSelectLetter = document.getElementById("printSelectLetter");
-            const printSelectLetterList = document.getElementById("printSelectLetterList");
-            const printSelectBarcodeLetterList = document.getElementById("printSelectBarcodeLetterList");
             const approveLetter = document.getElementById("approveLetter");
             const approveLetterForm = document.getElementById("approveLetterForm");
             const approveLetterBtn = document.getElementById("approveLetterBtn");
@@ -882,43 +844,7 @@
                 e.preventDefault();
                 let selectedCodes = getSelectedCodes();
                 if (selectedCodes) {
-                    window.location.href = `/print/letter-content/${selectedCodes}`;
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Setidaknya pilih satu untuk dicetak!',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
-                        },
-                    });
-                }
-            });
-
-            printSelectLetterList.addEventListener("click", function(e) {
-                e.preventDefault();
-                let selectedCodes = getSelectedCodes();
-                if (selectedCodes) {
                     window.location.href = `/print/letter/${selectedCodes}`;
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Setidaknya pilih satu untuk dicetak!',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
-                        },
-                    });
-                }
-            });
-
-            printSelectBarcodeLetterList.addEventListener("click", function(e) {
-                e.preventDefault();
-                let selectedCodes = getSelectedCodes();
-                if (selectedCodes) {
-                    window.location.href = `/print/barcode/letter/${selectedCodes}`;
                 } else {
                     Swal.fire({
                         icon: 'error',
