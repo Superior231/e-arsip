@@ -140,7 +140,7 @@
                 </table>
 
                 <div class="qr-code py-3 py-md-0">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/letter/{{ $letter->no_letter }}&size=100x100"
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/{{ $letter->no_letter }}&size=100x100"
                         alt="QR Code">
                 </div>
             </div>
@@ -341,7 +341,11 @@
                             {!! $letter->decision !!}
                         </div>
                     </div>
-                    <div class="letter-footer d-flex justify-content-end mt-4">
+                    <div class="letter-footer d-flex align-items-center justify-content-between mt-4">
+                        <div class="print-border" style="width: max-content;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/{{ $letter->no_letter }}&size=100x100"
+                                    alt="QR Code">
+                            </div>
                         <div class="d-flex flex-column aliign-items-start">
                             <span>Slawi,
                                 {{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('d F Y') }}</span>
@@ -398,8 +402,6 @@
         document.addEventListener("DOMContentLoaded", function() {
             const checkAll = document.getElementById("checkAll");
             const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
-            const printSelectLetterList = document.getElementById("printSelectLetterList");
-            const printSelectBarcodeLetterList = document.getElementById("printSelectBarcodeLetterList");
 
             function getSelectedCodes() {
                 let selectedCodes = [];
@@ -415,42 +417,6 @@
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = checkAll.checked;
                 });
-            });
-
-            printSelectLetterList.addEventListener("click", function(e) {
-                e.preventDefault();
-                let selectedCodes = getSelectedCodes();
-                if (selectedCodes) {
-                    window.location.href = `/print/letter/${selectedCodes}`;
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Setidaknya pilih satu untuk dicetak!',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
-                        },
-                    });
-                }
-            });
-
-            printSelectBarcodeLetterList.addEventListener("click", function(e) {
-                e.preventDefault();
-                let selectedCodes = getSelectedCodes();
-                if (selectedCodes) {
-                    window.location.href = `/print/barcode/letter/${selectedCodes}`;
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Setidaknya pilih satu untuk dicetak!',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn-primary bg-primary border-0 shadow-none',
-                        },
-                    });
-                }
             });
         });
     </script>

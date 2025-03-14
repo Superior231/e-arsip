@@ -73,5 +73,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('profile', ProfileController::class);
     Route::delete('/profile/{id}/delete-avatar', [ProfileController::class, 'deleteAvatar'])->name('profile.delete.avatar');
 
-    Route::get('/print/letter/{no_letter}', [PrintLetterController::class, 'show'])->name('print.letter');
+    Route::get('/print/{no_letter}', [PrintLetterController::class, 'show'])->name('print.letter');
 });

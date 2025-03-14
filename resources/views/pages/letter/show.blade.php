@@ -169,7 +169,7 @@
                 </table>
 
                 <div class="qr-code py-3 py-md-0">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/letter/{{ $letter->no_letter }}&size=100x100"
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/{{ $letter->no_letter }}&size=100x100"
                         alt="QR Code">
                 </div>
             </div>
@@ -256,7 +256,11 @@
                         </div>
                         {!! $letter->content !!}
                     </div>
-                    <div class="letter-footer d-flex justify-content-end mt-4">
+                    <div class="letter-footer d-flex align-items-center justify-content-between mt-4">
+                        <div class="print-border" style="width: max-content;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/{{ $letter->no_letter }}&size=100x100"
+                                    alt="QR Code">
+                            </div>
                         <div class="d-flex flex-column aliign-items-start">
                             <span>Slawi,
                                 {{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('d F Y') }}</span>
@@ -432,7 +436,11 @@
                                 </div>
                                 {!! $letter->content !!}
                             </div>
-                            <div class="letter-footer d-flex justify-content-end mt-4">
+                            <div class="letter-footer d-flex align-items-center justify-content-between mt-4">
+                                <div class="print-border" style="width: max-content;">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/{{ $letter->no_letter }}&size=100x100"
+                                        alt="QR Code">
+                                </div>
                                 <div class="d-flex flex-column aliign-items-start">
                                     <span>Slawi,
                                         {{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('d F Y') }}</span>
@@ -513,7 +521,7 @@
                 e.preventDefault();
                 let selectedCodes = getSelectedCodes();
                 if (selectedCodes) {
-                    window.location.href = `/print/letter/${selectedCodes}`;
+                    window.location.href = `/print/${selectedCodes}`;
                 } else {
                     Swal.fire({
                         icon: 'error',

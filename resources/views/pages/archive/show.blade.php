@@ -686,7 +686,7 @@
                 .addClass(statusClass);
 
             let letterQrCode =
-                `https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/letter/${noLetter}&size=100x100`;
+                `https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/${noLetter}&size=100x100`;
             $('#detailLetterQrCode').attr('src', letterQrCode);
 
             $('#detailLetterLink').attr('href', `/letter/${noLetter}`);
@@ -844,7 +844,7 @@
                 e.preventDefault();
                 let selectedCodes = getSelectedCodes();
                 if (selectedCodes) {
-                    window.location.href = `/print/letter/${selectedCodes}`;
+                    window.location.href = `/print/${selectedCodes}`;
                 } else {
                     Swal.fire({
                         icon: 'error',
