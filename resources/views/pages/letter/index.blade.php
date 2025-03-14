@@ -22,6 +22,11 @@
             padding: 5px 10px;
             border-radius: 30px 0px 0px 30px;
         }
+
+        table tr td>* {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
     </style>
 @endpush
 
@@ -65,6 +70,7 @@
                                 <th>Arsip</th>
                                 <th class="text-nowrap" style="min-width: 200px;">Nama Surat</th>
                                 <th>Tanggal</th>
+                                <th>Author</th>
                                 <th class="text-center w-100">Status</th>
                                 <th class="text-center">Actions</th>
                             </tr>
@@ -100,6 +106,8 @@
                                         <span class="link-primary" style="cursor: pointer;" title="Detail Surat"
                                             data-bs-toggle="modal" data-bs-target="#detailLetterModal"
                                             onclick="showDetailLetter(
+                                                    '{{ $letter->user->avatar }}',
+                                                    '{{ $letter->user->name }}',
                                                     '{{ $letter->status }}',
                                                     '{{ $letter->type }}',
                                                     '{{ $letter->no_letter }}',
@@ -123,9 +131,23 @@
                                         </span>
                                     </td>
                                     <td>
+                                        <div class="author">
+                                            <div class="avatar">
+                                                @if (!empty($letter->user->avatar))
+                                                    <img class="img"
+                                                        src="{{ asset('storage/avatars/' . $letter->user->avatar) }}">
+                                                @else
+                                                    <img class="img"
+                                                        src="https://ui-avatars.com/api/?background=random&name={{ urlencode($letter->user->name) }}">
+                                                @endif
+                                            </div>
+                                            <span>{{ $letter->user->name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
                                         <div class="d-flex justify-content-center">
                                             <span
-                                                class="badge {{ $letter->status == 'active' ? 'bg-success text-light' : 'bg-warning text-dark' }} status-badge me-3">{{ $letter->status }}</span>
+                                                class="badge {{ $letter->status == 'approve' ? 'bg-success text-light' : 'bg-warning text-dark' }} status-badge me-3">{{ $letter->status }}</span>
                                         </div>
                                     </td>
                                     <td>
@@ -171,30 +193,34 @@
                                                             Lihat detail
                                                         </a>
                                                     </li>
-                                                    <li>
-                                                        <a class="dropdown-item d-flex align-items-center gap-1"
-                                                            href="{{ route('letter.edit', $letter->no_letter) }}">
-                                                            <i class='bx bx-pencil fs-5'></i>
-                                                            Edit data
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <form id="deleteLetterForm-{{ $letter->id }}"
-                                                            action="{{ route('letter.delete', $letter->id) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf @method('PUT')
-
-                                                            <input type="hidden" class="form-control" id="status"
-                                                                name="status" value="delete">
-
-                                                            <a style="cursor: pointer;"
-                                                                class="dropdown-item d-flex align-items-center gap-1"
-                                                                onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
-                                                                <i class='bx bx-trash fs-5'></i>
-                                                                Hapus
-                                                            </a>
-                                                        </form>
-                                                    </li>
+                                                    @if (Auth::user()->roles === 'superadmin' || $letter->status !== 'approve')
+                                                        @if (Auth::user()->roles !== 'user' || (Auth::user()->id === $letter->user_id && $letter->status !== 'approve'))
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center gap-1"
+                                                                    href="{{ route('letter.edit', $letter->no_letter) }}">
+                                                                    <i class='bx bx-pencil fs-5'></i>
+                                                                    Edit data
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <form id="deleteLetterForm-{{ $letter->id }}"
+                                                                    action="{{ route('letter.delete', $letter->id) }}"
+                                                                    method="POST" class="d-inline">
+                                                                    @csrf @method('PUT')
+        
+                                                                    <input type="hidden" class="form-control" id="status"
+                                                                        name="status" value="delete">
+        
+                                                                    <a style="cursor: pointer;"
+                                                                        class="dropdown-item d-flex align-items-center gap-1"
+                                                                        onclick="confirmDeleteLetter('{{ $letter->id }}', '{{ $letter->no_letter }}', '{{ $letter->name }}')">
+                                                                        <i class='bx bx-trash fs-5'></i>
+                                                                        Hapus
+                                                                    </a>
+                                                                </form>
+                                                            </li>
+                                                        @endif
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
@@ -293,6 +319,22 @@
                     <div
                         class="d-flex flex-column-reverse flex-md-row justify-content-between align-items-center align-items-md-start gap-2">
                         <table>
+                            <tr>
+                                <td>
+                                    <h5>Oleh</h5>
+                                </td>
+                                <td>
+                                    <h5>&nbsp;:&nbsp;</h5>
+                                </td>
+                                <td>
+                                    <div class="author py-2">
+                                        <div class="avatar">
+                                            <img id="detailLetterUserAvatar" class="img" src="">
+                                        </div>
+                                        <h5 class="ms-4 ps-1 mb-0 pb-0" id="detailLetterUserName"></h5>
+                                    </div>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <h5>Status</h5>
@@ -453,8 +495,15 @@
         }
 
         function showDetailLetter(
+            letterUserAvatar, letterUserName,
             letterStatus, letterType, noLetter, letterCode, letterArchive,
             item, letterName, letterDate, letterDetail) {
+            var avatarUrl = letterUserAvatar ? '{{ asset('storage/avatars') }}/' + letterUserAvatar :
+                `https://ui-avatars.com/api/?background=random&name=${encodeURIComponent(letterUserName)}`;
+
+            $('#detailLetterUserAvatar').attr('src', avatarUrl);
+            $('#detailLetterUserName').text(letterUserName);
+
             $('#detailLetterStatus').text(letterStatus);
             $('#detailNoLetter').text(noLetter);
             $('#detailLetterCode').text(letterCode);

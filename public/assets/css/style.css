@@ -898,7 +898,7 @@ input[type="checkbox"] {
 }
 
 .letter {
-    max-width: 210mm;
+    width: 210mm;
     height: 100%;
     margin: 0 auto;
     padding: 5mm 20mm;

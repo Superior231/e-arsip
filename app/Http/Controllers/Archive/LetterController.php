@@ -420,6 +420,9 @@ class LetterController extends Controller
     public function delete_letter(Request $request, $id)
     {
         $letter = Letter::findOrFail($id);
+        if (Auth::user()->roles !== 'superadmin' && $letter->status === 'approve') {
+            return redirect()->back()->with('error', 'Surat ini telah disetujui!');
+        }
         if (Auth::user()->roles === 'user' && Auth::user()->id !== $letter->user_id) {
             return redirect()->back()->with('error', 'Anda tidak memiliki hak akses untuk menghapus surat ini!');
         }

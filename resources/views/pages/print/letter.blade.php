@@ -30,18 +30,21 @@
 
             .letter-body p,
             .letter-body span {
-                margin-bottom: 0px !important;
-                margin: 0px !important;
-                padding: 0px !important;
                 line-height: 1.5 !important;
                 white-space: wrap !important;
+            }
+
+            .print-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0px !important;
             }
         }
 
         .print-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 30px;
         }
     </style>
 @endpush
@@ -218,7 +221,7 @@
                         </div>
                     </div>
                 @elseif ($letter->type == 'memo')
-                <div class="letter new-page">
+                    <div class="letter new-page">
                         <div class="letter-header d-flex justify-content-between align-items-center gap-2">
                             <div class="logo">
                                 <img src="{{ asset('assets/img/logo_ppj.png') }}" alt="Logo" style="width: 100px">
@@ -383,5 +386,13 @@
         };
 
         window.addEventListener("scroll", handleScroll);
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("figure.table").forEach(function(figure) {
+                figure.classList.replace("table", "ck-table");
+            });
+        });
     </script>
 @endpush

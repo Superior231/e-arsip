@@ -65,3 +65,13 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("figure.table").forEach(function(figure) {
+                figure.classList.replace("table", "ck-table");
+            });
+        });
+    </script>
+@endpush
