@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-lg-2 g-3 mt-0" id="archiveContainer">
+    <div class="row row-cols-1 row-cols-lg-2 g-3 mt-4" id="archiveContainer">
         <div class="col col-12 col-lg-8" id="archiveList">
             <div class="card p-4 pt-3">
                 <div class="actions d-flex align-items-center justify-content-between">
