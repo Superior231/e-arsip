@@ -55,53 +55,6 @@ class ArchiveController extends Controller
         ]);
     }
 
-    public function administrasi_index()
-    {
-        $category = Category::where('name', 'Administrasi')->first();
-        if (!empty($category) && $category) {
-            $archives = Archive::with('category')->where('category_id', $category->id)->latest()->get();
-        } else {
-            $archives = collect();
-        }
-
-        $histories = History::latest()->get();
-        $history_archive = $histories->where('type', 'archive');
-        
-        return view('pages.archive.index', [
-            'title' => 'Arsip Administrasi - Putra Panggil Jaya',
-            'navTitle' => 'Arsip Administrasi',
-            'tableTitle' => 'Daftar Semua Administrasi',
-            'active' => 'archive',
-            'archives' => $archives,
-            'histories' => $histories,
-            'history_archive' => $history_archive,
-        ]);
-    }
-
-    public function laporan_index()
-    {
-        $categories = Category::where('name', 'LIKE', 'Laporan%')->pluck('id');
-
-        if ($categories->isNotEmpty()) {
-            $archives = Archive::with('category')->whereIn('category_id', $categories)->latest()->get();
-        } else {
-            $archives = collect();
-        }
-        
-        $histories = History::latest()->get();
-        $history_archive = $histories->where('type', 'archive');
-        
-        return view('pages.archive.index', [
-            'title' => 'Arsip Laporan - Putra Panggil Jaya',
-            'navTitle' => 'Arsip Laporan',
-            'tableTitle' => 'Daftar Semua Laporan',
-            'active' => 'archive',
-            'archives' => $archives,
-            'histories' => $histories,
-            'history_archive' => $history_archive,
-        ]);
-    }
-
     public function create()
     {
         if (Auth::user()->roles === 'user') {

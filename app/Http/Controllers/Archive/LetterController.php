@@ -16,6 +16,23 @@ use Intervention\Image\Facades\Image;
 
 class LetterController extends Controller
 {
+    public function letter_index()
+    {
+        $archives = Archive::where('name', 'LIKE', 'Surat%')->latest()->get();
+        $histories = History::latest()->get();
+        $history_archive = $histories->where('type', 'archive');
+        
+        return view('pages.archive.index', [
+            'title' => 'Surat - Putra Panggil Jaya',
+            'navTitle' => 'Surat',
+            'tableTitle' => 'Daftar Surat',
+            'active' => 'archive',
+            'archives' => $archives,
+            'histories' => $histories,
+            'history_archive' => $history_archive,
+        ]);
+    }
+
     public function letterIn_index()
     {
         $letters = Letter::where('type', 'letter_in')->latest()->get();

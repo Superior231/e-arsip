@@ -49,14 +49,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/letter/reply/{no_letter}', [LetterController::class, 'letter_reply'])->name('letter.reply');
     Route::post('/letter/approve', [LetterController::class, 'approve_letter'])->name('letter.approve');
     Route::get('/letter/inventory/{no_letter}', [ArchiveController::class, 'inventory_detail'])->name('inventory.detail');
-
+    
+    Route::get('/letter', [LetterController::class, 'letter_index'])->name('letter.index');
     Route::get('/surat-masuk', [LetterController::class, 'letterIn_index'])->name('letterIn.index');
     Route::get('/surat-keluar', [LetterController::class, 'letterOut_index'])->name('letterOut.index');
     Route::get('/surat-pending', [LetterController::class, 'letter_pending_index'])->name('letter.pending');
-
     Route::get('/faktur', [ArchiveController::class, 'faktur_index'])->name('faktur.index');
-    Route::get('/administrasi', [ArchiveController::class, 'administrasi_index'])->name('administrasi.index');
-    Route::get('/laporan', [ArchiveController::class, 'laporan_index'])->name('laporan.index');
 
     Route::get('/memo', [MemoController::class, 'index'])->name('memo.index');
     Route::get('/memo/create/{archive_id}', [MemoController::class, 'create'])->name('memo.create');
