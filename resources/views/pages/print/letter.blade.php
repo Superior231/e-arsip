@@ -217,6 +217,95 @@
                             </div>
                         </div>
                     </div>
+                @elseif ($letter->type == 'memo')
+                <div class="letter new-page">
+                        <div class="letter-header d-flex justify-content-between align-items-center gap-2">
+                            <div class="logo">
+                                <img src="{{ asset('assets/img/logo_ppj.png') }}" alt="Logo" style="width: 100px">
+                            </div>
+                            <div class="letter-header-title d-flex flex-column align-items-center">
+                                <h4 class="fw-bold">CV PUTRA PANGGIL JAYA</h4>
+                                <span class="fw-bold text-center">Jalan Kolonel Sugiono No.15 Slawi Kulon, Slawi</span>
+                                <span class="fw-bold">Email : ppj.slawi.pos@gmail.com</span>
+                            </div>
+                            <div class="logo opacity-0">
+                                <img src="{{ asset('assets/img/logo_ppj.png') }}" alt="Logo" style="width: 100px">
+                            </div>
+                        </div>
+                        <div class="break">
+                            <hr class="bg-secondary border-2">
+                        </div>
+                        <div class="letter-body">
+                            <div class="d-flex flex-column align-items-center justify-content-center mb-4">
+                                <span class="fw-bold"><u>{{ strtoupper($letter->archive->category->name) }}</u></span>
+                                <span>No: {{ $letter->letter_code }}</span>
+                            </div>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <h5>Nama Memo</h5>
+                                    </td>
+                                    <td>
+                                        <h5>&nbsp;:&nbsp;</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{{ $letter->name }}</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Hari, Tanggal</h5>
+                                    </td>
+                                    <td>
+                                        <h5>&nbsp;:&nbsp;</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('l, d F Y') }}
+                                        </h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Notulis</h5>
+                                    </td>
+                                    <td>
+                                        <h5>&nbsp;:&nbsp;</h5>
+                                    </td>
+                                    <td>
+                                        <h5>{{ $letter->notulis }}</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h5>Isi Memo</h5>
+                                    </td>
+                                    <td>
+                                        <h5>&nbsp;:&nbsp;</h5>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div class="content">
+                                {!! $letter->content !!}
+                            </div>
+                        </div>
+                        <div class="letter-footer d-flex align-items-center justify-content-between mt-3">
+                            <div class="print-border" style="width: max-content;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ request()->getHost() }}/print/letter/{{ $letter->no_letter }}&size=100x100"
+                                    alt="QR Code">
+                            </div>
+                            <div class="d-flex flex-column aliign-items-start">
+                                <span>Slawi,
+                                    {{ \Carbon\Carbon::parse($letter->date)->locale('id')->translatedFormat('d F Y') }}</span>
+                                <span>Mengetahui,</span>
+                                <span>Pimpinan CV Putra Panggil Jaya</span>
+                                <div class="ttd" style="height: 50px;">
+
+                                </div>
+                                <span>Yugie Hermawan</span>
+                            </div>
+                        </div>
+                    </div>
                 @elseif ($letter->type == 'letter_out')
                     <div class="letter new-page">
                         <div class="letter-header d-flex justify-content-between align-items-center gap-2">
