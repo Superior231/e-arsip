@@ -21,6 +21,7 @@ class StaffController extends Controller
         $admin = $users->where('roles', 'admin');
         $staff = $users->where('roles', 'user');
         $histories = History::latest()->get();
+        $history_staff = $histories->where('type', 'staff');
 
         return view('pages.staff.index', [
             'title' => 'Staff - Putra Panggil Jaya',
@@ -32,7 +33,8 @@ class StaffController extends Controller
             'superadmin' => $superadmin,
             'admin' => $admin,
             'staff' => $staff,
-            'histories' => $histories
+            'histories' => $histories,
+            'history_staff' => $history_staff
         ]);
     }
     

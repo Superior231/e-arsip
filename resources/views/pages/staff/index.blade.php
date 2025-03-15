@@ -11,9 +11,11 @@
             align-items: center;
             gap: 10px;
         }
+
         .username .username-info h5 {
             margin-left: 40px;
         }
+
         .username .username-info .avatar {
             position: absolute;
             width: 30px;
@@ -21,15 +23,41 @@
             overflow: hidden;
             border-radius: 50%;
         }
+
         .username .username-info .avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
+        .history-icon {
+            position: fixed;
+            top: 70px;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            cursor: pointer;
+            z-index: 9;
+        }
+
+        .history-icon>* {
+            background-color: #fa967d;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 30px 0px 0px 30px;
+        }
     </style>
 @endpush
 
 @section('content')
+    <div class="history-icon mb-2 d-none" onclick="historyStaff()">
+        <div class="d-flex align-items-center">
+            <i class='bx bx-chevrons-right fs-3' id="iconHistory"></i>
+            <span class="my-0 py-0">History</span>
+        </div>
+    </div>
+
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2 staff-container">
         <div class="col">
             <div class="card text-decoration-none h-100">
@@ -128,88 +156,142 @@
         </div>
     </div>
 
-    <div class="staff mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h3 class="fw-semibold py-0 my-0">Semua Staff</h3>
-            <a href="#" class="btn btn-primary d-flex align-items-center gap-1" data-bs-toggle="modal"
-                data-bs-target="#tambahSaffModal">
-                <i class='bx bx-plus'></i>
-                Tambah Staff
-            </a>
-        </div>
-
-        <div class="table-responsive card p-4">
-            <table class="table table-striped" id="staffTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Role</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($users as $user)
-                        <tr class="align-middle">
-                            <td>
-                                <div class="username">
-                                    <div class="username-info">
-                                        <div class="avatar">
-                                            @if (!empty($user->avatar))
-                                                <img class="img" src="{{ asset('storage/avatars/' . $user->avatar) }}">
+    <div class="row row-cols-1 row-cols-lg-2 g-3 mt-0 mt-lg-4" id="staffListContainer">
+        <div class="col col-12 col-lg-8" id="staffList">
+            <div class="card p-4 pt-3">
+                <div class="actions d-flex justify-content-between align-items-center">
+                    <h4 class="fw-semibold py-0 my-0">Semua Staff</h4>
+                    <button type="button" class="btn btn-primary d-flex align-items-center gap-1" data-bs-toggle="modal"
+                        data-bs-target="#tambahSaffModal">
+                        <i class='bx bx-plus'></i>
+                        Staff
+                    </button>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="staffTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
+                                <tr class="align-middle">
+                                    <td>
+                                        <div class="username">
+                                            <div class="username-info">
+                                                <div class="avatar">
+                                                    @if (!empty($user->avatar))
+                                                        <img class="img"
+                                                            src="{{ asset('storage/avatars/' . $user->avatar) }}">
+                                                    @else
+                                                        <img class="img"
+                                                            src="https://ui-avatars.com/api/?background=random&name={{ urlencode($user->name) }}">
+                                                    @endif
+                                                </div>
+                                                <h5 class="py-0 my-0">{{ $user->name }}</h5>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-1 text-nowrap">
+                                            <i
+                                                class='bx
+                                            {{ $user->roles === 'superadmin'
+                                                ? 'bxs-crown text-warning'
+                                                : ($user->roles === 'admin'
+                                                    ? 'bxs-wrench'
+                                                    : 'bxs-user') }}
+                                            fs-5'></i>
+                                            {{ $user->roles }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="status d-flex justify-content-center pe-3">
+                                            @if ($user->status == 'approved')
+                                                <span class="badge bg-success">Approved</span>
                                             @else
-                                                <img class="img"
-                                                    src="https://ui-avatars.com/api/?background=random&name={{ urlencode($user->name) }}">
+                                                <span class="badge bg-danger">Suspended</span>
                                             @endif
                                         </div>
-                                        <h5 class="py-0 my-0">{{ $user->name }}</h5>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center gap-1 text-nowrap">
-                                    <i class='bx
-                                    {{ $user->roles === 'superadmin' ? 'bxs-crown text-warning' : 
-                                    ($user->roles === 'admin' ? 'bxs-wrench' : 'bxs-user') }}
-                                    fs-5'></i>
-                                    {{ $user->roles }}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="status d-flex justify-content-center pe-3">
-                                    @if ($user->status == 'approved')
-                                        <span class="badge bg-success">Approved</span>
-                                    @else
-                                        <span class="badge bg-danger">Suspended</span>
-                                    @endif
-                                </div>
-                            </td>
-                            <td>
-                                <div class="actions d-flex align-items-center justify-content-center gap-2 pe-3">
-                                    @if (Auth::user()->roles === 'superadmin')
-                                        <div style="cursor: pointer;"
-                                            class="btn btn-primary d-flex align-items-center justify-content-center p-2"
-                                            onclick="editStaff('{{ $user->id }}', '{{ $user->avatar }}', '{{ $user->name }}', '{{ $user->roles }}', '{{ $user->status }}')"
-                                            data-bs-toggle="modal" data-bs-target="#editStaffModal">
-                                            <i class='bx bxs-pencil p-0 m-0'></i>
+                                    </td>
+                                    <td>
+                                        <div class="actions d-flex align-items-center justify-content-center gap-2 pe-3">
+                                            @if (Auth::user()->roles === 'superadmin')
+                                                <div style="cursor: pointer;"
+                                                    class="btn btn-primary d-flex align-items-center justify-content-center p-2"
+                                                    onclick="editStaff('{{ $user->id }}', '{{ $user->avatar }}', '{{ $user->name }}', '{{ $user->roles }}', '{{ $user->status }}')"
+                                                    data-bs-toggle="modal" data-bs-target="#editStaffModal">
+                                                    <i class='bx bxs-pencil p-0 m-0'></i>
+                                                </div>
+                                            @elseif (Auth::user()->roles === 'admin' &&
+                                                    $user->roles !== 'superadmin' &&
+                                                    $user->roles !== 'admin' &&
+                                                    Auth::user()->id !== $user->id)
+                                                <div style="cursor: pointer;"
+                                                    class="btn btn-primary d-flex align-items-center justify-content-center p-2"
+                                                    onclick="editStaff('{{ $user->id }}', '{{ $user->avatar }}', '{{ $user->name }}', '{{ $user->roles }}', '{{ $user->status }}')"
+                                                    data-bs-toggle="modal" data-bs-target="#editStaffModal">
+                                                    <i class='bx bxs-pencil p-0 m-0'></i>
+                                                </div>
+                                            @endif
                                         </div>
-                                    @elseif (Auth::user()->roles === 'admin' &&
-                                            $user->roles !== 'superadmin' &&
-                                            $user->roles !== 'admin' &&
-                                            Auth::user()->id !== $user->id)
-                                        <div style="cursor: pointer;"
-                                            class="btn btn-primary d-flex align-items-center justify-content-center p-2"
-                                            onclick="editStaff('{{ $user->id }}', '{{ $user->avatar }}', '{{ $user->name }}', '{{ $user->roles }}', '{{ $user->status }}')"
-                                            data-bs-toggle="modal" data-bs-target="#editStaffModal">
-                                            <i class='bx bxs-pencil p-0 m-0'></i>
-                                        </div>
-                                    @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col col-12 col-lg-4" id="historyStaff">
+            <div class="card">
+                <div class="card-body px-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="fw-semibold my-0 py-0 px-3">Riwayat Staff</h4>
+                        <i class='bx bx-chevrons-right fs-3 px-3' id="iconHistory" onclick="historyStaff()"
+                            style="cursor: pointer;"></i>
+                    </div>
+                    <hr class="pb-0 mb-0">
+                    <div class="d-flex flex-column" style="max-height: 500px; overflow-y: scroll">
+                        @forelse ($history_staff as $history)
+                            <a href="{{ route('history.detail', $history->id) }}" class="text-decoration-none text-dark"
+                                style="cursor: pointer;">
+                                @php
+                                    $bgClass = match ($history->method) {
+                                        'create' => 'bg-success text-light',
+                                        'update' => 'bg-warning',
+                                        'update status' => 'bg-primary text-light',
+                                        'update status, update' => 'bg-dark text-light',
+                                        'delete' => 'bg-danger text-light',
+                                        default => 'bg-secondary text-dark',
+                                    };
+                                @endphp
+
+                                <div class="notification-header d-flex justify-content-between {{ $bgClass }} px-3">
+                                    <span class="fs-7">{{ $history->title }}</span>
+                                    <span
+                                        class="fs-7">{{ \Carbon\Carbon::parse($history->created_at)->format('d M Y H:i') }}
+                                        WIB</span>
                                 </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                <div class="notification-body d-flex flex-column px-3 gap-0 mb-2">
+                                    <p class="my-0 py-0 fs-6 fw-bold">{{ $history->name }}</p>
+                                    <p class="my-0 py-0 fs-7">{{ $history->description }}</p>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="px-3 pt-2 d-flex justify-content-center align-items-center">
+                                <span>Belum ada riwayat.</span>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -369,5 +451,48 @@
 
             $('#editStaffForm').attr('action', "{{ route('staff.update', '') }}" + '/' + id);
         }
+
+        function historyStaff() {
+            let historyDiv = document.getElementById('historyStaff');
+            let staffList = document.getElementById('staffList');
+            let staffListContainer = document.getElementById('staffListContainer');
+            let historyIcon = document.querySelector('.history-icon');
+            let icon = document.getElementById("iconHistory");
+
+            if (icon.classList.contains("bx-chevrons-right")) {
+                icon.classList.remove("bx-chevrons-right");
+                icon.classList.add("bx-chevrons-left");
+                localStorage.setItem("historyStaffState", "closed");
+            } else {
+                icon.classList.remove("bx-chevrons-left");
+                icon.classList.add("bx-chevrons-right");
+                localStorage.setItem("historyStaffState", "open");
+            }
+
+            if (historyDiv.style.display === 'none') {
+                historyDiv.style.display = 'block';
+                staffList.classList.remove('col-lg-12');
+                staffList.classList.add('col-lg-8');
+                staffListContainer.classList.remove('row-cols-lg-1', 'mt-4');
+                staffListContainer.classList.add('row-cols-lg-2', 'mt-0');
+                historyIcon.classList.remove('d-flex');
+                historyIcon.classList.add('d-none');
+            } else {
+                historyDiv.style.display = 'none';
+                staffList.classList.remove('col-lg-8');
+                staffList.classList.add('col-lg-12');
+                staffListContainer.classList.remove('row-cols-lg-2', 'mt-0');
+                staffListContainer.classList.add('row-cols-lg-1', 'mt-4');
+                historyIcon.classList.remove('d-none');
+                historyIcon.classList.add('d-flex');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const state = localStorage.getItem("historyStaffState");
+            if (state === "closed") {
+                historyStaff();
+            }
+        });
     </script>
 @endpush
